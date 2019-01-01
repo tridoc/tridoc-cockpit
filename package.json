@@ -1,0 +1,19 @@
+{
+  "name": "tridoc-cockpit",
+  "version": "1.0.0",
+  "description": "Webapplication for tridoc",
+  "main": "index.js",
+  "scripts": {
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tridoc/tridoc-webapp.git"
+  },
+  "author": "https://github.com/tridoc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tridoc/tridoc-webapp/issues"
+  },
+  "homepage": "https://tridoc.me"
+}

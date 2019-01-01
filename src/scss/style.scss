@@ -1,3 +1,45 @@
-body {
-    color: red;
+@import "variables";
+@import "common";
+
+.grid {
+    display: grid;
+    grid-template-columns: $list-w $list-w 100fr;
+    grid-template-rows: $header-h auto $footer-h;
+    grid-template-areas:
+        "header header header"
+        "tags documents main"
+        "footer footer footer";
+}
+
+.header {
+    padding: $padding;
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: $header-h;
+    border-bottom: 1px solid $green-m;
+}
+
+.main {
+    height: 100%;
+    grid-area: main;
+}
+
+.tags {
+    height: 100%;
+    grid-area: tags;
+    border-right: 1px solid $green-m;
+}
+
+.documents {
+    height: 100%;
+    grid-area: documents;
+    border-right: 1px solid $green-m;
+}
+
+.footer {
+    height: $footer-h;
+    grid-area: footer;
+    border-top: 1px solid $green-m;
 }

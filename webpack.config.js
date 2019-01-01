@@ -5,9 +5,8 @@ module.exports = [{
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000
-    }
-}, {
-    entry: './src/scss/style.scss',
+    },
+    entry: path.resolve(__dirname, 'src') + "/scss/style.scss",
     output: {
         // This is necessary for webpack to compile
         // But we never use style-bundle.js
@@ -36,7 +35,7 @@ module.exports = [{
         }]
     },
 }, {
-    entry: "./src/js/index.js",
+    entry: path.resolve(__dirname, 'src/js/index.js'),
     output: {
         path: path.resolve("dist/"),
         filename: "index.js"
@@ -45,6 +44,7 @@ module.exports = [{
         rules: [{
             test: /\.js$/,
             loader: 'babel-loader',
+            exclude: /node_modules/,
             options: {
                 presets: ['@babel/preset-env']
             }

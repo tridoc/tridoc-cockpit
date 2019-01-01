@@ -3,8 +3,9 @@
 
 .grid {
     display: grid;
+    height: 100vh;
     grid-template-columns: $list-w $list-w 100fr;
-    grid-template-rows: $header-h auto $footer-h;
+    grid-template-rows: $header-h 100fr $footer-h;
     grid-template-areas:
         "header header header"
         "tags documents main"
@@ -27,19 +28,46 @@
 }
 
 .tags {
-    height: 100%;
     grid-area: tags;
-    border-right: 1px solid $green-m;
 }
 
 .documents {
-    height: 100%;
     grid-area: documents;
+}
+
+.tags,
+.documents {
     border-right: 1px solid $green-m;
+
+    .list {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: calc(100vh - 126px);
+    }
 }
 
 .footer {
     height: $footer-h;
     grid-area: footer;
     border-top: 1px solid $green-m;
+}
+
+.list {
+    list-style: none;
+
+    &-item {
+        height: $list-i-h;
+        padding: $padding;
+        border-bottom: 1px solid $green-m;
+        &-flexible {
+            height: unset;
+        }
+    }
+}
+
+.searchbox {
+    border: 1px solid $green-d;
+    width: 100%;
+    background-color: $green-l;
+    border-radius: 0;
 }

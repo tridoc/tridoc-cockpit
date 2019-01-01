@@ -5,12 +5,17 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title tridoc cockpit
     link(rel="stylesheet", href="style.css")
-    script(src="index.js")
   body.grid
     .header
-      span foo
-      span bar
+      span tridoc cockpit
     .tags
+      .list-item
+        input#search-tags(placeholder="Search for tags",type="text").searchbox
+      ul.list#tag-list
     .documents
+      .list-item
+        input#search-document(placeholder="Search in documents",type="text").searchbox
+      ul.list#document-list
     .main
     .footer
+    script(src="index.js")

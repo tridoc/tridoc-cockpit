@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Webapplication for tridoc",
   "private": true,
+  "main": "src/js/index.js",
   "scripts": {
     "start": "pug -w src/pug -o dist & webpack-dev-server --config webpack.config.js",
     "build": "pug src/pug -o dist & webpack --config webpack.config.js"

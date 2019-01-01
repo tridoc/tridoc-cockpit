@@ -11,21 +11,23 @@ html(lang="en")
 
     .tags
       .box
-        input#search-tags(disabled,placeholder="Search for tags",type="text").input.searchbox
+        input(disabled,placeholder="Search for tags",type="text")#search-tags.input.searchbox
       .box.box-flexible
-        input#server-url(placeholder="url",type="text").input
-        input#server-username(placeholder="username",type="text").input
-        input#server-password(placeholder="password",type="password").input
+        input(placeholder="url",type="text")#server-url.input
+        input(placeholder="username",type="text")#server-username.input
+        input(placeholder="password",type="password")#server-password.input
         button#server-save save
       .box#tag-list
         i ...
 
     .documents
       .box
-        input#search-document(placeholder="Search in documents",type="text").input.searchbox
-      ul.list#document-list
+        input(placeholder="Search in documents",type="text")#search-document.input.searchbox
+      ul#document-list.list
 
     .main
+      .box.box-big
+        h1#current-title ...
 
     .footer
 

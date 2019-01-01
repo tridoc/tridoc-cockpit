@@ -53,8 +53,10 @@
 }
 
 .box {
-    height: $list-i-h;
-    min-height: $list-i-h;
+    display: flex;
+    align-items: center;
+    height: $box-h;
+    min-height: $box-h;
     width: 100%;
     padding: $padding;
     border-bottom: $border-m;
@@ -62,14 +64,17 @@
     &-flexible {
         height: unset;
     }
+    &-big {
+        height: $box-b-h;
+    }
 }
 
 .list {
     list-style: none;
 
     &-item {
-        height: $list-i-h;
-        min-height: $list-i-h;
+        height: $box-h;
+        min-height: $box-h;
         width: 100%;
         padding: $padding;
         border-bottom: $border-l;

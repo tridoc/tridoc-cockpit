@@ -19,7 +19,7 @@
     align-items: center;
     justify-content: space-between;
     height: $header-h;
-    border-bottom: 1px solid $green-m;
+    border-bottom: $border-m;
 }
 
 .main {
@@ -37,7 +37,7 @@
 
 .tags,
 .documents {
-    border-right: 1px solid $green-m;
+    border-right: $border-m;
 
     .list {
         overflow-y: scroll;
@@ -49,7 +49,19 @@
 .footer {
     height: $footer-h;
     grid-area: footer;
-    border-top: 1px solid $green-m;
+    border-top: $border-m;
+}
+
+.box {
+    height: $list-i-h;
+    min-height: $list-i-h;
+    width: 100%;
+    padding: $padding;
+    border-bottom: $border-m;
+
+    &-flexible {
+        height: unset;
+    }
 }
 
 .list {
@@ -57,15 +69,18 @@
 
     &-item {
         height: $list-i-h;
+        min-height: $list-i-h;
+        width: 100%;
         padding: $padding;
-        border-bottom: 1px solid $green-m;
+        border-bottom: $border-l;
+
         &-flexible {
             height: unset;
         }
     }
 }
 
-.searchbox {
+.input {
     border: 1px solid $green-d;
     width: 100%;
     background-color: $green-l;

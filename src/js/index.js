@@ -1,6 +1,26 @@
 import Server from './server';
-let server = new Server(/******************************/);
+
+const urlInput = document.getElementById("server-url");
+const usernameInput = document.getElementById("server-username");
+const passwordInput = document.getElementById("server-password");
+
 const storage = localStorage;
+
+if (storage.getItem("server")) {
+    urlInput.value = storage.getItem("server");
+} else {
+    urlInput.value = "http://localhost:8000";
+}
+
+if (storage.getItem("username")) {
+    usernameInput.value = storage.getItem("username");
+}
+
+if (storage.getItem("password")) {
+    passwordInput.value = storage.getItem("password");
+}
+
+let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
 const count = () => {
     server.countDocuments("", "", "")
@@ -37,19 +57,8 @@ const searchDocuments = (page) => {
             dest.innerHTML = e;
         } else if (array.length > 0) {
             array.forEach(a => {
-                let label = a.title ? a.title : "Untitled document";
-                list = list + "<div class='list-item list-item-flexible' data-document-id=\"" + a.identifier + "\">" +
-                "    <h3 class='mdc-typography--headline5'>" + label + "</h3>" +
-                    "  <div class='list-content'>" +
-                    "    <div class='tags-here'></div>" +
-                    "    <span class='standard-mono mdc-typography--subtitle1'>" + a.identifier + "</span>" +
-                    "  </div>" +
-                    "  <div class='mdc-card__actions'>" +
-                    "    " +
-                    "    <button class='mdc-button mdc-button--unelevated mdc-card__action mdc-card__action--button document-edit'>Edit</button>" +
-                    "    <a class='mdc-button mdc-card__action mdc-card__action--button' href='" + server.url + "/doc/" + a.identifier + "' target='_blank'><i class='material-icons mdc-button__icon' aria-hidden='true'>open_in_new</i>Open</a>" +
-                    "  </div>" +
-                    "</div>";
+                let label = a.title ? a.title : a.identifier;
+                list = list + `<button class='list-item list-item-flexible' data-document-id="${a.identifier}">${label}</button>`;
             });
             dest.innerHTML = list;
             if (list != "") {
@@ -75,6 +84,23 @@ const searchDocuments = (page) => {
         console.log(e);
     });
 }
+
+const saveServer = () => {
+    let serverAddress = urlInput.value;
+    server = new Server(serverAddress, usernameInput.value, passwordInput.value);
+    try {
+        storage.setItem("server", serverAddress);
+        storage.setItem("username", usernameInput.value);
+        storage.setItem("password", passwordInput.value);
+    } catch (error) {
+        console.log(error)
+    }
+    searchDocuments();
+}
+
+/* -- */
+
+document.querySelector("#server-save").addEventListener("click", saveServer);
 
 /* -- */
 

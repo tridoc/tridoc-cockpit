@@ -8,14 +8,25 @@ html(lang="en")
   body.grid
     .header
       span tridoc cockpit
+
     .tags
-      .list-item
-        input#search-tags(placeholder="Search for tags",type="text").searchbox
-      ul.list#tag-list
+      .box
+        input#search-tags(disabled,placeholder="Search for tags",type="text").input.searchbox
+      .box.box-flexible
+        input#server-url(placeholder="url",type="text").input
+        input#server-username(placeholder="username",type="text").input
+        input#server-password(placeholder="password",type="password").input
+        button#server-save save
+      .box#tag-list
+        i ...
+
     .documents
-      .list-item
-        input#search-document(placeholder="Search in documents",type="text").searchbox
+      .box
+        input#search-document(placeholder="Search in documents",type="text").input.searchbox
       ul.list#document-list
+
     .main
+
     .footer
+
     script(src="index.js")

@@ -45,7 +45,8 @@
         grid-area: document;
         position: relative;
         height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
-        overflow-x: scroll;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 
     #pdf-text-layer {

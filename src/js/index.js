@@ -7,6 +7,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.w
 const urlInput = document.getElementById("server-url");
 const usernameInput = document.getElementById("server-username");
 const passwordInput = document.getElementById("server-password");
+const saveButton = document.getElementById("server-save");
+
+const searchInput = document.getElementById("search-documents");
+
+const documentContainer = document.getElementById("document");
+const documentText = document.getElementById("pdf-text");
 
 const storage = localStorage;
 
@@ -26,8 +32,10 @@ if (storage.getItem("password")) {
 
 let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
-const render = id => {
-    let url = server.url + "/doc/" + id;
+const render = (id, page) => {
+    console.log('Rendering');
+    const url = server.url + "/doc/" + id;
+    const pageNumber = page || 1;
     console.log(url);
     console.log("'Authorization': " + server.headers.get('Authorization'));
     var loadingTask = pdfjsLib.getDocument({
@@ -40,25 +48,36 @@ const render = id => {
         console.log('PDF loaded');
 
         // Fetch the first page
-        var pageNumber = 1;
         pdf.getPage(pageNumber).then(function (page) {
             console.log('Page loaded');
+            const documentCanvas = document.getElementById("pdf-canvas");
 
-            var scale = 1.5;
-            var viewport = page.getViewport({
+            let unscaledViewport = page.getViewport({
+                scale: 1
+            });
+
+            unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
+            unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
+
+            const scaledWidth = documentContainer.offsetWidth;
+            const scale = scaledWidth / unscaledViewport.width;
+            const scaledHeight = unscaledViewport.height * scale;
+
+            let scaledViewport = page.getViewport({
                 scale: scale
             });
 
             // Prepare canvas using PDF page dimensions
-            var canvas = document.getElementById('pdf-canvas');
-            var context = canvas.getContext('2d');
-            canvas.height = viewport.height ||viewport.viewBox[3];
-            canvas.width = viewport.width || viewport.viewBox[2];
+            var context = documentCanvas.getContext('2d');
+            documentCanvas.height = scaledHeight;
+            documentCanvas.width = scaledWidth;
+
+            console.log(scaledViewport.width);
 
             // Render PDF page into canvas context
             var renderContext = {
                 canvasContext: context,
-                viewport: viewport
+                viewport: scaledViewport
             };
             var renderTask = page.render(renderContext);
             renderTask.promise.then(function () {
@@ -71,9 +90,8 @@ const render = id => {
     });
 }
 
-render("gv8wIv~j~Y2gSKV4Npai2");
-
 function fillout() {
+    console.log('Fillout');
     let documentTitle = this.innerHTML;
     let id = this.getAttribute("data-document-id");
     if (documentTitle != id) {
@@ -83,7 +101,7 @@ function fillout() {
     render(id);
 }
 const searchDocuments = (page) => {
-    let query = "";
+    let query = searchInput.value ? encodeURIComponent(searchInput.value) : "";
     let dest = document.getElementById("document-list");
     let tags = "";
     let notTags = "";
@@ -104,6 +122,7 @@ const searchDocuments = (page) => {
     let offset = page * limit;
     let to = 0;
 
+    console.log('Searching for Documents' + query + " " + tagsQuery + " " + notTagsQuery + " " + limit + " " + offset)
     server.getDocuments(query, tagsQuery, notTagsQuery, limit, offset).then(array => {
         let list = '';
         if (array.error) {
@@ -150,10 +169,14 @@ const saveServer = () => {
     searchDocuments();
 }
 
-/* -- */
+/* - EVENT LISTENERS - */
 
-document.getElementById("server-save").addEventListener("click", saveServer);
+saveButton.addEventListener("click", saveServer);
+searchInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") searchDocuments()
+});
 
-/* -- */
+/* - ON LOAD - */
 
+render("gv8wIv~j~Y2gSKV4Npai2");
 searchDocuments();

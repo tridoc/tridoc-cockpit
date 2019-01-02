@@ -1,5 +1,5 @@
 export default class Server {
-    constructor(url,username,password) {
+    constructor(url, username, password) {
         if (url.startsWith("http")) {
             this.url = url;
         } else {
@@ -21,19 +21,21 @@ export default class Server {
         };
         if (type) {
             body.parameter = {
-                "type":"http://www.w3.org/2001/XMLSchema#"+type,
-                "value":value
+                "type": "http://www.w3.org/2001/XMLSchema#" + type,
+                "value": value
             };
         }
-        return fetch(this.url + "/doc/"+id+"/tag", {
+        return fetch(this.url + "/doc/" + id + "/tag", {
             method: "POST",
             headers: this.postHeaders,
             body: JSON.stringify(body)
         }).then(r => r.json());
     }
 
-    countDocuments(query,tagsQuery,notTagsQuery) {
-        return fetch(this.url + "/count?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery, {headers: this.headers}).then(r => r.json());
+    countDocuments(query, tagsQuery, notTagsQuery) {
+        return fetch(this.url + "/count?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery, {
+            headers: this.headers
+        }).then(r => r.json());
     }
 
     createTag(label, type) {
@@ -41,7 +43,9 @@ export default class Server {
             'label': label
         };
         if (type) {
-            body.parameter = {"type":"http://www.w3.org/2001/XMLSchema#"+type};
+            body.parameter = {
+                "type": "http://www.w3.org/2001/XMLSchema#" + type
+            };
         }
         return fetch(this.url + "/tag", {
             method: "POST",
@@ -64,17 +68,22 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    getDocuments(query,tagsQuery,notTagsQuery,limit,offset) {
-        return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset,
-            {headers: this.headers}).then(r => r.json());
+    getDocuments(query, tagsQuery, notTagsQuery, limit, offset) {
+        return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset, {
+            headers: this.headers
+        }).then(r => r.json());
     }
 
     getTags(id) {
-        return id ? fetch(this.url + "/doc/"+id+"/tag", {headers: this.headers}).then(r => r.json()) : fetch(this.url + "/tag", {headers: this.headers}).then(r => r.json());
+        return id ? fetch(this.url + "/doc/" + id + "/tag", {
+            headers: this.headers
+        }).then(r => r.json()) : fetch(this.url + "/tag", {
+            headers: this.headers
+        }).then(r => r.json());
     }
 
-    removeTag(id,label) {
-        return fetch(this.url + "/doc/" + id +"/tag/" + label, {
+    removeTag(id, label) {
+        return fetch(this.url + "/doc/" + id + "/tag/" + label, {
             method: "DELETE",
             headers: this.headers
         });

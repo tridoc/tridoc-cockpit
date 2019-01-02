@@ -25,6 +25,16 @@
 .main {
     height: 100%;
     grid-area: main;
+    background-color: $green-l;
+}
+
+#document {
+    position: relative;
+}
+#pdf-text-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .tags {
@@ -53,8 +63,8 @@
 }
 
 .box {
-    display: flex;
-    align-items: center;
+    //display: flex;
+    //align-items: center;
     height: $box-h;
     min-height: $box-h;
     width: 100%;

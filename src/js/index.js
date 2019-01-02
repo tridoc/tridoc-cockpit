@@ -1,4 +1,7 @@
 import Server from './server';
+import TextLayerBuilder from 'pdfjs-dist/lib/web/text_layer_builder.js';
+const pdfjsLib = require('pdfjs-dist');
+pdfjsLib.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.worker.min.js';
 
 const urlInput = document.getElementById("server-url");
 const usernameInput = document.getElementById("server-username");
@@ -22,6 +25,59 @@ if (storage.getItem("password")) {
 
 let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
+const render = id => {
+    let url = server.url + "/doc/" + id;
+    console.log("Getting Document");
+    pdfjsLib.getDocument({
+        url: url,
+        httpHeaders: {
+            "Authorization": server.postHeaders.get("Authorization")
+        }
+    }).then(function (pdfDocument) {
+        console.log("Got Document");
+        // Request a first page
+        return pdfDocument.getPage(1).then(function (pdfPage) {
+            console.log("Got Page");
+            // Display page on the existing canvas with 100% scale.
+            var viewport = pdfPage.getViewport({
+                scale: 1.0,
+            });
+            console.log(viewport);
+            var canvas = document.getElementById('pdf-canvas');
+            canvas.width = viewport.width || viewport.viewBox[2];
+            canvas.height = viewport.height || viewport.viewBox[3];
+            var ctx = canvas.getContext('2d');
+            ctx.scale(1,1);
+            console.log(ctx);
+
+            var renderTask = pdfPage.render({
+                canvasContext: ctx,
+                viewport: viewport,
+            });
+            pdfPage.getTextContent().then(function (textContent) {
+                console.log("Got Text")
+                let page_num = 1;
+                var textLayerDiv = document.getElementById('pdf-text-layer');
+                textLayerDiv.style.height = viewport.height + 'px';
+                textLayerDiv.style.width = viewport.width + 'px';
+                var textLayer = TextLayerBuilder({
+                    textLayerDiv: textLayerDiv,
+                    pageIndex: page_num - 1,
+                    viewport: viewport
+                });
+
+                textLayer.setTextContent(textContent);
+                textLayer.render();
+            }).catch(e => console.log(e));
+            return renderTask.promise;
+        }).then(() => {
+            console.log("Rendered Page");
+        });
+    }).catch(e => console.log(e));
+}
+
+render("IanWviMO0ZIb0_2K1GXFO");
+
 function fillout() {
     let documentTitle = this.innerHTML;
     let id = this.getAttribute("data-document-id");
@@ -29,6 +85,7 @@ function fillout() {
         let title = document.getElementById("current-title")
         title.innerHTML = documentTitle;
     }
+    render(id);
 }
 const searchDocuments = (page) => {
     let query = "";
@@ -45,7 +102,6 @@ const searchDocuments = (page) => {
         encodeURIComponent(notTags);
         notTagsQuery = "&nottag=" + notTags.replace(/\s?,\s?/, "&nottag=");
     }
-    console.log(tagsQuery + notTagsQuery);
     if (isNaN(page)) {
         page = 0
     }

@@ -10,6 +10,8 @@ const passwordInput = document.getElementById("server-password");
 const saveButton = document.getElementById("server-save");
 
 const searchInput = document.getElementById("search-documents");
+const searchLoader = document.createElement("div");
+searchLoader.classList.add("loader");
 
 const documentContainer = document.getElementById("document");
 const documentText = document.getElementById("pdf-text");
@@ -34,7 +36,8 @@ if (storage.getItem("password")) {
 
 let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
-const renderPage = (pdf, pageNumber) => {
+const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContainer) => {
+    const nopreview = container === documentContainer;
     pdf.getPage(pageNumber).then(function (page) {
         console.log(`Page ${pageNumber} loaded`);
 
@@ -48,8 +51,7 @@ const renderPage = (pdf, pageNumber) => {
         unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
         unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
 
-        const scaledWidth = documentContainer.offsetWidth;
-        console.log(scaledWidth);
+        const scaledWidth = container.offsetWidth;
         const scale = scaledWidth / unscaledViewport.width;
         const scaledHeight = unscaledViewport.height * scale;
 
@@ -62,8 +64,6 @@ const renderPage = (pdf, pageNumber) => {
         canvas.height = scaledHeight;
         canvas.width = scaledWidth;
 
-        console.log(scaledViewport.width);
-
         // Render PDF page into canvas context
         var renderContext = {
             canvasContext: context,
@@ -71,27 +71,25 @@ const renderPage = (pdf, pageNumber) => {
         };
         var renderTask = page.render(renderContext);
         renderTask.promise.then(function () {
-            documentContainer.appendChild(canvas);
-            console.log(`Page ${pageNumber} rendered`);
-            if (pageNumber < pdf.numPages) renderPage(pdf, pageNumber + 1);
-            else {
-                console.log(`PDF rendered`);
-                documentLoader.parentNode.removeChild(documentLoader);
+            if (documentLoader.parentNode && nopreview) documentLoader.parentNode.removeChild(documentLoader);
+            container.appendChild(canvas);
+            console.log(`Page ${pageNumber} of ${max > -1 ? max : pdf.numPages} rendered`);
+            console.log(max)
+            if (pageNumber < pdf.numPages && (max === -1 || pageNumber < max)) {
+                if (nopreview) container.appendChild(documentLoader);
+                renderPages(pdf, pageNumber +1, max, container);
             }
+            else console.log('Finished rendering PDF');
         });
     });
 }
 
-const render = (id, page) => {
+const render = (id) => {
+    documentContainer.innerHTML = '';
     documentContainer.appendChild(documentLoader);
-    const documentCanvases = document.getElementsByClassName("pdf-canvas");
-    for (const c of documentCanvases) c.parentNode.removeChild(c);
 
-    console.log('Rendering');
     const url = server.url + "/doc/" + id;
-    const pageNumber = page || 1;
-    console.log(url);
-    console.log("'Authorization': " + server.headers.get('Authorization'));
+    console.log(`Rendering ${url}`);
     var loadingTask = pdfjsLib.getDocument({
         url: url,
         httpHeaders: {
@@ -100,7 +98,26 @@ const render = (id, page) => {
     });
     loadingTask.promise.then(function (pdf) {
         console.log('PDF loaded');
-        renderPage(pdf, 1);
+        renderPages(pdf);
+    }, function (reason) {
+        // PDF loading error
+        console.error(reason);
+    });
+}
+
+const renderPreview = (element) => {
+    const id = element.getAttribute("data-document-id");
+    const url = server.url + "/doc/" + id;
+    console.log(`Rendering preview of ${url}`);
+    var loadingTask = pdfjsLib.getDocument({
+        url: url,
+        httpHeaders: {
+            'Authorization': server.headers.get('Authorization')
+        }
+    });
+    loadingTask.promise.then(function (pdf) {
+        console.log('PDF loaded');
+        renderPages(pdf,1,1,element);
     }, function (reason) {
         // PDF loading error
         console.error(reason);
@@ -120,6 +137,8 @@ function fillout() {
 const searchDocuments = (page) => {
     let query = searchInput.value ? encodeURIComponent(searchInput.value) : "";
     let dest = document.getElementById("document-list");
+    dest.innerHTML = '';
+    dest.appendChild(searchLoader);
     let tags = "";
     let notTags = "";
     let tagsQuery = "";
@@ -147,12 +166,17 @@ const searchDocuments = (page) => {
         } else if (array.length > 0) {
             array.forEach(a => {
                 let label = a.title ? a.title : a.identifier;
-                list = list + `<button class='list-item list-item-flexible fillout-button' data-document-id="${a.identifier}">${label}</button>`;
+                const documentListEntry = document.createElement('button');
+                documentListEntry.classList = 'list-item list-item-flexible fillout-button';
+                documentListEntry.setAttribute('data-document-id',a.identifier);
+                documentListEntry.innerHTML = label;
+                documentListEntry.addEventListener("click", fillout);
+                //renderPreview(documentListEntry); currently crashes browser
+                searchLoader.parentNode.removeChild(searchLoader);
+                dest.appendChild(documentListEntry);
+                dest.appendChild(searchLoader);
             });
-            dest.innerHTML = list;
-            if (list != "") {
-                document.querySelectorAll(".fillout-button").forEach(element => element.addEventListener("click", fillout));
-            }
+            searchLoader.parentNode.removeChild(searchLoader);
         } else {
             let label1 = query ? " Nothing Found" : " Documents will appear here";
             let label2 = query ? "You can try another query" : "Upload something";
@@ -195,5 +219,4 @@ searchInput.addEventListener("keydown", e => {
 
 /* - ON LOAD - */
 
-render("gv8wIv~j~Y2gSKV4Npai2");
 searchDocuments();

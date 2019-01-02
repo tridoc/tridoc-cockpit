@@ -5,6 +5,12 @@
     display: grid;
     height: 100vh;
     grid-template-columns: $list-w $list-w 100fr;
+    @media (max-width: $_s) {
+        grid-template-columns: $list-w_s $list-w_s 100fr;
+    }
+    @media (max-width: $_xs) {
+        grid-template-columns: $list-w_xs $list-w_xs 100fr;
+    }
     grid-template-rows: $header-h 100fr $footer-h;
     grid-template-areas:
         "header header header"
@@ -26,7 +32,7 @@
     grid-area: main;
     display: grid;
     height: 100%;
-    grid-template-columns: 100fr $list-w;
+    grid-template-columns: 100fr 0;
     grid-template-rows: $title-h auto;
     grid-template-areas:
         "header header"
@@ -38,6 +44,8 @@
     }
 
     .comments {
+        grid-area: comments;
+        display: none;
         border-left: $border-m;
     }
 
@@ -117,4 +125,50 @@
     width: 100%;
     background-color: $green-l;
     border-radius: 0;
+}
+
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+.loader {
+  font-size: 10px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-indent: -9999em;
+  border-top: $border-l;
+  border-right: $border-l;
+  border-bottom: $border-l;
+  border-left: $border-d;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

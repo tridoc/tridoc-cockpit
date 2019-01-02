@@ -13,6 +13,8 @@ const searchInput = document.getElementById("search-documents");
 
 const documentContainer = document.getElementById("document");
 const documentText = document.getElementById("pdf-text");
+const documentLoader = document.createElement("div");
+documentLoader.classList.add("loader");
 
 const storage = localStorage;
 
@@ -32,7 +34,59 @@ if (storage.getItem("password")) {
 
 let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
+const renderPage = (pdf, pageNumber) => {
+    pdf.getPage(pageNumber).then(function (page) {
+        console.log(`Page ${pageNumber} loaded`);
+
+        const canvas = document.createElement("canvas");
+        canvas.classList.add("pdf-canvas");
+
+        let unscaledViewport = page.getViewport({
+            scale: 1
+        });
+
+        unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
+        unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
+
+        const scaledWidth = documentContainer.offsetWidth;
+        console.log(scaledWidth);
+        const scale = scaledWidth / unscaledViewport.width;
+        const scaledHeight = unscaledViewport.height * scale;
+
+        let scaledViewport = page.getViewport({
+            scale: scale
+        });
+
+        // Prepare canvas using PDF page dimensions
+        var context = canvas.getContext('2d');
+        canvas.height = scaledHeight;
+        canvas.width = scaledWidth;
+
+        console.log(scaledViewport.width);
+
+        // Render PDF page into canvas context
+        var renderContext = {
+            canvasContext: context,
+            viewport: scaledViewport
+        };
+        var renderTask = page.render(renderContext);
+        renderTask.promise.then(function () {
+            documentContainer.appendChild(canvas);
+            console.log(`Page ${pageNumber} rendered`);
+            if (pageNumber < pdf.numPages) renderPage(pdf, pageNumber + 1);
+            else {
+                console.log(`PDF rendered`);
+                documentLoader.parentNode.removeChild(documentLoader);
+            }
+        });
+    });
+}
+
 const render = (id, page) => {
+    documentContainer.appendChild(documentLoader);
+    const documentCanvases = document.getElementsByClassName("pdf-canvas");
+    for (const c of documentCanvases) c.parentNode.removeChild(c);
+
     console.log('Rendering');
     const url = server.url + "/doc/" + id;
     const pageNumber = page || 1;
@@ -46,44 +100,7 @@ const render = (id, page) => {
     });
     loadingTask.promise.then(function (pdf) {
         console.log('PDF loaded');
-
-        // Fetch the first page
-        pdf.getPage(pageNumber).then(function (page) {
-            console.log('Page loaded');
-            const documentCanvas = document.getElementById("pdf-canvas");
-
-            let unscaledViewport = page.getViewport({
-                scale: 1
-            });
-
-            unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
-            unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
-
-            const scaledWidth = documentContainer.offsetWidth;
-            const scale = scaledWidth / unscaledViewport.width;
-            const scaledHeight = unscaledViewport.height * scale;
-
-            let scaledViewport = page.getViewport({
-                scale: scale
-            });
-
-            // Prepare canvas using PDF page dimensions
-            var context = documentCanvas.getContext('2d');
-            documentCanvas.height = scaledHeight;
-            documentCanvas.width = scaledWidth;
-
-            console.log(scaledViewport.width);
-
-            // Render PDF page into canvas context
-            var renderContext = {
-                canvasContext: context,
-                viewport: scaledViewport
-            };
-            var renderTask = page.render(renderContext);
-            renderTask.promise.then(function () {
-                console.log('Page rendered');
-            });
-        });
+        renderPage(pdf, 1);
     }, function (reason) {
         // PDF loading error
         console.error(reason);

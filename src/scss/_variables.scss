@@ -12,10 +12,14 @@ $orange-l: #ff9e40;
 $orange-m: #ff6d00;
 $orange-d: #c43c00;
 
-$border-m: 1px solid $green-m;
 $border-l: 1px solid $green-l;
+$border-m: 1px solid $green-m;
+$border-d: 1px solid $green-d;
 
 //Sizes
+
+$_s: 700px;
+$_xs: 450px;
 
 $padding: 12px;
 
@@ -27,3 +31,5 @@ $box-b-h: 84px;
 $title-h: 128px;
 
 $list-w: 200px;
+$list-w_s: 150px;
+$list-w_xs: 90px;

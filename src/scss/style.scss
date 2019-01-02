@@ -23,18 +23,37 @@
 }
 
 .main {
-    height: 100%;
     grid-area: main;
-    background-color: $green-l;
-}
+    display: grid;
+    height: 100%;
+    grid-template-columns: 100fr $list-w;
+    grid-template-rows: $title-h auto;
+    grid-template-areas:
+        "header header"
+        "document comments";
 
-#document {
-    position: relative;
-}
-#pdf-text-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
+    .title {
+        grid-area: header;
+        height: $title-h;
+    }
+
+    .comments {
+        border-left: $border-m;
+    }
+
+    #document {
+        grid-area: document;
+        position: relative;
+        height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
+        overflow-x: scroll;
+    }
+
+    #pdf-text-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
 }
 
 .tags {
@@ -73,9 +92,6 @@
 
     &-flexible {
         height: unset;
-    }
-    &-big {
-        height: $box-b-h;
     }
 }
 

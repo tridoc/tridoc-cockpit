@@ -5,6 +5,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title tridoc cockpit
     link(rel="stylesheet", href="style.css")
+    script(src="https://mozilla.github.io/pdf.js/build/pdf.js")
     
   body.grid
     .header
@@ -27,11 +28,13 @@ html(lang="en")
       ul#document-list.list
 
     .main
-      .box.box-big
+      .box.title
         h1#current-title ...
       #document
         canvas#pdf-canvas
         #pdf-text-layer
+      .comments
+        .box.box-flexible Comments not yet supported by Backend
 
     .footer
 

@@ -74,12 +74,10 @@ const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContaine
             if (documentLoader.parentNode && nopreview) documentLoader.parentNode.removeChild(documentLoader);
             container.appendChild(canvas);
             console.log(`Page ${pageNumber} of ${max > -1 ? max : pdf.numPages} rendered`);
-            console.log(max)
             if (pageNumber < pdf.numPages && (max === -1 || pageNumber < max)) {
                 if (nopreview) container.appendChild(documentLoader);
-                renderPages(pdf, pageNumber +1, max, container);
-            }
-            else console.log('Finished rendering PDF');
+                renderPages(pdf, pageNumber + 1, max, container);
+            } else console.log('Finished rendering PDF');
         });
     });
 }
@@ -117,21 +115,73 @@ const renderPreview = (element) => {
     });
     loadingTask.promise.then(function (pdf) {
         console.log('PDF loaded');
-        renderPages(pdf,1,1,element);
+        renderPages(pdf, 1, 1, element);
     }, function (reason) {
         // PDF loading error
         console.error(reason);
     });
 }
 
+function getTags() {
+    document.querySelectorAll(".s__th").forEach((dest) => {
+        let id = dest.closest(".s__ddi").getAttribute("data-document-id");
+        server.getTags(id).then(array => {
+            let list = "";
+            if (array.error) {
+                dest.innerHTML = "Error: " + array.error;
+            } else if (array.length > 0) {
+                array.sort(function (a, b) {
+                    return a.label.localeCompare(b.label);
+                })
+                array.forEach(a => {
+                    let type = "simple";
+                    let icon = "mi-tag";
+                    let value;
+                    if (a.parameter) {
+                        value = a.parameter.value;
+                        if (a.parameter.type == "http://www.w3.org/2001/XMLSchema#decimal") {
+                            type = "decimal";
+                            icon = "mi-num";
+                        } else if (a.parameter.type == "http://www.w3.org/2001/XMLSchema#date") {
+                            type = "date";
+                            icon = "mi-cal";
+                        }
+                    }
+                    const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
+                    list = list + `<div class='tag' data-tag-type='${type}' data-tag-label='${a.label}'>
+                        <i class='tag-icon ${icon}'>${type}</i>
+                        <span class="tag-text">${a.label}</span>
+                        ${valueIndicator}
+                        </div>`;
+                });
+                dest.innerHTML = list;
+                /*if (list != "") {
+                    document.querySelectorAll(".tag").forEach(element => element.addEventListener("click", tagFillout));
+                }*/
+            } else {
+                list = "<div class='mdc-chip'>" +
+                    "  <i class='material-icons mdc-chip__icon mdc-chip__icon--leading'>blur_off</i>" +
+                    "  <div class='mdc-chip__text'>" +
+                    "    Document has no tags." +
+                    "  </div>" +
+                    "</div>";
+                dest.innerHTML = list;
+            }
+        }).catch(e => {
+            dest.innerHTML = "Error: " + e;
+        });
+    });
+}
+
 function fillout() {
     console.log('Fillout');
-    let documentTitle = this.innerHTML;
+    let documentTitle = this.getElementsByClassName("s__t")[0].innerHTML;
     let id = this.getAttribute("data-document-id");
     if (documentTitle != id) {
         let title = document.getElementById("current-title")
         title.innerHTML = documentTitle;
     }
+    document.this.getElementsByClassName("main")[0].setAttribute('data-document-id', id);
     render(id);
 }
 const searchDocuments = (page) => {
@@ -158,7 +208,6 @@ const searchDocuments = (page) => {
     let offset = page * limit;
     let to = 0;
 
-    console.log('Searching for Documents' + query + " " + tagsQuery + " " + notTagsQuery + " " + limit + " " + offset)
     server.getDocuments(query, tagsQuery, notTagsQuery, limit, offset).then(array => {
         let list = '';
         if (array.error) {
@@ -167,9 +216,15 @@ const searchDocuments = (page) => {
             array.forEach(a => {
                 let label = a.title ? a.title : a.identifier;
                 const documentListEntry = document.createElement('button');
-                documentListEntry.classList = 'list-item list-item-flexible fillout-button';
-                documentListEntry.setAttribute('data-document-id',a.identifier);
-                documentListEntry.innerHTML = label;
+                documentListEntry.classList = 'list-item list-item-flexible fillout-button s__ddi';
+                documentListEntry.setAttribute('data-document-id', a.identifier);
+                const title = document.createElement('h2');
+                title.classList = 's__t';
+                title.innerHTML = label;
+                documentListEntry.appendChild(title);
+                const tagsHere = document.createElement('div');
+                tagsHere.classList = 's__th';
+                documentListEntry.appendChild(tagsHere);
                 documentListEntry.addEventListener("click", fillout);
                 //renderPreview(documentListEntry); currently crashes browser
                 searchLoader.parentNode.removeChild(searchLoader);
@@ -192,6 +247,7 @@ const searchDocuments = (page) => {
         document.querySelectorAll(".page-switch").forEach(element => element.addEventListener("click", () => {
             searchDocuments(element.getAttribute("data-pagination-target"));
         }));
+        getTags();
     }).catch(e => {
         console.log(e);
     });

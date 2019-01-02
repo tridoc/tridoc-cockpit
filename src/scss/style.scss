@@ -1,5 +1,6 @@
 @import "variables";
 @import "common";
+@import "icons";
 
 .grid {
   display: grid;
@@ -137,6 +138,36 @@
   border-radius: 0;
 }
 
+.tag {
+  align-items: center;
+  width: unset;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 6px;
+  background-color: $tag-l;
+  margin-right: 4px;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  &-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  &-text,
+  &-value {
+    height: 18px;
+    padding: 0 4px;
+  }
+
+  &-value {
+    background-color: $tag-m;
+    border-radius: 0 4px 4px 0;
+  }
+}
+
 .loader,
 .loader:after {
   border-radius: 50%;
@@ -146,8 +177,8 @@
 
 .loader {
   font-size: 10px;
-  margin: 60px auto; /*
-  position: absolute;
+  margin: 60px auto;
+  /*position: absolute;
   top: 0;
   bottom: 0;
   left: 0;

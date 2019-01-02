@@ -4,7 +4,8 @@ module.exports = [{
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 9000
+        port: 9000,
+        host: '0.0.0.0'
     },
     entry: path.resolve(__dirname, 'src') + "/scss/style.scss",
     output: {

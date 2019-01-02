@@ -1,6 +1,8 @@
 import Server from './server';
-const pdfjsLib = require('pdfjs-dist');
-pdfjsLib.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.worker.min.js';
+
+// Loaded via <script> tag, create shortcut to access PDF.js exports.
+var pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
 const urlInput = document.getElementById("server-url");
 const usernameInput = document.getElementById("server-username");

@@ -1,5 +1,4 @@
 import Server from './server';
-import TextLayerBuilder from 'pdfjs-dist/lib/web/text_layer_builder.js';
 const pdfjsLib = require('pdfjs-dist');
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.worker.min.js';
 
@@ -27,56 +26,50 @@ let server = new Server(urlInput.value, usernameInput.value, passwordInput.value
 
 const render = id => {
     let url = server.url + "/doc/" + id;
-    console.log("Getting Document");
-    pdfjsLib.getDocument({
+    console.log(url);
+    console.log("'Authorization': " + server.headers.get('Authorization'));
+    var loadingTask = pdfjsLib.getDocument({
         url: url,
         httpHeaders: {
-            "Authorization": server.postHeaders.get("Authorization")
+            'Authorization': server.headers.get('Authorization')
         }
-    }).then(function (pdfDocument) {
-        console.log("Got Document");
-        // Request a first page
-        return pdfDocument.getPage(1).then(function (pdfPage) {
-            console.log("Got Page");
-            // Display page on the existing canvas with 100% scale.
-            var viewport = pdfPage.getViewport({
-                scale: 1.0,
+    });
+    loadingTask.promise.then(function (pdf) {
+        console.log('PDF loaded');
+
+        // Fetch the first page
+        var pageNumber = 1;
+        pdf.getPage(pageNumber).then(function (page) {
+            console.log('Page loaded');
+
+            var scale = 1.5;
+            var viewport = page.getViewport({
+                scale: scale
             });
-            console.log(viewport);
+
+            // Prepare canvas using PDF page dimensions
             var canvas = document.getElementById('pdf-canvas');
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height ||viewport.viewBox[3];
             canvas.width = viewport.width || viewport.viewBox[2];
-            canvas.height = viewport.height || viewport.viewBox[3];
-            var ctx = canvas.getContext('2d');
-            ctx.scale(1,1);
-            console.log(ctx);
 
-            var renderTask = pdfPage.render({
-                canvasContext: ctx,
-                viewport: viewport,
+            // Render PDF page into canvas context
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function () {
+                console.log('Page rendered');
             });
-            pdfPage.getTextContent().then(function (textContent) {
-                console.log("Got Text")
-                let page_num = 1;
-                var textLayerDiv = document.getElementById('pdf-text-layer');
-                textLayerDiv.style.height = viewport.height + 'px';
-                textLayerDiv.style.width = viewport.width + 'px';
-                var textLayer = TextLayerBuilder({
-                    textLayerDiv: textLayerDiv,
-                    pageIndex: page_num - 1,
-                    viewport: viewport
-                });
-
-                textLayer.setTextContent(textContent);
-                textLayer.render();
-            }).catch(e => console.log(e));
-            return renderTask.promise;
-        }).then(() => {
-            console.log("Rendered Page");
         });
-    }).catch(e => console.log(e));
+    }, function (reason) {
+        // PDF loading error
+        console.error(reason);
+    });
 }
 
-render("IanWviMO0ZIb0_2K1GXFO");
+render("gv8wIv~j~Y2gSKV4Npai2");
 
 function fillout() {
     let documentTitle = this.innerHTML;

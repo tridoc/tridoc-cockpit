@@ -10,7 +10,7 @@ $svg-tag-new:'PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy
 
 $svg-tag-remove:'PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHBhdGggZD0iTTIxLjQxLDExLjU4TDEyLjQxLDIuNThDMTIuMDQsMi4yMSAxMS41MywyIDExLDJINEEyLDIgMCAwLDAgMiw0VjExQzIsMTEuNTMgMi4yMSwxMi4wNCAyLjU5LDEyLjQxTDMsMTIuODFDMy45LDEyLjI3IDQuOTQsMTIgNiwxMkE2LDYgMCAwLDEgMTIsMThDMTIsMTkuMDYgMTEuNzIsMjAuMDkgMTEuMTgsMjFMMTEuNTgsMjEuNEMxMS45NSwyMS43OCAxMi40NywyMiAxMywyMkMxMy41MywyMiAxNC4wNCwyMS43OSAxNC40MSwyMS40MUwyMS40MSwxNC40MUMyMS43OSwxNC4wNCAyMiwxMy41MyAyMiwxM0MyMiwxMi40NyAyMS43OSwxMS45NiAyMS40MSwxMS41OE01LjUsN0ExLjUsMS41IDAgMCwxIDQsNS41QTEuNSwxLjUgMCAwLDEgNS41LDRBMS41LDEuNSAwIDAsMSA3LDUuNUExLjUsMS41IDAgMCwxIDUuNSw3TTEwLDE5SDJWMTdIMTBWMTlaIi8+PC9zdmc+';
 
-@mixin svg ($base64, $size) {
+@mixin svgSquare ($base64, $size) {
   width: $size;
   height: $size;
   fill: black;
@@ -20,26 +20,26 @@ $svg-tag-remove:'PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSdodHRwOi8vd3d3LnczLm9
 
 .mi {
   &-cal {
-    @include svg($svg-calendar, 24px);
+    @include svgSquare($svg-calendar, 24px);
   }
 
   &-num {
-    @include svg($svg-counter, 24px);
+    @include svgSquare($svg-counter, 24px);
   }
 
   &-tag {
-    @include svg($svg-tag, 24px);
+    @include svgSquare($svg-tag, 24px);
   }
 
   &-taf {
-    @include svg($svg-tag-favourite, 24px);
+    @include svgSquare($svg-tag-favourite, 24px);
   }
 
   &-tan {
-    @include svg($svg-tag-new, 24px);
+    @include svgSquare($svg-tag-new, 24px);
   }
 
   &-tar {
-    @include svg($svg-tag-remove, 24px);
+    @include svgSquare($svg-tag-remove, 24px);
   }
 }

@@ -142,7 +142,7 @@
   align-items: center;
   width: unset;
   display: inline-flex;
-  padding: 2px;
+  padding: $tag-p;
   border-radius: 6px;
   background-color: $tag-l;
   margin-right: 4px;
@@ -152,13 +152,13 @@
   }
 
   &-icon {
-    height: 18px;
-    width: 18px;
+    height: $tag-h;
+    width: $tag-h;
   }
 
   &-text,
   &-value {
-    height: 18px;
+    height: $tag-h;
     padding: 0 4px;
   }
 
@@ -168,14 +168,8 @@
   }
 }
 
-.loader,
-.loader:after {
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-}
-
 .loader {
+
   font-size: 10px;
   margin: 60px auto;
   /*position: absolute;
@@ -193,6 +187,22 @@
   transform: translateZ(0);
   -webkit-animation: load8 1.1s infinite linear;
   animation: load8 1.1s infinite linear;
+
+  &,
+  &:after {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+  }
+
+  &-small,
+  &-small:after {
+    border-radius: 50%;
+    $h: calc(#{$tag-h} + 2 * #{$tag-p});
+    width: $h;
+    height: $h;
+    margin: 0 auto 0 0;
+  }
 }
 
 @-webkit-keyframes load8 {

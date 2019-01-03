@@ -125,6 +125,10 @@
     padding: $padding;
     border-bottom: $border-l;
 
+    &:last-child {
+      border-bottom: none;
+    }
+
     &-flexible {
       height: unset;
     }
@@ -198,10 +202,9 @@
   &-small,
   &-small:after {
     border-radius: 50%;
-    $h: calc(#{$tag-h} + 2 * #{$tag-p});
-    width: $h;
-    height: $h;
-    margin: 0 auto 0 0;
+    width: $tag-h;
+    height: $tag-h;
+    margin: 1px;
   }
 }
 

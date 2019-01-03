@@ -7,6 +7,7 @@
     border: none;
     list-style: none;
     text-align: start;
+    border-collapse: collapse;
 }
 
 html {
@@ -15,4 +16,8 @@ html {
 body {
     height: 100%;
     height: 100vh;
+}
+
+.inline {
+    display: inline-block;
 }

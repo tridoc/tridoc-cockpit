@@ -11,6 +11,15 @@ html(lang="en")
     .header
       span tridoc cockpit
 
+    .main.s__id
+      .box.title
+        h1#current-title
+        #current-tags.s__th
+      #document
+        #pdf-text-layer
+      .comments
+        .box.box-flexible Comments not yet supported by Backend
+
     .tags
       .box
         input(disabled,placeholder="Search for tags",type="text")#search-tags.input.searchbox
@@ -19,7 +28,19 @@ html(lang="en")
         input(placeholder="username",type="text")#server-username.input
         input(placeholder="password",type="password")#server-password.input
         button#server-save save
-      .box#tag-list
+      .box#tag-list(hidden)
+      .box.box-flexible
+        h3 Search syntax:
+        h4 abc
+        p Matches documents where "abc" can be found in text or title
+        h4 #abc
+        p Matches documents with tag "abc"
+        h4 ##abc
+        p Matches documents with tag "#abc"
+        h4 !#abc
+        p Matches documents without tag "abc"
+        h4 \#abc
+        p Matches where "#abc" can be found in text or title
       i.mi-cal
       i.mi-num
       i.mi-tag
@@ -32,15 +53,6 @@ html(lang="en")
         input(placeholder="Search in documents",type="text")#search-documents.input.searchbox
       ul#document-list.list
         .loader
-
-    .main.s__id
-      .box.title
-        h1#current-title
-        #current-tags.s__th
-      #document
-        #pdf-text-layer
-      .comments
-        .box.box-flexible Comments not yet supported by Backend
 
     .footer
 

@@ -39,7 +39,7 @@ let server = new Server(urlInput.value, usernameInput.value, passwordInput.value
 const generateError = (e) => {
     const errorElem = document.createElement('div');
     errorElem.classList = 'error';
-    errorElem.textContent = e.status ? `Error ${e.status}: ${e.message ? e.message : e}` :e;
+    errorElem.textContent = e.status ? `Error ${e.status}: ${e.message ? e.message : e}` : e;
     return errorElem;
 }
 
@@ -131,9 +131,11 @@ const renderPreview = (element) => {
 
 function getTags() {
     document.querySelectorAll('.s__th').forEach((dest) => {
-        let id = dest.closest('.s__id').getAttribute('data-document-id');
+        const id = dest.closest('.s__id').getAttribute('data-document-id');
         if (!id) return;
-        dest.innerHTML = '<div class="loader loader-small"></div>';
+        const loader = document.createElement("div")
+        loader.classList = 'loader loader-small inline'
+        dest.appendChild(loader);
         server.getTags(id).then(array => {
             let list = '';
             if (array.error) {
@@ -188,22 +190,22 @@ function fillout() {
     render(id);
 }
 const searchDocuments = (page) => {
-    let query = searchInput.value ? encodeURIComponent(searchInput.value) : '';
     let dest = document.getElementById('document-list');
     dest.innerHTML = '';
     dest.appendChild(searchLoader);
-    let tags = '';
-    let notTags = '';
-    let tagsQuery = '';
-    if (tags.length > 0) {
-        encodeURIComponent(tags);
-        tagsQuery = '&tag=' + tags.replace(/\s?,\s?/, '&tag=');
+
+    function regx(re, string, join = ', ') {
+        const match = re.exec(string);
+        return match ? join + match[1] + regx(re, string, join) : '';
     }
-    let notTagsQuery = '';
-    if (notTags.length > 0) {
-        encodeURIComponent(notTags);
-        notTagsQuery = '&nottag=' + notTags.replace(/\s?,\s?/, '&nottag=');
-    }
+    const value = ' ' + searchInput.value;
+    const tagsregex = /[^!#\\\b]\B#([^\s"',;:]+?(?=\s|$))/g;
+    const nottagsregex = /[^#\\]\B!#([^\s"',;:]+?(?=\s|$))/g;
+    const query = value ? encodeURIComponent(value.replace(tagsregex, '').replace(nottagsregex, '').replace(/^ /,'').replace(/\\/,'')) : '';
+    const tags = regx(tagsregex, value, '&tag=');
+    let notTags = regx(nottagsregex, value, '&nottag=');
+    let tagsQuery = tags ? tags : '';
+    let notTagsQuery = notTags ? notTags : '';
     if (isNaN(page)) {
         page = 0
     }

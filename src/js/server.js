@@ -69,7 +69,7 @@ export default class Server {
     }
 
     getDocuments(query, tagsQuery, notTagsQuery, limit, offset) {
-        const url = this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset;
+        const url = this.url + "/doc?text=" + query + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset;
         console.log(url);
         return fetch(url, {
             headers: this.headers

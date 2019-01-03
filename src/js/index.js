@@ -216,7 +216,7 @@ const searchDocuments = (page) => {
     server.getDocuments(query, tagsQuery, notTagsQuery, limit, offset).then(array => {
         let list = '';
         if (array.error) {
-            dest.innerHTML = e;
+            dest.innerHTML = array.error;
         } else if (array.length > 0) {
             array.forEach(a => {
                 let label = a.title ? a.title : a.identifier;

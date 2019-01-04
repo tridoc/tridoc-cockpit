@@ -1,8 +1,8 @@
 import Server from './server';
-
-// Loaded via <script> tag, create shortcut to access PDF.js exports.
+import pdfjsLib from 'pdfjs-dist';
+/*// Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
-pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';*/
 
 const urlInput = document.getElementById('server-url');
 const usernameInput = document.getElementById('server-username');
@@ -51,9 +51,7 @@ const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContaine
         const canvas = document.createElement('canvas');
         canvas.classList.add('pdf-canvas');
 
-        let unscaledViewport = page.getViewport({
-            scale: 1
-        });
+        let unscaledViewport = page.getViewport(1);
 
         unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
         unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
@@ -62,9 +60,7 @@ const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContaine
         const scale = scaledWidth / unscaledViewport.width;
         const scaledHeight = unscaledViewport.height * scale;
 
-        let scaledViewport = page.getViewport({
-            scale: scale
-        });
+        let scaledViewport = page.getViewport(scale);
 
         // Prepare canvas using PDF page dimensions
         var context = canvas.getContext('2d');

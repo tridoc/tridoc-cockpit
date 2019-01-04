@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-html(lang="en")
+html(lang='en')
   head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title tridoc cockpit
-    link(rel="stylesheet", href="style.css")
-    //script(src="https://mozilla.github.io/pdf.js/build/pdf.js")
+    link(rel='stylesheet', href='style.css')
+    //script(src='https://mozilla.github.io/pdf.js/build/pdf.js')
     
   body.grid
     .header
       span tridoc cockpit
 
-    .main.s__id
+    .main#main.s__id.s__title
       .box.title
-        h1#current-title
+        h1
+          span#current-title
+          button#edit-title.mi
+            svg(viewBox='0 0 24 24')
+              path(d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z')
         #current-tags.s__th
       #document
         #pdf-text-layer
@@ -22,38 +26,32 @@ html(lang="en")
 
     .tags
       .box
-        input(disabled,placeholder="Search for tags",type="text")#search-tags.input.searchbox
+        input(disabled,placeholder='Search for tags',type='text')#search-tags.input.searchbox
       .box.box-flexible
-        input(placeholder="url",type="text")#server-url.input
-        input(placeholder="username",type="text")#server-username.input
-        input(placeholder="password",type="password")#server-password.input
+        input(placeholder='url',type='text')#server-url.input
+        input(placeholder='username',type='text')#server-username.input
+        input(placeholder='password',type='password')#server-password.input
         button#server-save save
       .box#tag-list(hidden)
       .box.box-flexible
         h3 Search syntax:
         h4 abc
-        p Matches documents where "abc" can be found in text or title
+        p Matches documents where 'abc' can be found in text or title
         h4 #abc
-        p Matches documents with tag "abc"
+        p Matches documents with tag 'abc'
         h4 ##abc
-        p Matches documents with tag "#abc"
+        p Matches documents with tag '#abc'
         h4 !#abc
-        p Matches documents without tag "abc"
+        p Matches documents without tag 'abc'
         h4 \#abc
-        p Matches where "#abc" can be found in text or title
-      i.mi-cal
-      i.mi-num
-      i.mi-tag
-      i.mi-taf
-      i.mi-tan
-      i.mi-tar
+        p Matches where '#abc' can be found in text or title
 
     .documents
       .box
-        input(placeholder="Search in documents",type="text")#search-documents.input.searchbox
+        input(placeholder='Search in documents',type='text')#search-documents.input.searchbox
       ul#document-list.list
         .loader
 
     .footer
 
-    script(src="index.js")
+    script(src='index.js')

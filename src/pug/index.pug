@@ -8,10 +8,10 @@ html(lang='en')
     //script(src='https://mozilla.github.io/pdf.js/build/pdf.js')
     
   body.grid
-    .header
+    header
       span tridoc cockpit
 
-    .main#main.s__id.s__title
+    main#main.s__id.s__title
       .box.title
         h1#current-title.inline
         button#edit-title.mi.inline
@@ -23,32 +23,34 @@ html(lang='en')
         #current-tags-container.inline
           #current-tags.s__th
           input(type="text" autofocus)#current-tags-input.inline
-
-      #document
-        #pdf-text-layer
-
-      .comments
-        .box.box-flexible
-          input(placeholder='url',type='text')#server-url.input
-          input(placeholder='username',type='text')#server-username.input
-          input(placeholder='password',type='password')#server-password.input
-          button#server-save save
-        .box.box-flexible
-          h3 Search syntax:
-          h4 abc
-          p Matches documents where 'abc' can be found in text or title
-          h4 #abc
-          p Matches documents with tag 'abc'
-          h4 ##abc
-          p Matches documents with tag '#abc'
-          h4 !#abc
-          p Matches documents without tag 'abc'
-          h4 \#abc
-          p Matches where '#abc' can be found in text or title
+      .main-grid
+        #document
+          #pdf-text-layer
+        .comments
+          .box.box-flexible
+            input(placeholder='url',type='text')#server-url.input
+            input(placeholder='username',type='text')#server-username.input
+            input(placeholder='password',type='password')#server-password.input
+            button#server-save save
+          .box.box-flexible
+            h3 Search syntax:
+            h4 abc
+            p Matches documents where 'abc' can be found in text or title
+            h4 #abc
+            p Matches documents with tag 'abc'
+            h4 ##abc
+            p Matches documents with tag '#abc'
+            h4 !#abc
+            p Matches documents without tag 'abc'
+            h4 \#abc
+            p Matches where '#abc' can be found in text or title
 
     .tags
-      .box
-        input(disabled,placeholder='Search for tags',type='text')#search-tags.input.searchbox
+      button#collapse-tags.tag.list-tag
+        .tag-icon
+          svg(viewBox="0 0 24 24")
+            path(d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
+        span.tag-text Collapse
       ul#tag-list.list
         .loader
 

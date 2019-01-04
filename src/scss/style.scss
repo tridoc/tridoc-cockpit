@@ -6,6 +6,12 @@
   display: grid;
   height: 100vh;
   grid-template-columns: $list-w $list-w 100fr;
+  &.tags-collapsed {
+    grid-template-columns: 0 $list-w 100fr;
+    .tags {
+      display:none;
+    }
+  }
 
   @media (max-width: $_s) {
     grid-template-columns: $list-w_s $list-w_s 100fr;
@@ -21,7 +27,7 @@
   "footer footer footer";
 }
 
-.header {
+header {
   padding: $padding;
   grid-area: header;
   display: flex;
@@ -31,26 +37,25 @@
   border-bottom: $border-m;
 }
 
-.main {
+main {
   grid-area: main;
-  display: grid;
-  height: 100%;
-  grid-template-columns: 100fr $list-w;
 
-  @media (max-width: $_s) {
-    grid-template-columns: 100fr $list-w_s;
+  .main-grid {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 100fr $list-w;
+    grid-template-rows: auto;
+
+    @media (max-width: $_s) {
+      grid-template-columns: 100fr $list-w_s;
+    }
+
+    @media (max-width: $_xs) {
+      grid-template-columns: 100fr $list-w_xs;
+    }
   }
-
-  @media (max-width: $_xs) {
-    grid-template-columns: 100fr $list-w_xs;
-  }
-
-  grid-template-rows: $title-h auto;
-  grid-template-areas: "header header"
-  "document comments";
 
   .title {
-    grid-area: header;
     height: $title-h;
   }
 
@@ -97,14 +102,12 @@
   }
 
   .comments {
-    grid-area: comments;
     border-left: $border-m;
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-y: scroll;
   }
 
   #document {
-    grid-area: document;
     position: relative;
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-x: hidden;
@@ -189,6 +192,7 @@
   &:last-of-type {
     margin-right: 0;
   }
+
   &-icon,
   &-icon svg {
     height: $tag-h;

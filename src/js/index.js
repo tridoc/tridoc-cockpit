@@ -194,6 +194,13 @@ const getTags = () => {
     });
 }
 
+const uploadTag = (id, label, type = '', value = '') => {
+    server.addTag(id, label, type, value).then(r => {
+        if (r.error === 'Cannot find tag') server.createTag(label,type).then(r => server.addTag(id, label, type, value).then(r => getTags()));
+        else console.log(r);
+    });
+}
+
 const resetEditButton = () => {
     currentTitle.contentEditable = false;
     currentTitle.innerHTML = main.getAttribute('data-document-title') || `<i>Untitled Document <code>${main.getAttribute('data-document-id')}<code></i>`;
@@ -334,17 +341,20 @@ currentTagsInput.addEventListener('keydown', e => {
         if (e.preventDefault) {
             e.preventDefault();
             if (label == '') return false;
+            const id = main.getAttribute('data-document-id');
             const io = label.indexOf(':');
             if (io > 0) {
                 const value = label.substring(io + 1);
-                if (value.indexOf(':')) return false;
+                //if (value.indexOf(':')) return false;
                 if (+value) {
                     label = label.substring(0, io);
                     addTag(currentTagsElement, label, 'decimal', +value);
+                    uploadTag(id, label, 'decimal', +value);
                     currentTagsInput.value = '';
                 }
             } else {
                 addTag(currentTagsElement, label);
+                uploadTag(id, label);
                 currentTagsInput.value = '';
             }
         }

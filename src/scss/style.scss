@@ -189,11 +189,11 @@
   &:last-of-type {
     margin-right: 0;
   }
-
-  &-icon {
+  &-icon,
+  &-icon svg {
     height: $tag-h;
     width: $tag-h;
-    color: #000;
+    fill: $tag-d;
   }
 
   &-text,
@@ -227,12 +227,24 @@
   }
 
   &-tag {
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding: $tag-p;
+    padding: 0;
     margin: 0;
     box-shadow: none;
     border-bottom: 1px solid $tag-d;
     border-radius: 0;
+
+    .tag-text {
+      padding: $tag-m;
+    }
+
+    .tag-icon {
+      flex-shrink: 0;
+      flex-grow: 0;
+      margin: $tag-m;
+    }
   }
 }
 

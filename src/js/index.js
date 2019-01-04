@@ -25,6 +25,7 @@ documentLoader.classList.add('loader');
 
 const currentTitle = document.getElementById('current-title');
 const editTitleButton = document.getElementById('edit-title');
+const cancelEditTitleButton = document.getElementById('cancel-edit-title');
 
 const storage = localStorage;
 
@@ -187,6 +188,8 @@ const getTags = () => {
 
 const resetEditButton = () => {
     currentTitle.contentEditable = false;
+    currentTitle.innerHTML = main.getAttribute('data-document-title') || `<i>Untitled Document <code>${main.getAttribute('data-document-id')}<code></i>`;
+    cancelEditTitleButton.classList.add('hidden');
     editTitleButton.innerHTML = editIcon;
     editTitleButton.removeEventListener('click', saveTitle);
     editTitleButton.addEventListener('click', editTitle);
@@ -201,6 +204,7 @@ const saveTitle = () => {
 const editTitle = () => {
     currentTitle.contentEditable = true;
     currentTitle.innerHTML = main.getAttribute('data-document-title') || '';
+    cancelEditTitleButton.classList.remove('hidden');
     editTitleButton.innerHTML = saveIcon;
     editTitleButton.removeEventListener('click', editTitle);
     editTitleButton.addEventListener('click', saveTitle);
@@ -313,7 +317,8 @@ function filloutFromEvent() {
     fillout(this);
 }
 
-editTitleButton.addEventListener('click', editTitle)
+editTitleButton.addEventListener('click', editTitle);
+cancelEditTitleButton.addEventListener('click', resetEditButton);
 
 /* - ON LOAD - */
 

@@ -209,11 +209,11 @@ const editTitle = () => {
 const fillout = (element) => {
     resetEditButton();
     const titleElement = element.getElementsByClassName('s__t')[0];
-    let documentTitle = titleElement.getAttribute('data-document-title') || titleElement.innerHTML;
+    let documentTitle = element.getAttribute('data-document-title');
     let id = element.getAttribute('data-document-id');
-    currentTitle.innerHTML = documentTitle === id ? `<i>Untitled Document <code>${id}<code></i>` : documentTitle;
+    currentTitle.innerHTML = documentTitle || `<i>Untitled Document <code>${id}<code></i>`;
     main.setAttribute('data-document-id', id);
-    main.setAttribute('data-document-title', titleElement.getAttribute('data-document-title') || '');
+    main.setAttribute('data-document-title', element.getAttribute('data-document-title'));
     getTags();
     render(id);
 }

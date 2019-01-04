@@ -46,6 +46,17 @@
     height: $title-h;
   }
 
+  #current-title {
+    &[contenteditable=true] {
+      &:empty::before {
+        font-style: italic;
+        content: 'Title';
+      }
+
+      border-bottom: $border-d;
+    }
+  }
+
   .comments {
     grid-area: comments;
     display: none;

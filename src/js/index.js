@@ -1,11 +1,15 @@
 import Server from './server';
 import pdfjsLib from 'pdfjs-dist';
+import {
+    isNumber
+} from 'util';
 /*// Loaded via <script> tag, create shortcut to access PDF.js exports.
 var pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';*/
 
 const saveIcon = '<svg viewBox="0 0 24 24"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/></svg>';
 const editIcon = '<svg viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>';
+const addTagIcon = '<svg viewBox="0 0 24 24"><path d="M21.41,11.58L12.41,2.58C12.04,2.21 11.53,2 11,2H4A2,2 0 0,0 2,4V11C2,11.53 2.21,12.04 2.59,12.41L3,12.81C3.9,12.27 4.94,12 6,12A6,6 0 0,1 12,18C12,19.06 11.72,20.09 11.18,21L11.58,21.4C11.95,21.78 12.47,22 13,22C13.53,22 14.04,21.79 14.41,21.41L21.41,14.41C21.79,14.04 22,13.53 22,13C22,12.47 21.79,11.96 21.41,11.58M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M10,19H7V22H5V19H2V17H5V14H7V17H10V19Z"/></svg>';
 
 const urlInput = document.getElementById('server-url');
 const usernameInput = document.getElementById('server-username');
@@ -26,6 +30,8 @@ documentLoader.classList.add('loader');
 const currentTitle = document.getElementById('current-title');
 const editTitleButton = document.getElementById('edit-title');
 const cancelEditTitleButton = document.getElementById('cancel-edit-title');
+const currentTagsElement = document.getElementById('current-tags');
+const currentTagsInput = document.getElementById('current-tags-input');
 
 const storage = localStorage;
 
@@ -134,6 +140,16 @@ const renderPreview = (element) => {
     });
 }
 
+const addTag = (whereto, label, type = 'simple', value = '') => {
+    const newTag = document.createElement("div");
+    newTag.classList = 'tag';
+    newTag.setAttribute('data-tag-type', type);
+    newTag.setAttribute('data-tag-label', label);
+    const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
+    newTag.innerHTML = `<span class="tag-text">${label}</span>${valueIndicator}`;
+    whereto.appendChild(newTag)
+}
+
 const getTags = () => {
     document.querySelectorAll('.s__th').forEach((dest) => {
         const id = dest.closest('.s__id').getAttribute('data-document-id');
@@ -148,6 +164,7 @@ const getTags = () => {
             if (array.error) {
                 dest.innerHTML = 'Error: ' + array.error;
             } else if (array.length > 0) {
+                dest.innerHTML = '';
                 array.sort((a, b) => {
                     return a.label.localeCompare(b.label);
                 })
@@ -165,17 +182,8 @@ const getTags = () => {
                             icon = 'mi-cal';
                         }
                     }
-                    const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
-                    list = list + `<div class='tag' data-tag-type='${type}' data-tag-label='${a.label}'>
-                        <i class='tag-icon ${icon}'>${type}</i>
-                        <span class="tag-text">${a.label}</span>
-                        ${valueIndicator}
-                        </div>`;
+                    addTag(dest, a.label, type, value);
                 });
-                dest.innerHTML = list;
-                /*if (list != '') {
-                    document.querySelectorAll('.tag').forEach(element => element.addEventListener('click', tagFillout));
-                }*/
             } else {
                 list = '<i>No Tags</i>';
                 dest.innerHTML = list;
@@ -319,6 +327,31 @@ function filloutFromEvent() {
 
 editTitleButton.addEventListener('click', editTitle);
 cancelEditTitleButton.addEventListener('click', resetEditButton);
+currentTagsInput.addEventListener('keydown', e => {
+    let label = currentTagsInput.value;
+    const keys = ['Enter', ' ', ';', ',', '\'', '"'];
+    if (keys.includes(e.key)) {
+        if (e.preventDefault) {
+            e.preventDefault();
+            if (label == '') return false;
+            const io = label.indexOf(':');
+            if (io > 0) {
+                const value = label.substring(io + 1);
+                if (value.indexOf(':')) return false;
+                if (+value) {
+                    label = label.substring(0, io);
+                    addTag(currentTagsElement, label, 'decimal', +value);
+                    currentTagsInput.value = '';
+                }
+            } else {
+                addTag(currentTagsElement, label);
+                currentTagsInput.value = '';
+            }
+        }
+        return false;
+    }
+    if (label == '' && e.key === 'Backspace') currentTagsElement.removeChild(currentTagsElement.lastChild);
+});
 
 /* - ON LOAD - */
 

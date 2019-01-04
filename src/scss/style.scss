@@ -35,11 +35,19 @@
   grid-area: main;
   display: grid;
   height: 100%;
-  grid-template-columns: 100fr 0;
+  grid-template-columns: 100fr $list-w;
+
+  @media (max-width: $_s) {
+    grid-template-columns: 100fr $list-w_s;
+  }
+
+  @media (max-width: $_xs) {
+    grid-template-columns: 100fr $list-w_xs;
+  }
+
   grid-template-rows: $title-h auto;
-  grid-template-areas:
-    "header header"
-    "document comments";
+  grid-template-areas: "header header"
+  "document comments";
 
   .title {
     grid-area: header;
@@ -90,16 +98,17 @@
 
   .comments {
     grid-area: comments;
-    display: none;
     border-left: $border-m;
+    //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
+    //overflow-y: scroll;
   }
 
   #document {
     grid-area: document;
     position: relative;
-    height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
-    overflow-y: scroll;
-    overflow-x: hidden;
+    //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
+    //overflow-x: hidden;
+    //overflow-y: scroll;
   }
 
   .pdf-canvas {
@@ -131,9 +140,9 @@
   border-right: $border-m;
 
   .list {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: calc(100vh - 126px);
+    //overflow-y: scroll;
+    //overflow-x: hidden;
+    //height: calc(100vh - 126px);
   }
 }
 
@@ -146,7 +155,7 @@
 .box {
   //display: flex;
   //align-items: center;
-  height: $box-h;
+  //height: $box-h;
   min-height: $box-h;
   width: 100%;
   padding: $padding;
@@ -155,33 +164,6 @@
   &-flexible {
     height: unset;
   }
-}
-
-.list {
-  list-style: none;
-
-  &-item {
-    height: $box-h;
-    min-height: $box-h;
-    width: 100%;
-    padding: $padding;
-    border-bottom: $border-l;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &-flexible {
-      height: unset;
-    }
-  }
-}
-
-.input {
-  border: 1px solid $green-d;
-  width: 100%;
-  background-color: $green-l;
-  border-radius: 0;
 }
 
 .tag {
@@ -225,6 +207,42 @@
   }
 }
 
+.list {
+  list-style: none;
+
+  &-item {
+    //height: $box-h;
+    //min-height: $box-h;
+    width: 100%;
+    padding: $padding;
+    border-bottom: $border-l;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-flexible {
+      height: unset;
+    }
+  }
+
+  &-tag {
+    width: 100%;
+    padding: $tag-p;
+    margin: 0;
+    box-shadow: none;
+    border-bottom: 1px solid $tag-d;
+    border-radius: 0;
+  }
+}
+
+.input {
+  border: 1px solid $green-d;
+  width: 100%;
+  background-color: $green-l;
+  border-radius: 0;
+}
+
 .loader {
 
   font-size: 10px;
@@ -254,6 +272,7 @@
 
   &-small,
   &-small:after {
+    display: inline-block;
     border-radius: 50%;
     width: $tag-h;
     height: $tag-h;

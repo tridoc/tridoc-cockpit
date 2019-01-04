@@ -20,6 +20,8 @@ const searchInput = document.getElementById('search-documents');
 const searchLoader = document.createElement('div');
 searchLoader.classList.add('loader');
 
+const tagList = document.getElementById('tag-list');
+
 const main = document.getElementById('main');
 
 const documentContainer = document.getElementById('document');
@@ -150,10 +152,50 @@ const addTag = (whereto, label, type = 'simple', value = '') => {
     whereto.appendChild(newTag)
 }
 
+const getTagList = () => {
+    server.getTags().then(array => {
+        if (array.error) {
+            tagList.innerHTML = 'Error: ' + array.error;
+        } else if (array.length > 0) {
+            tagList.innerHTML = '';
+            array.sort((a, b) => {
+                return a.label.localeCompare(b.label);
+            })
+            array.forEach(a => {
+                let type = 'simple';
+                let icon = 'mi-tag';
+                let value;
+                if (a.parameter) {
+                    value = a.parameter.value;
+                    if (a.parameter.type == 'http://www.w3.org/2001/XMLSchema#decimal') {
+                        type = 'decimal';
+                        icon = 'mi-num';
+                    } else if (a.parameter.type == 'http://www.w3.org/2001/XMLSchema#date') {
+                        type = 'date';
+                        icon = 'mi-cal';
+                    }
+                }
+                const newTag = document.createElement("li");
+                newTag.classList = 'tag list-tag';
+                newTag.setAttribute('data-tag-type', type);
+                newTag.setAttribute('data-tag-label', a.label);
+                const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
+                newTag.innerHTML = `<span class="tag-text">${a.label}</span>${valueIndicator}`;
+                tagList.appendChild(newTag)
+            });
+        } else {
+            tagList.innerHTML = '<i>No Tags</i>';
+        }
+    }).catch(e => {
+        tagList.innerHTML = 'Error: ' + e;
+    });
+}
+
 const getTags = () => {
+    getTagList();
     document.querySelectorAll('.s__th').forEach((dest) => {
+        if (!dest.closest('.s__id')) return;
         const id = dest.closest('.s__id').getAttribute('data-document-id');
-        if (!id) return;
         if (!dest.getElementsByClassName("loader")[0]) {
             const loader = document.createElement("div")
             loader.classList = 'loader loader-small inline'
@@ -196,7 +238,7 @@ const getTags = () => {
 
 const uploadTag = (id, label, type = '', value = '') => {
     server.addTag(id, label, type, value).then(r => {
-        if (r.error === 'Cannot find tag') server.createTag(label,type).then(r => server.addTag(id, label, type, value).then(r => getTags()));
+        if (r.error === 'Cannot find tag') server.createTag(label, type).then(r => server.addTag(id, label, type, value).then(r => getTags()));
         else console.log(r);
     });
 }

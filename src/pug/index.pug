@@ -22,38 +22,40 @@ html(lang='en')
             path(d='M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12C4,13.85 4.63,15.55 5.68,16.91L16.91,5.68C15.55,4.63 13.85,4 12,4M12,20A8,8 0 0,0 20,12C20,10.15 19.37,8.45 18.32,7.09L7.09,18.32C8.45,19.37 10.15,20 12,20Z')
         #current-tags-container.inline
           #current-tags.s__th
-          input(type="text" autofocus)#current-tags-input
+          input(type="text" autofocus)#current-tags-input.inline
+
       #document
         #pdf-text-layer
+
       .comments
-        .box.box-flexible Comments not yet supported by Backend
+        .box.box-flexible
+          input(placeholder='url',type='text')#server-url.input
+          input(placeholder='username',type='text')#server-username.input
+          input(placeholder='password',type='password')#server-password.input
+          button#server-save save
+        .box.box-flexible
+          h3 Search syntax:
+          h4 abc
+          p Matches documents where 'abc' can be found in text or title
+          h4 #abc
+          p Matches documents with tag 'abc'
+          h4 ##abc
+          p Matches documents with tag '#abc'
+          h4 !#abc
+          p Matches documents without tag 'abc'
+          h4 \#abc
+          p Matches where '#abc' can be found in text or title
 
     .tags
       .box
         input(disabled,placeholder='Search for tags',type='text')#search-tags.input.searchbox
-      .box.box-flexible
-        input(placeholder='url',type='text')#server-url.input
-        input(placeholder='username',type='text')#server-username.input
-        input(placeholder='password',type='password')#server-password.input
-        button#server-save save
-      .box#tag-list(hidden)
-      .box.box-flexible
-        h3 Search syntax:
-        h4 abc
-        p Matches documents where 'abc' can be found in text or title
-        h4 #abc
-        p Matches documents with tag 'abc'
-        h4 ##abc
-        p Matches documents with tag '#abc'
-        h4 !#abc
-        p Matches documents without tag 'abc'
-        h4 \#abc
-        p Matches where '#abc' can be found in text or title
+      ul#tag-list.list
+        .loader
 
     .documents
       .box
         input(placeholder='Search in documents',type='text')#search-documents.input.searchbox
-      ul#document-list.list
+      #document-list.list
         .loader
 
     .footer

@@ -26,6 +26,7 @@ const searchInput = document.getElementById('search-documents');
 const searchLoader = document.createElement('div');
 searchLoader.classList.add('loader');
 
+const tagSidebar = document.getElementById('tag-sidebar');
 const tagList = document.getElementById('tag-list');
 const tagCollapseButton = document.getElementById('collapse-tags');
 
@@ -162,9 +163,8 @@ const addTag = (whereto, label, type = 'simple', value = '') => {
 
 const getTagList = () => {
     server.getTags().then(array => {
-        if (array.error) {
-            tagList.innerHTML = 'Error: ' + array.error;
-        } else if (array.length > 0) {
+        if (array.error) tagList.innerHTML = 'Error: ' + array.error;
+        else if (array.length > 0) {
             tagList.innerHTML = '';
             array.sort((a, b) => {
                 return a.label.localeCompare(b.label);
@@ -181,17 +181,21 @@ const getTagList = () => {
                     }
                 }
                 const newTag = document.createElement("li");
-                newTag.classList = 'tag list-tag';
+                newTag.classList = 'tag';
                 newTag.setAttribute('data-tag-type', type);
                 newTag.setAttribute('data-tag-label', a.label);
                 const icon = type === 'date' ? dateIcon : type === 'decimal' ? numberIcon : '';
                 const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
                 newTag.innerHTML = `<div class="tag-icon">${icon}</div><span class="tag-text">${a.label}</span>${valueIndicator}`;
+                newTag.addEventListener('click', e => {
+                    if (searchInput.value.indexOf(a.label) === -1) {
+                        searchInput.value = `#${a.label} ${searchInput.value}`;
+                        searchDocuments();
+                    }
+                })
                 tagList.appendChild(newTag)
             });
-        } else {
-            tagList.innerHTML = '<i>No Tags</i>';
-        }
+        } else tagList.innerHTML = '<i>No Tags</i>';
     }).catch(e => {
         tagList.innerHTML = 'Error: ' + e;
     });
@@ -383,11 +387,13 @@ function filloutFromEvent() {
 tagCollapseButton.addEventListener('click', e => {
     if (document.body.classList.contains('tags-collapsed')) {
         tagCollapseButton.innerHTML = `<div class="tag-icon">${collapseIcon}</div><span class="tag-text">Collapse</span>`;
-        tagList.insertBefore(tagCollapseButton, tagList.firstChild);
+        tagSidebar.insertBefore(tagCollapseButton, tagSidebar.firstChild);
+        getTagList();
     } else {
         tagCollapseButton.innerHTML = `<div class="tag-icon">${tagsIcon}</div><span class="tag-text">Show Tags</span>`;
         header.appendChild(tagCollapseButton);
     }
+    tagCollapseButton.classList.toggle('tag');
     document.body.classList.toggle('tags-collapsed');
 });
 
@@ -424,4 +430,5 @@ currentTagsInput.addEventListener('keydown', e => {
 
 /* - ON LOAD - */
 
+getTagList();
 searchDocuments();

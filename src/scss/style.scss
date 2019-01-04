@@ -6,10 +6,12 @@
   display: grid;
   height: 100vh;
   grid-template-columns: $list-w $list-w 100fr;
+
   &.tags-collapsed {
     grid-template-columns: 0 $list-w 100fr;
+
     .tags {
-      display:none;
+      display: none;
     }
   }
 
@@ -32,7 +34,7 @@ header {
   grid-area: header;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  //justify-content: space-between;
   height: $header-h;
   border-bottom: $border-m;
 }
@@ -128,10 +130,6 @@ main {
     left: 0;
   }
 
-}
-
-.tags {
-  grid-area: tags;
 }
 
 .documents {
@@ -241,13 +239,43 @@ main {
     border-radius: 0;
 
     .tag-text {
-      padding: $tag-m;
+      padding: $tag-pp;
     }
 
     .tag-icon {
       flex-shrink: 0;
       flex-grow: 0;
-      margin: $tag-m;
+      margin: $tag-pp;
+    }
+  }
+}
+
+.tags {
+  grid-area: tags;
+  border: 1px solid $tag-d;
+  border-top: none;
+  border-bottom: none;
+  #collapse-tags {
+    background-color: $tag-m;
+  }
+  .tag {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    border-bottom: 1px solid $tag-d;
+    border-radius: 0;
+
+    &-text {
+      padding: $tag-pp;
+    }
+
+    &-icon {
+      flex-shrink: 0;
+      flex-grow: 0;
+      margin: $tag-pp;
     }
   }
 }

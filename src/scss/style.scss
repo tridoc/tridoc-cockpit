@@ -15,16 +15,17 @@
     grid-template-columns: auto $list-w_xs 100fr;
   }
 
-  grid-template-rows: $header-h 100fr $footer-h;
-  grid-template-areas: "header header header"
+  grid-template-rows: /*$header-h 100fr $footer-h*/ auto;
+  grid-template-areas: /*"header header header"*/
   "tags documents main"
-  "footer footer footer";
+  /*"footer footer footer"*/;
 }
 
 header {
   padding: $padding;
   grid-area: header;
   display: flex;
+  display: none;
   align-items: center;
   //justify-content: space-between;
   height: $header-h;
@@ -100,20 +101,23 @@ main {
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-y: scroll;
   }
+  #document-wrapper {
+    padding: 10px;
+  }
 
   #document {
     position: relative;
+    max-width: 200mm;
+    margin: 0 auto;
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-x: hidden;
     //overflow-y: scroll;
   }
 
   .pdf-canvas {
-    border-bottom: $border-l;
-
-    &:last-of-type {
-      border-bottom: none;
-    }
+    box-shadow: 0px 1px 4px #c6c6c6, 0px 2px 17px #d1d1d1;
+    margin-bottom: 5px;
+    display: block;
   }
 
   #pdf-text-layer {

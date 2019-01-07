@@ -1,6 +1,7 @@
 // COLORS
 
-$green-l: #5df2d6;
+//$green-l: #5df2d6;
+$green-l: #e1fff9;
 $green-m: #00bfa5;
 $green-d: #008e76;
 
@@ -12,10 +13,6 @@ $orange-l: #ff9e40;
 $orange-m: #ff6d00;
 $orange-d: #c43c00;
 
-$border-l: 1px solid $green-l;
-$border-m: 1px solid $green-m;
-$border-d: 1px solid $green-d;
-
 $gray-l: #ECEFF1;
 $gray-m: #B0BEC5;
 $gray-d: #607D8B;
@@ -23,6 +20,10 @@ $gray-d: #607D8B;
 $tag-l: $gray-l;
 $tag-m: $gray-m;
 $tag-d: $gray-d;
+
+$border-l: 1px solid $gray-l;
+$border-m: 1px solid $green-m;
+$border-d: 1px solid $green-d;
 
 //Sizes
 
@@ -41,12 +42,14 @@ $side-p: $side-spacing $side-spacing 0;
 $side-btn-p: 8px;
 $side-btn-size: 48px;
 $side-btn-icon-size: 24px;
-$side-btn-icon-margin: calc((#{$side-btn-size} - (#{$side-btn-icon-size} + (2*#{$side-btn-p})))/2);
+$side-btn-icon-margin: calc((#{$side-btn-size} - (#{$side-btn-icon-size} + 2px + (2*#{$side-btn-p})))/2);
 $side-btn-icon-color: $green-d;
 
 $tag-h: 18px;
 $tag-p: 2px;
 $tag-pp: 5px;
+
+$input-p: 12px;
 
 $title-h: fit-content;
 

@@ -2,6 +2,17 @@
 @import "common";
 @import "icons";
 
+@mixin interactive {
+
+  &:focus,
+  &:focus-within,
+  &:hover {
+    background-color: $green-l;
+    border-color: $green-d;
+    outline: none;
+  }
+}
+
 .grid {
   display: grid;
   height: 100vh;
@@ -15,10 +26,14 @@
     grid-template-columns: auto $list-w_xs 100fr;
   }
 
-  grid-template-rows: /*$header-h 100fr $footer-h*/ auto;
-  grid-template-areas: /*"header header header"*/
+  grid-template-rows:
+  /*$header-h 100fr $footer-h*/
+  auto;
+  grid-template-areas:
+  /*"header header header"*/
   "tags documents main"
-  /*"footer footer footer"*/;
+  /*"footer footer footer"*/
+  ;
 }
 
 header {
@@ -67,20 +82,21 @@ main {
 
 
   #current-tags-container {
-    padding: $padding;
-    width: 100%;
     height: auto;
-    background: #fff;
-    border-radius: 4px;
-    font-size: 1em;
-    border: $border-l;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    /*
+    #current-tags {
+      display: flex;
+      flex-shrink: 1;
+    }*/
 
     & input {
       outline: none;
       width: auto;
-      border: 0;
       float: left;
-      padding: 8px;
+      margin: 3px;
       background: none;
     }
 
@@ -101,6 +117,7 @@ main {
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-y: scroll;
   }
+
   #document-wrapper {
     padding: 10px;
   }
@@ -132,7 +149,10 @@ main {
   grid-area: documents;
 }
 
-.tags,
+.tags {
+  grid-area: tags;
+}
+
 .documents {
   border-right: $border-m;
 
@@ -248,17 +268,15 @@ main {
 }
 
 .sidebar {
-  z-index: 800;
-  grid-area: tags;
-  border: none;
+  border-right: $border-l;
   padding: $side-p;
   width: $list-w;
-  box-shadow: 0px 1px 4px #c6c6c6,
-    0px 2px 17px #d1d1d1;
+  //box-shadow: 0px 1px 4px #c6c6c6, 0px 2px 17px #d1d1d1;
 
   @media (max-width: $_s) {
     width: $list-w_s;
   }
+
   /*
   @media (max-width: $_xs) {
     width: $list-w_xs;
@@ -296,15 +314,11 @@ main {
     margin: 0;
     margin-bottom: $side-spacing;
     box-shadow: none;
+    border: $border-l;
     border-radius: calc(#{$side-btn-size}/2);
-
-    &:focus,
-    &:hover {
-      background-color: $green-l;
-    }
+    @include interactive;
 
     &-text {
-      padding: $tag-pp;
       font-size: 18px;
     }
 
@@ -348,10 +362,16 @@ main {
 }
 
 .input {
-  border: 1px solid $green-d;
   width: 100%;
-  background-color: $green-l;
-  border-radius: 0;
+  height: $side-btn-size;
+  min-height: $side-btn-size;
+  padding: $input-p;
+  font-size: 12px;
+  margin: 0;
+  margin-bottom: $side-spacing;
+  border: $border-l;
+  border-radius: calc(#{$side-btn-size}/4);
+  @include interactive;
 }
 
 .loader {

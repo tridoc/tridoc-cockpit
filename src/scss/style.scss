@@ -5,22 +5,14 @@
 .grid {
   display: grid;
   height: 100vh;
-  grid-template-columns: $list-w $list-w 100fr;
-
-  &.tags-collapsed {
-    grid-template-columns: 0 $list-w 100fr;
-
-    .tags {
-      display: none;
-    }
-  }
+  grid-template-columns: auto $list-w 100fr;
 
   @media (max-width: $_s) {
-    grid-template-columns: $list-w_s $list-w_s 100fr;
+    grid-template-columns: auto $list-w_s 100fr;
   }
 
   @media (max-width: $_xs) {
-    grid-template-columns: $list-w_xs $list-w_xs 100fr;
+    grid-template-columns: auto $list-w_xs 100fr;
   }
 
   grid-template-rows: $header-h 100fr $footer-h;
@@ -250,22 +242,91 @@ main {
   }
 }
 
-.tags {
+.sidebar {
+  z-index: 800;
   grid-area: tags;
-  border: 1px solid $tag-d;
-  border-top: none;
-  border-bottom: none;
-  #collapse-tags {
-    background-color: $tag-m;
+  border: none;
+  padding: $side-p;
+  width: $list-w;
+  box-shadow: 0px 1px 4px #c6c6c6,
+    0px 2px 17px #d1d1d1;
+
+  @media (max-width: $_s) {
+    width: $list-w_s;
   }
-  .tag {
+  /*
+  @media (max-width: $_xs) {
+    width: $list-w_xs;
+  }
+  */
+  &__collapsed {
+    width: calc(#{$side-btn-size} + (2*#{$side-p}));
+
+    .sidebar-button {
+      width: $side-btn-size;
+      height: $side-btn-size;
+
+      &-text {
+        display: none;
+      }
+
+      &-icon {
+        flex-shrink: 0;
+        flex-grow: 0;
+        margin: 0;
+      }
+    }
+
+    .list {
+      display: none;
+    }
+  }
+
+  &-button {
     display: flex;
     align-items: center;
     width: 100%;
+    min-height: $side-btn-size;
+    padding: $side-btn-p;
+    margin: 0;
+    margin-bottom: $side-spacing;
+    box-shadow: none;
+    border-radius: calc(#{$side-btn-size}/2);
+
+    &:focus,
+    &:hover {
+      background-color: $green-l;
+    }
+
+    &-text {
+      padding: $tag-pp;
+      font-size: 18px;
+    }
+
+    &-icon {
+      flex-shrink: 0;
+      flex-grow: 0;
+      margin-right: $side-btn-p;
+
+      &,
+      & svg {
+        height: $side-btn-icon-size;
+        width: $side-btn-icon-size;
+        fill: $side-btn-icon-color;
+      }
+    }
+  }
+
+  .tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 0;
     margin: 0;
+    margin-bottom: $side-spacing;
     box-shadow: none;
-    border-bottom: 1px solid $tag-d;
+    //border-bottom: 1px solid $tag-d;
     border-radius: 0;
 
     &-text {

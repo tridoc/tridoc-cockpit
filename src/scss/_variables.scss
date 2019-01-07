@@ -36,6 +36,13 @@ $footer-h: 42px;
 $box-h: 42px;
 $box-b-h: 84px;
 
+$side-spacing: 5px;
+$side-p: $side-spacing $side-spacing 0;
+$side-btn-p: 8px;
+$side-btn-size: 48px;
+$side-btn-icon-size: calc(#{$side-btn-size} - (2 *#{$side-btn-p}));
+$side-btn-icon-color: $green-d;
+
 $tag-h: 18px;
 $tag-p: 2px;
 $tag-pp: 5px;

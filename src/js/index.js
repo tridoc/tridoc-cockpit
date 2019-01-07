@@ -23,6 +23,7 @@ const passwordInput = document.getElementById('server-password');
 const saveButton = document.getElementById('server-save');
 
 const searchInput = document.getElementById('search-documents');
+const searchReset = document.getElementById('reset-filters');
 const searchLoader = document.createElement('div');
 searchLoader.classList.add('loader');
 
@@ -186,7 +187,7 @@ const getTagList = () => {
                 newTag.setAttribute('data-tag-label', a.label);
                 const icon = type === 'date' ? dateIcon : type === 'decimal' ? numberIcon : '';
                 const valueIndicator = value ? '<span class="tag-value">' + value + '</span>' : '';
-                newTag.innerHTML = `<div class="tag-icon">${icon}</div><span class="tag-text">${a.label}</span>${valueIndicator}`;
+                newTag.innerHTML = `<span class="tag-text">${a.label}</span>${valueIndicator}<div class="tag-icon">${icon}</div>`;
                 newTag.addEventListener('click', e => {
                     if (searchInput.value.indexOf(a.label) === -1) {
                         searchInput.value = `#${a.label} ${searchInput.value}`;
@@ -360,6 +361,11 @@ const searchDocuments = (page) => {
     });
 }
 
+const resetFilter = () => {
+    searchInput.value = '';
+    searchDocuments();
+}
+
 const saveServer = () => {
     let serverAddress = urlInput.value;
     server = new Server(serverAddress, usernameInput.value, passwordInput.value);
@@ -375,26 +381,17 @@ const saveServer = () => {
 
 /* - EVENT LISTENERS - */
 
-saveButton.addEventListener('click', saveServer);
-searchInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') searchDocuments()
-});
-
 function filloutFromEvent() {
     fillout(this);
 }
 
+saveButton.addEventListener('click', saveServer);
+searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') searchDocuments()
+});
+searchReset.addEventListener('click', resetFilter);
 tagCollapseButton.addEventListener('click', e => {
-    if (document.body.classList.contains('tags-collapsed')) {
-        tagCollapseButton.innerHTML = `<div class="tag-icon">${collapseIcon}</div><span class="tag-text">Collapse</span>`;
-        tagSidebar.insertBefore(tagCollapseButton, tagSidebar.firstChild);
-        getTagList();
-    } else {
-        tagCollapseButton.innerHTML = `<div class="tag-icon">${tagsIcon}</div><span class="tag-text">Show Tags</span>`;
-        header.appendChild(tagCollapseButton);
-    }
-    tagCollapseButton.classList.toggle('tag');
-    document.body.classList.toggle('tags-collapsed');
+    tagSidebar.classList.toggle('sidebar__collapsed');
 });
 
 editTitleButton.addEventListener('click', editTitle);

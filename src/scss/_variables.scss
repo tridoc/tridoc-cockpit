@@ -40,7 +40,8 @@ $side-spacing: 5px;
 $side-p: $side-spacing $side-spacing 0;
 $side-btn-p: 8px;
 $side-btn-size: 48px;
-$side-btn-icon-size: calc(#{$side-btn-size} - (2 *#{$side-btn-p}));
+$side-btn-icon-size: 24px;
+$side-btn-icon-margin: calc((#{$side-btn-size} - (#{$side-btn-icon-size} + (2*#{$side-btn-p})))/2);
 $side-btn-icon-color: $green-d;
 
 $tag-h: 18px;

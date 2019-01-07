@@ -13,7 +13,7 @@ html(lang='en')
       span tridoc cockpit
 
     main#main.s__id.s__title
-      .box.title
+      .box.title.sticky-top
         h1#current-title.inline
         button#edit-title.mi.inline
           svg(viewBox='0 0 24 24')
@@ -24,7 +24,7 @@ html(lang='en')
         
         #current-tags-container.input
           #current-tags.s__th
-          input(type="text",placeholder="Add Tags to document",autofocus)#current-tags-input
+          input(type="text",placeholder="Add Tags to document")#current-tags-input
 
       .main-grid
         #document-wrapper
@@ -38,7 +38,7 @@ html(lang='en')
             button#server-save.sidebar-button
               .sidebar-button-icon
                 svg(viewBox="0 0 24 24")
-                  path(d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
+                  path(d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z")
               span.sidebar-button-text Save
           .box.box-flexible
             h3 Search syntax:
@@ -54,21 +54,22 @@ html(lang='en')
             p Matches where '#abc' can be found in text or title
 
     #tag-sidebar.sidebar.tags
-      button#collapse-tags.sidebar-button
-        .sidebar-button-icon
-          svg(viewBox="0 0 24 24")
-            path(d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
-        span.sidebar-button-text Collapse
-      button#reset-filters.sidebar-button
-        .sidebar-button-icon
-          svg(viewBox="0 0 24 24")
-            path(d="M16,15H9V13H16V15M19,11H9V9H19V11M19,7H9V5H19V7M3,5V21H19V23H3A2,2 0 0,1 1,21V5H3M21,1A2,2 0 0,1 23,3V17C23,18.11 22.11,19 21,19H7A2,2 0 0,1 5,17V3C5,1.89 5.89,1 7,1H21M7,3V17H21V3H7Z")
-        span.sidebar-button-text Reset Filters
+      .sticky-top
+        button#collapse-tags.sidebar-button
+          .sidebar-button-icon
+            svg(viewBox="0 0 24 24")
+              path(d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
+          span.sidebar-button-text Collapse
+        button#reset-filters.sidebar-button
+          .sidebar-button-icon
+            svg(viewBox="0 0 24 24")
+              path(d="M16,15H9V13H16V15M19,11H9V9H19V11M19,7H9V5H19V7M3,5V21H19V23H3A2,2 0 0,1 1,21V5H3M21,1A2,2 0 0,1 23,3V17C23,18.11 22.11,19 21,19H7A2,2 0 0,1 5,17V3C5,1.89 5.89,1 7,1H21M7,3V17H21V3H7Z")
+          span.sidebar-button-text Reset Filters
       ul#tag-list.list
         .loader
 
     .sidebar.documents
-      div
+      .sticky-top
         input(placeholder='Search in documents',type='text')#search-documents.input
       #document-list.list
         .loader

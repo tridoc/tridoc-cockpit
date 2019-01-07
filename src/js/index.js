@@ -182,7 +182,7 @@ const getTagList = () => {
                     }
                 }
                 const newTag = document.createElement("li");
-                newTag.classList = 'tag';
+                newTag.classList = 'sidebar-tag tag';
                 newTag.setAttribute('data-tag-type', type);
                 newTag.setAttribute('data-tag-label', a.label);
                 const icon = type === 'date' ? dateIcon : type === 'decimal' ? numberIcon : '';

@@ -371,11 +371,11 @@ main {
     //border-bottom: 1px solid $tag-d;
     border-radius: 0;
 
-    &-text {
+    .tag-text {
       padding: $tag-pp;
     }
 
-    &-icon {
+    .tag-icon {
       flex-shrink: 0;
       flex-grow: 0;
       margin: $tag-pp;

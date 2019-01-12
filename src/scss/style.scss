@@ -126,7 +126,11 @@ main {
   }
 
   .comments {
-    border-left: $border-m;
+    border-left: $border-l;
+    border-right: none;
+    height: fit-content;
+    position: absolute;
+    right: 0;
     //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
     //overflow-y: scroll;
   }
@@ -281,6 +285,7 @@ main {
 }
 
 .sidebar {
+  background-color: #fff;
   border-right: $border-l;
   padding: $side-p;
   padding-top: 0;
@@ -311,6 +316,12 @@ main {
       width: $side-btn-size;
       height: $side-btn-size;
 
+      &-rotate {
+        .sidebar-button-icon {
+          transform: rotate(180deg);
+        }
+      }
+
       &-text {
         display: none;
       }
@@ -339,6 +350,12 @@ main {
     border: $border-l;
     border-radius: calc(#{$side-btn-size}/2);
     @include interactive;
+
+    &-rotate {
+      .sidebar-button-icon {
+        transition: transform 0.5s ease-in-out;
+      }
+    }
 
     &-text {
       font-size: 18px;

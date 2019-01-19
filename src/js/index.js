@@ -21,6 +21,9 @@ const urlInput = document.getElementById('server-url');
 const usernameInput = document.getElementById('server-username');
 const passwordInput = document.getElementById('server-password');
 const saveButton = document.getElementById('server-save');
+const settingsButton = document.getElementById('settings');
+const settingsPopup = document.getElementById('settings-popup');
+const closeSettingsButton = document.getElementById('settings-close');
 
 const searchInput = document.getElementById('search-documents');
 const searchReset = document.getElementById('reset-filters');
@@ -393,7 +396,8 @@ searchReset.addEventListener('click', resetFilter);
 tagCollapseButton.addEventListener('click', e => {
     tagSidebar.classList.toggle('sidebar__collapsed');
 });
-
+settingsButton.addEventListener('click', () => settingsPopup.classList.remove('hidden'));
+closeSettingsButton.addEventListener('click', () => settingsPopup.classList.add('hidden'));
 editTitleButton.addEventListener('click', editTitle);
 cancelEditTitleButton.addEventListener('click', resetEditButton);
 currentTagsInput.addEventListener('keydown', e => {

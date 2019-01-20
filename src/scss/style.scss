@@ -171,12 +171,6 @@ main {
 
 .documents {
   border-right: $border-m;
-
-  .list {
-    //overflow-y: scroll;
-    //overflow-x: hidden;
-    //height: calc(100vh - 126px);
-  }
 }
 
 .footer {
@@ -285,6 +279,7 @@ main {
 
 .sidebar {
   position: relative;
+  top: 0;
   background-color: #fff;
   border-right: $border-l;
   padding: $side-p;
@@ -315,7 +310,7 @@ main {
   */
   &__collapsed {
     overflow-y: hidden;
-    width: calc(#{$side-btn-size} + (2*#{$side-p}));
+    width: calc(#{$side-btn-size} + (2*#{$side-spacing}));
 
     .sidebar-button {
       width: $side-btn-size;
@@ -338,8 +333,12 @@ main {
       }
     }
 
-    .list * {
-      display: none;
+    .list {
+      overflow: hidden;
+
+      * {
+        display: none;
+      }
     }
   }
 

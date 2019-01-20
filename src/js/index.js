@@ -370,6 +370,7 @@ const resetFilter = () => {
 }
 
 const saveServer = () => {
+    settingsPopup.classList.add('hidden');
     let serverAddress = urlInput.value;
     server = new Server(serverAddress, usernameInput.value, passwordInput.value);
     try {

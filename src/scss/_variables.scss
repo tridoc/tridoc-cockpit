@@ -48,6 +48,7 @@ $side-btn-icon-color: $green-d;
 $tag-h: 18px;
 $tag-p: 2px;
 $tag-pp: 5px;
+$tag-hh: calc(#{$tag-h} + 2 * #{$tag-pp});
 
 $input-p: 12px;
 

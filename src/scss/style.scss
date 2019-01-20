@@ -188,45 +188,55 @@ main {
   }
 }
 
+.s__th {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .tag {
+  display: flex;
+  align-items: center;
   border-radius: 3px;
   background: $tag-l;
-  float: left;
   margin: 3px;
-  padding: 4px;
+  padding: 0;
   font-size: 1em;
+  min-height: $tag-hh;
   vertical-align: middle;
-  box-shadow: 0px 1px 4px #c6c6c6,
-    0px 2px 17px #d1d1d1;
-
-  & a {
-    color: #000;
-    padding-right: 10px;
-    padding-left: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: 5px;
-  }
+  //box-shadow: 0px 1px 4px #c6c6c6, 0px 2px 17px #d1d1d1;
 
   &:last-of-type {
     margin-right: 0;
   }
 
-  &-icon,
-  &-icon svg {
-    height: $tag-h;
-    width: $tag-h;
-    fill: $tag-d;
+  &-icon {
+    margin: $tag-pp;
+
+    &,
+    & svg {
+      height: $tag-h;
+      width: $tag-h;
+      fill: $tag-d;
+    }
+  }
+
+  &-remove {
+    display: none;
+  }
+
+  &:hover &-remove {
+    display: unset;
   }
 
   &-text,
   &-value {
-    padding: 5px 0;
+    word-break: break-all;
+    padding: $tag-pp;
   }
 
   &-value {
-    background-color: $tag-m;
-    border-radius: 0 4px 4px 0;
+    border-radius: 4px;
+    font-style: italic;
   }
 }
 
@@ -393,8 +403,6 @@ main {
   }
 
   &-tag {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
     width: 100%;
     padding: 0;

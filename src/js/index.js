@@ -281,6 +281,12 @@ const editTitle = () => {
     editTitleButton.innerHTML = saveIcon;
     editTitleButton.removeEventListener('click', editTitle);
     editTitleButton.addEventListener('click', saveTitle);
+    currentTitle.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            saveTitle()
+        }
+    });
 }
 
 const fillout = (element) => {

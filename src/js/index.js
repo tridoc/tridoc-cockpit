@@ -267,9 +267,11 @@ const resetEditButton = () => {
 }
 
 const saveTitle = () => {
-    resetEditButton();
     const id = main.getAttribute('data-document-id');
     const title = currentTitle.innerHTML;
+    main.setAttribute('data-document-title', title);
+    resetEditButton();
+    console.log('Saving')
     server.setDocumentTitle(id, title).then(r => searchDocuments());
 }
 const editTitle = () => {

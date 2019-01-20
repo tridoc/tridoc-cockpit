@@ -82,15 +82,13 @@ main {
     height: $title-h;
   }
 
-  #current-title {
-    &[contenteditable=true] {
-      &:empty::before {
-        font-style: italic;
-        content: 'Add a Title';
-      }
-
-      border-bottom: $border-d;
+  #current-title[contenteditable=true] {
+    &:empty::before {
+      font-style: italic;
+      content: 'Add a Title';
     }
+
+    border-bottom: $border-d;
   }
 
   #current-tags-container {
@@ -128,10 +126,6 @@ main {
     border-left: $border-l;
     border-right: none;
     height: fit-content;
-    position: absolute;
-    right: 0;
-    //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
-    //overflow-y: scroll;
   }
 
   #document-wrapper {
@@ -380,7 +374,16 @@ main {
     }
   }
 
-  .sticky-bottom {
+  &-top {
+    justify-self: start;
+    z-index: 1000;
+    background-color: #fff;
+    border-bottom: $border-l;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+  }
+
+  &-bottom {
     justify-self: end;
     z-index: 1000;
     background-color: #fff;

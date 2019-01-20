@@ -30,7 +30,7 @@ html(lang='en')
         #document-wrapper
           #document
             #pdf-text-layer
-        .comments.sidebar.sidebar__left
+        .comments
           .box.box-flexible
             h3 Search syntax:
             h4 abc
@@ -45,7 +45,7 @@ html(lang='en')
             p Matches where '#abc' can be found in text or title
 
     #tag-sidebar.sidebar.tags
-      .sticky-top
+      .sidebar-top
         button#collapse-tags.sidebar-button.sidebar-button-rotate
           .sidebar-button-icon
             svg(viewBox="0 0 24 24")
@@ -58,7 +58,7 @@ html(lang='en')
           span.sidebar-button-text Reset Filters
       ul#tag-list.list
         .loader
-      .sticky-bottom
+      .sidebar-bottom
         button#settings.sidebar-button
           .sidebar-button-icon
             svg(viewBox="0 0 24 24")
@@ -82,7 +82,7 @@ html(lang='en')
 
 
     .sidebar.documents
-      .sticky-top
+      .sidebar-top
         input(placeholder='Search in documents',type='text')#search-documents.input
       #document-list.list
         .loader

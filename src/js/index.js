@@ -65,6 +65,12 @@ if (storage.getItem('password')) {
     passwordInput.value = storage.getItem('password');
 }
 
+if (storage.getItem("limit")) {
+    document.getElementById("result-limit").value = storage.getItem("limit");
+} else {
+    document.getElementById("result-limit").value = "-1";
+}
+
 let server = new Server(urlInput.value, usernameInput.value, passwordInput.value);
 
 const generateError = e => {

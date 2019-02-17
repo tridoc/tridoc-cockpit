@@ -502,7 +502,32 @@ main {
 #settings-popup {
   bottom: 0;
   left: 0;
-  width: $list-w;
+  width: calc(2*#{$list-w});
+
+  h1,
+  h2,
+  p {
+    text-align: center;
+  }
+
+  .settings-columns,
+  #settings-footer {
+    display: flex;
+
+    &>* {
+      flex: 1;
+    }
+
+    .vertical-spacer {
+      margin: 0 5px;
+      flex: 0;
+      border-left: $border-l;
+      width: 1px;
+      &.invisible {
+        border-left-color: transparent;
+      }
+    }
+  }
 }
 
 .popup {

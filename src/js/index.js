@@ -1,4 +1,4 @@
-import Server from './server';
+import Server from '@tridoc/frontend';
 import pdfjsLib from 'pdfjs-dist';
 import {
     isNumber
@@ -123,10 +123,10 @@ const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContaine
 }
 
 const render = (id) => {
-    documentContainer.innerHTML = '';
+    const url = server.url + '/doc/' + id;
+    /*documentContainer.innerHTML = '';
     documentContainer.appendChild(documentLoader);
 
-    const url = server.url + '/doc/' + id;
     console.log(`Rendering ${url}`);
     var loadingTask = pdfjsLib.getDocument({
         url: url,
@@ -140,7 +140,10 @@ const render = (id) => {
     }, reason => {
         if (documentLoader.parentNode) documentLoader.parentNode.removeChild(documentLoader);
         documentContainer.appendChild(generateError(reason));
-    });
+    });*/
+    documentContainer.innerHTML = `<object data="${url}" type="application/pdf" width="100%" height="100%">
+    <a href="${url}">Download PDF</a>
+    </object>`;
 }
 
 const renderPreview = (element) => {

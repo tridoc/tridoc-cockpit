@@ -32,6 +32,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "@tridoc/frontend": "^1.0.0",
     "pdfjs-dist": "^2.0.943"
   }
 }

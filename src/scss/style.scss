@@ -129,11 +129,8 @@ main {
 
     #document {
         position: relative;
-        max-width: 200mm;
-        margin: 0 auto;
-        //height: calc(100vh - (#{$header-h} + #{$title-h} + #{$footer-h}));
-        //overflow-x: hidden;
-        //overflow-y: scroll;
+        height: 100%;
+        width: 100%;
     }
 
     .pdf-canvas {

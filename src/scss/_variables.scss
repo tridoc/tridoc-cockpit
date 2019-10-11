@@ -13,7 +13,7 @@ $orange-l: #ff9e40;
 $orange-m: #ff6d00;
 $orange-d: #c43c00;
 
-$gray-l: #ECEFF1;
+$gray-l: #e0e0e0;
 $gray-m: #B0BEC5;
 $gray-d: #607D8B;
 
@@ -21,9 +21,7 @@ $tag-l: $gray-l;
 $tag-m: $gray-m;
 $tag-d: $gray-d;
 
-$border-l: 1px solid $gray-l;
-$border-m: 1px solid $green-m;
-$border-d: 1px solid $green-d;
+$border: 2px solid #000000;
 
 //Sizes
 
@@ -32,18 +30,16 @@ $_xs: 450px;
 
 $padding: 12px;
 
-$header-h: 42px;
+$header-h: 128px;
 $footer-h: 42px;
 $box-h: 42px;
 $box-b-h: 84px;
 
-$side-spacing: 5px;
-$side-p: $side-spacing $side-spacing 0;
 $side-btn-p: 8px;
 $side-btn-size: 48px;
 $side-btn-icon-size: 24px;
 $side-btn-icon-margin: calc((#{$side-btn-size} - (#{$side-btn-icon-size} + 2px + (2*#{$side-btn-p})))/2);
-$side-btn-icon-color: $green-d;
+$side-btn-icon-color: #000000;
 
 $tag-h: 18px;
 $tag-p: 2px;
@@ -54,6 +50,6 @@ $input-p: 12px;
 
 $title-h: fit-content;
 
-$list-w: 200px;
+$list-w: 256px;
 $list-w_s: 150px;
 $list-w_xs: 90px;

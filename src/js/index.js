@@ -22,7 +22,7 @@ const urlInput = document.getElementById('server-url');
 const usernameInput = document.getElementById('server-username');
 const passwordInput = document.getElementById('server-password');
 const saveButton = document.getElementById('server-save');
-const settingsButton = document.getElementById('settings');
+const settingsButton = document.getElementById('settings-button');
 const settingsPopup = document.getElementById('settings-popup');
 const closeSettingsButton = document.getElementById('settings-close');
 

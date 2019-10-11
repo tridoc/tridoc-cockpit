@@ -13,6 +13,10 @@
     }
 }
 
+object {
+    display: block;
+}
+
 .sticky-top {
     position: sticky;
     z-index: 1000;
@@ -55,8 +59,10 @@ header {
 main {
     grid-area: main;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+    border-bottom: $border;
+    border-right: $border;
 
     .main-grid {
         display: grid;
@@ -120,7 +126,6 @@ main {
     .comments {
         border-left: $border;
         border-right: none;
-        height: fit-content;
     }
 
     #document-wrapper {
@@ -149,14 +154,12 @@ main {
 
 .documents {
     grid-area: documents;
+    border-right: $border;
 }
 
 #tag-sidebar {
     grid-area: tags;
-}
-
-.documents {
-    border-right: $border;
+    $border-left: $border;
 }
 
 .box {
@@ -273,6 +276,7 @@ main {
     top: 0;
     background-color: #fff;
     border-right: $border;
+    border-bottom: $border;
     padding: 0;
     width: $list-w;
     height: 100%;
@@ -285,7 +289,7 @@ main {
 
     .list {
         flex-grow: 1;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     /*

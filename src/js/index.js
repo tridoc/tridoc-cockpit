@@ -1,11 +1,5 @@
 import Server from '@tridoc/frontend';
-import pdfjsLib from 'pdfjs-dist';
-import {
-    isNumber
-} from 'util';
-/*// Loaded via <script> tag, create shortcut to access PDF.js exports.
-var pdfjsLib = window['pdfjs-dist/build/pdf'];
-pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';*/
+import { isNumber } from 'util';
 
 const saveIcon = '<svg viewBox="0 0 24 24"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/></svg>';
 const editIcon = '<svg viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>';
@@ -80,89 +74,11 @@ const generateError = e => {
     return errorElem;
 }
 
-const renderPages = (pdf, pageNumber = 1, max = -1, container = documentContainer) => {
-    const nopreview = container === documentContainer;
-    pdf.getPage(pageNumber).then(page => {
-        console.log(`Page ${pageNumber} loaded`);
-
-        const canvas = document.createElement('canvas');
-        canvas.classList.add('pdf-canvas');
-
-        let unscaledViewport = page.getViewport(1);
-
-        unscaledViewport.height = unscaledViewport.height || unscaledViewport.viewBox[3]
-        unscaledViewport.width = unscaledViewport.width || unscaledViewport.viewBox[2];
-
-        const scaledWidth = container.offsetWidth;
-        const scale = scaledWidth / unscaledViewport.width;
-        const scaledHeight = unscaledViewport.height * scale;
-
-        let scaledViewport = page.getViewport(scale);
-
-        // Prepare canvas using PDF page dimensions
-        var context = canvas.getContext('2d');
-        canvas.height = scaledHeight;
-        canvas.width = scaledWidth;
-
-        // Render PDF page into canvas context
-        var renderContext = {
-            canvasContext: context,
-            viewport: scaledViewport
-        };
-        var renderTask = page.render(renderContext);
-        renderTask.promise.then(() => {
-            if (documentLoader.parentNode && nopreview) documentLoader.parentNode.removeChild(documentLoader);
-            container.appendChild(canvas);
-            console.log(`Page ${pageNumber} of ${max > -1 ? max : pdf.numPages} rendered`);
-            if (pageNumber < pdf.numPages && (max === -1 || pageNumber < max)) {
-                if (nopreview) container.appendChild(documentLoader);
-                renderPages(pdf, pageNumber + 1, max, container);
-            } else console.log('Finished rendering PDF');
-        });
-    });
-}
-
 const render = (id) => {
     const url = server.url + '/doc/' + id;
-    /*documentContainer.innerHTML = '';
-    documentContainer.appendChild(documentLoader);
-
-    console.log(`Rendering ${url}`);
-    var loadingTask = pdfjsLib.getDocument({
-        url: url,
-        httpHeaders: {
-            'Authorization': server.headers.get('Authorization')
-        }
-    });
-    loadingTask.promise.then(pdf => {
-        console.log('PDF loaded');
-        renderPages(pdf);
-    }, reason => {
-        if (documentLoader.parentNode) documentLoader.parentNode.removeChild(documentLoader);
-        documentContainer.appendChild(generateError(reason));
-    });*/
     documentContainer.innerHTML = `<object data="${url}" type="application/pdf" width="100%" height="100%">
     <a href="${url}">Download PDF</a>
     </object>`;
-}
-
-const renderPreview = (element) => {
-    const id = element.getAttribute('data-document-id');
-    const url = server.url + '/doc/' + id;
-    console.log(`Rendering preview of ${url}`);
-    var loadingTask = pdfjsLib.getDocument({
-        url: url,
-        httpHeaders: {
-            'Authorization': server.headers.get('Authorization')
-        }
-    });
-    loadingTask.promise.then(pdf => {
-        console.log('PDF loaded');
-        renderPages(pdf, 1, 1, element);
-    }, reason => {
-        // PDF loading error
-        console.error(reason);
-    });
 }
 
 const addTag = (whereto, label, type = 'simple', value = '') => {

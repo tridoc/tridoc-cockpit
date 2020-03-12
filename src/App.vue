@@ -6,23 +6,8 @@
     app
     bottom
   >
-    <v-list nav>
-      <v-subheader>TAGS</v-subheader>
-      <v-list-item-group v-model="item" color="primary">
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          <v-list-item-icon>
-            <v-icon v-text="item.icon"></v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.text"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-    <v-divider/>
+    <tag-list />
+    <v-divider />
     <v-list nav>
       <template v-for="item in items">
         <v-list-group
@@ -37,7 +22,7 @@
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </template>
-          <v-list-item v-for="(child, i) in item.children" :key="i" link>
+          <v-list-item dense v-for="(child, i) in item.children" :key="i" link>
             <v-list-item-action v-if="child.icon">
               <v-icon>{{ child.icon }}</v-icon>
             </v-list-item-action>
@@ -46,7 +31,11 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        <v-list-item v-else :key="item.text" link>
+        <v-list-item
+          v-else-if="!item.hide"
+          :key="item.text"
+          link
+        >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -126,9 +115,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import TagList from '@/components/TagList'
 
 @Component({
-  components: {}
+  components: {
+    TagList
+  }
 })
 export default class App extends Vue {
   drawer = null
@@ -136,19 +128,19 @@ export default class App extends Vue {
     {
       icon: 'mdi-filter-remove',
       text: 'Show all',
-      show: false
+      hide: true
     },
+    { icon: 'mdi-cog', text: 'Settings' },
+    { icon: 'mdi-help-circle', text: 'Help' },
     {
       icon: 'mdi-chevron-up',
       'icon-alt': 'mdi-chevron-down',
       text: 'More',
       model: false,
       children: [
-        { text: 'Export' }
+        { icon: 'mdi-package-down', text: 'Export' }
       ],
-    },
-    { icon: 'mdi-cog', text: 'Settings' },
-    { icon: 'mdi-help-circle', text: 'Help' }
+    }
   ]
 }
 </script>

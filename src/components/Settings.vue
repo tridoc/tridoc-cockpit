@@ -1,92 +1,126 @@
 <template>
-  <v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent max-width="600px">
-    <template v-slot:activator="{ on }">
-      <v-list-item v-on="on">
-        <v-list-item-icon>
-          <v-icon >mdi-cog</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Settings</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </template>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Settings</span>
-      </v-card-title>
-      <v-card-text>
-        <v-form
-          lazy-validation
-          v-model="valid"
-          ref="form"
+<v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
+  <template v-slot:activator="{ on }">
+    <v-list-item v-on="on">
+      <v-list-item-icon>
+        <v-icon >mdi-cog</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>Settings</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </template>
+  <v-card>
+    <v-card-title>
+      <span class="headline">Settings</span>
+    </v-card-title>
+    <v-card-text>
+      <v-expansion-panels
+        v-model="icurrent"
+      >
+        <v-expansion-panel
+          v-for="(server, i) in iservers"
+          :key="i"
         >
-          <v-container>
-            <v-row>
-              <v-col cols="12" md="auto">
-                <v-text-field
-                  outlined
-                  v-model="url"
-                  :rules="urlRules"
-                  label="Server URL"
-                  required
-                />
-              </v-col>
-              <v-col cols="12" md="auto">
-                <v-text-field
-                  outlined
-                  v-model="password"
-                  :rules="passwordRules"
-                  label="Password"
-                  required
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary darken-1" text @click="show = false">Close</v-btn>
-          <v-btn color="primary darken-1" text @click="save">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-expansion-panel-header :disable-icon-rotate="i === current">
+            {{ i + 1 }}: {{ server.url }}
+            <template
+              v-if="i === current"
+              v-slot:actions
+            >
+              <v-icon color="primary">mdi-check</v-icon>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-form v-model="server.valid">
+              <v-row>
+                <v-col sm="12" md="6">
+                  <v-text-field
+                    outlined
+                    full-width
+                    v-model="server.url"
+                    :rules="urlRules"
+                    label="Server URL"
+                    required
+                  />
+                </v-col>
+                <v-col sm="12" md="6">
+                  <v-text-field
+                    outlined
+                    full-width
+                    v-model="server.password"
+                    :rules="passwordRules"
+                    label="Password"
+                    required
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-spacer />
+                <v-col sm="auto">
+                  <v-btn color="primary darken-1" @click="save(i, server)">Save</v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <v-row>
+        <v-spacer />
+        <v-col sm="auto">
+          <v-btn color="primary darken-1" text @click="addRow">Add</v-btn>
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="secondary darken-1" text @click="show = false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-const isValidUrl = (string: string) => {
+const validateUrl = (string = '') => {
   if (!string.startsWith('http://') || !string.startsWith('https://')) {
     string = 'https://' + string
   }
   try {
     const url = new URL(string);
-    return url.href;
+    return url.href.replace(/\/$/, '')
   } catch (_) {
-    return false;
+    return false
   }
 }
 
 @Component({
 
 })
-export default class TagCreator extends Vue {
-  @Prop() servers !: {[key: string]: Server};
-  @Prop() current !: string;
+export default class SettingsDialog extends Vue {
+  @Prop() servers !: {
+      server: Server;
+      password: string;
+      url: string;
+    }[];
+
+  @Prop() current !: number;
+
+  iservers = this.servers.map(({ password, url }) => ({ valid: false, password, url }));
+
+  icurrent = this.current
 
   show = false
   valid = false
-  url = this.current || ''
-  password = ''
 
   urlRules: FormRule[] = [
     v => !!v || 'URL is required',
     v => {
-      const temp = isValidUrl(v)
+      const temp = validateUrl(v)
       if (temp) {
-        this.url = temp
         return true
       }
       return 'URL has to be valid'
@@ -97,13 +131,20 @@ export default class TagCreator extends Vue {
     v => !!v || 'Password is required',
   ]
 
-  save () {
-    this.$refs.form.validate()
-    if (this.valid) {
-      this.servers[this.url] = new Server(this.url)
-      this.$emit('change', this.url)
+  save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
+    if (valid) {
+      this.$emit('save', { index, url, password })
       this.show = false
     }
+  }
+
+  addRow () {
+    this.iservers.push({
+      password: '',
+      url: '',
+      valid: false
+    })
+    this.icurrent = this.iservers.length - 1
   }
 }
 </script>

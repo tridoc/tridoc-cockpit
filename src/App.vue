@@ -50,7 +50,11 @@
     </v-list>
     <v-divider />
     <v-list nav dense>
-      <settings-dialog />
+      <settings-dialog
+        :servers="servers"
+        :current="current"
+        @save="serverchange"
+      />
       <template v-for="item in navItems">
         <v-list-group
           :disabled="item.disabled"
@@ -150,11 +154,28 @@ interface Tag {
 export default class App extends Vue {
   error: { message: string; title?: string } | null = null
 
-  servers: {[key: string]: Server} = {
-    'http://192.168.1.6:8000': new Server('http://192.168.1.6:8000', 'tridoc', 'pw123')
-  };
+  servers: {
+      server: Server;
+      password: string;
+      url: string;
+    }[] = [{
+      url: 'http://192.168.1.6:8000',
+      password: 'pw123',
+      server: new Server('http://192.168.1.6:8000', 'tridoc', 'pw123'),
+    }, {
+      url: 'http://localhost:8000',
+      password: 'doesn\'t work',
+      server: new Server('http://192.168.1.6:8000', 'tridoc', 'pw123'),
+    }]
 
-  currentserver = this.servers['http://192.168.1.6:8000']
+  current = 0
+
+  get currentserver () {
+    if (this.current >= this.servers.length) {
+      this.current = this.servers.length - 1
+    }
+    return this.servers[this.current].server
+  }
 
   drawer = null
   navItems = [
@@ -204,12 +225,23 @@ export default class App extends Vue {
       })
   }
 
+  serverchange ({ index, url, password }: { index: number; url: string; password: string }) {
+    this.current = index;
+    this.servers[index] = {
+      url,
+      password,
+      server: new Server(url, 'tridoc', password)
+    };
+    console.log(url, password)
+    this.reload()
+  }
+
   reload () {
+    this.reset()
     this.currentserver.getTags()
       .then((r: { label: string; parameter?: { type: string }; error?: string }[]) => {
         if (r.error) {
-          console.log(r)
-          this.error = { message: r.error, ...r }
+          this.error = { title: r.error, ...r }
         } else {
           this.tags = r.map(e => {
             const result = {
@@ -243,7 +275,17 @@ export default class App extends Vue {
             return 0;
           })
         }
+      }, (e: any) => {
+        if (e instanceof Error) {
+          this.error = { title: 'A ' + e.name + ' occurred', message: e.message }
+        } else {
+          this.error = { message: e, ...e }
+        }
       })
+  }
+
+  reset () {
+    this.tags = []
   }
 
   mounted () {

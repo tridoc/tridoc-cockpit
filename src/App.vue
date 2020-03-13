@@ -10,7 +10,7 @@
       <v-list-item-group color="secondary">
 
         <tag-creator
-          :server="server"
+          :server="currentserver"
           @tagcreated="reload"
           @error="r => this.error = { title: r.error, message: r.message }"
         />
@@ -50,6 +50,7 @@
     </v-list>
     <v-divider />
     <v-list nav dense>
+      <settings-dialog />
       <template v-for="item in navItems">
         <v-list-group
           :disabled="item.disabled"
@@ -130,6 +131,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import TagCreator from './components/TagCreator.vue'
+import SettingsDialog from './components/Settings.vue'
 import ErrorDialog from './components/Error.vue'
 
 interface Tag {
@@ -141,23 +143,24 @@ interface Tag {
 @Component({
   components: {
     TagCreator,
+    SettingsDialog,
     ErrorDialog
   }
 })
 export default class App extends Vue {
   error: { message: string; title?: string } | null = null
-  serverurl = 'http://192.168.1.6:8000'
+
+  servers: {[key: string]: Server} = {
+    'http://192.168.1.6:8000': new Server('http://192.168.1.6:8000', 'tridoc', 'pw123')
+  };
+
+  currentserver = this.servers['http://192.168.1.6:8000']
+
   drawer = null
   navItems = [
     {
       icon: 'mdi-filter-remove',
       text: 'Show all',
-      hide: true,
-      disabled: true,
-    },
-    {
-      icon: 'mdi-cog',
-      text: 'Settings',
       disabled: true,
     },
     {
@@ -189,10 +192,8 @@ export default class App extends Vue {
     },
   ]
 
-  server = new Server(this.serverurl, 'tridoc', 'pw123')
-
   deleteTag (label: string) {
-    this.server.deleteTag(label)
+    this.currentserver.deleteTag(label)
       .then((r: {error?: string}) => {
         if (r.error) {
           console.log(r)
@@ -204,7 +205,7 @@ export default class App extends Vue {
   }
 
   reload () {
-    this.server.getTags()
+    this.currentserver.getTags()
       .then((r: { label: string; parameter?: { type: string }; error?: string }[]) => {
         if (r.error) {
           console.log(r)

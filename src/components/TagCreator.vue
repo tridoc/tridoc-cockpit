@@ -93,7 +93,10 @@ export default class TagCreator extends Vue {
     if (this.valid) {
       this.server.createTag(this.label, this.type !== 'simple' ? this.type : null)
         .then((r: {error?: 'string'}) => {
-          if (!r.error) {
+          if (r.error) {
+            this.$emit('error', r)
+            this.clear()
+          } else {
             this.$emit('tagcreated')
             this.clear()
           }

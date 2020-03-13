@@ -7,10 +7,12 @@
   >
     <v-list nav dense>
       <v-subheader>TAGS</v-subheader>
-      <v-list-item-group color="primary">
+      <v-list-item-group color="secondary">
+
         <tag-creator
           :server="server"
           @tagcreated="reload"
+          @error="r => this.error = { title: r.error, message: r.message }"
         />
 
         <v-menu
@@ -108,9 +110,11 @@
       label="Search"
     />
     <v-spacer/>
-    <!--<v-btn icon>
-      <v-icon>mdi-invert-colors</v-icon>
-    </v-btn>-->
+    <v-btn icon>
+      <v-icon
+        @click="$vuetify.theme.dark = !$vuetify.theme.dark"
+      >mdi-invert-colors</v-icon>
+    </v-btn>
   </v-app-bar>
 
   <v-content app>
@@ -242,7 +246,6 @@ export default class App extends Vue {
   }
 
   mounted () {
-    // this.server.countDocuments('', '', '').then((r: number) => alert('Documents found: ' + r))
     this.reload()
   }
 }

@@ -158,19 +158,14 @@ export default class App extends Vue {
       server: Server;
       password: string;
       url: string;
-    }[] = [{
-      url: 'http://192.168.1.6:8000',
-      password: 'pw123',
-      server: new Server('http://192.168.1.6:8000', 'tridoc', 'pw123'),
-    }, {
-      url: 'http://localhost:8000',
-      password: 'doesn\'t work',
-      server: new Server('http://192.168.1.6:8000', 'tridoc', 'pw123'),
-    }]
+    }[] = []
 
   current = 0
 
   get currentserver () {
+    if (this.servers.length === 0) {
+      return null
+    }
     if (this.current >= this.servers.length) {
       this.current = this.servers.length - 1
     }
@@ -232,7 +227,7 @@ export default class App extends Vue {
       password,
       server: new Server(url, 'tridoc', password)
     };
-    console.log(url, password)
+    this.store()
     this.reload()
   }
 
@@ -288,7 +283,46 @@ export default class App extends Vue {
     this.tags = []
   }
 
-  mounted () {
+  restore () {
+    const storedServers = JSON.parse(localStorage.getItem('servers') || '');
+    const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0');
+    if (storedServers) {
+      this.servers = storedServers.map(({ password, url }: { password: string; url: string }) => ({
+        password,
+        url,
+        server: new Server(url, 'tridoc', password)
+      }))
+    }
+    if (storedCurrent) {
+      this.current = storedCurrent
+    }
+    console.log(storedServers, storedCurrent)
+    console.log(this.servers, this.current)
+    // This will collect stored data from toolbox
+    const storedUrl = localStorage.getItem('server')
+    const storedPassword = localStorage.getItem('password')
+    if (storedUrl && storedPassword) {
+      this.servers.push({
+        password: storedPassword,
+        url: storedUrl,
+        server: new Server(storedUrl, 'tridoc', storedPassword)
+      })
+    }
+  }
+
+  store () {
+    localStorage.setItem('currentserver', this.current.toString())
+    localStorage.setItem(
+      'servers',
+      JSON.stringify(this.servers.map(({ password, url }: { password: string; url: string }) => ({
+        password,
+        url
+      })))
+    )
+  }
+
+  created () {
+    this.restore()
     this.reload()
   }
 }

@@ -20,7 +20,7 @@
       >
         <v-expansion-panel
           v-for="(server, i) in iservers"
-          :key="i"
+          :key="server.id"
         >
           <v-expansion-panel-header :disable-icon-rotate="i === current">
             {{ i + 1 }}: {{ server.url }}
@@ -97,6 +97,11 @@ const validateUrl = (string = '') => {
   }
 }
 
+const counterhelper = (() => {
+  let i = 0
+  return () => i++
+})()
+
 @Component({
 
 })
@@ -109,7 +114,11 @@ export default class SettingsDialog extends Vue {
 
   @Prop() current !: number;
 
-  iservers = this.servers.map(({ password, url }) => ({ valid: false, password, url }));
+  counter () {
+    return counterhelper()
+  }
+
+  iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
 
   icurrent = this.current
 
@@ -140,6 +149,7 @@ export default class SettingsDialog extends Vue {
 
   addRow () {
     this.iservers.push({
+      id: this.counter(),
       password: '',
       url: '',
       valid: false

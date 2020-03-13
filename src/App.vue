@@ -2,15 +2,41 @@
 <v-app>
   <v-navigation-drawer
     v-model="drawer"
-    :clipped="$vuetify.breakpoint.lgAndUp"
+    :clipped="$vuetify.breakpoint.mdAndUp"
     app
-    bottom
   >
-    <tag-list />
+    <v-list nav dense>
+      <v-subheader>TAGS</v-subheader>
+      <v-list-item-group color="primary">
+        <v-list-item
+          v-for="(item, i) in tags"
+          :key="i"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="item.icon"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.label"></v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-icon v-text="item['type-icon']" small></v-icon>
+          </v-list-item-action>
+        </v-list-item>
+        <v-list-item disabled @click="/**/">
+          <v-list-item-icon>
+            <v-icon>mdi-tag-plus</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Add Tag</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
     <v-divider />
-    <v-list nav>
+    <v-list nav dense>
       <template v-for="item in items">
         <v-list-group
+          :disabled="item.disabled"
           v-if="item.children"
           :key="item.text"
           v-model="item.model"
@@ -22,7 +48,13 @@
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </template>
-          <v-list-item dense v-for="(child, i) in item.children" :key="i" link>
+          <v-list-item
+            dense
+            v-for="(child, i) in item.children"
+            :key="i"
+            link
+            :disabled="child.disabled"
+          >
             <v-list-item-action v-if="child.icon">
               <v-icon>{{ child.icon }}</v-icon>
             </v-list-item-action>
@@ -33,6 +65,7 @@
         </v-list-group>
         <v-list-item
           v-else-if="!item.hide"
+          :disabled="item.disabled"
           :key="item.text"
           link
         >
@@ -47,7 +80,7 @@
     </v-list>
   </v-navigation-drawer>
 
-  <v-app-bar :clipped-left="true" app color="blue darken-3" dark>
+  <v-app-bar :clipped-left="true" app color="primary" :flat="$vuetify.breakpoint.mdAndUp" dark>
     <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
     <v-toolbar-title style="width: 300px" class="hidden-sm-and-down">
       tridoc Cockpit
@@ -114,12 +147,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import TagList from '@/components/TagList'
+import { Component, Vue } from 'vue-property-decorator'
+import Server from '@tridoc/frontend'
 
 @Component({
   components: {
-    TagList
   }
 })
 export default class App extends Vue {
@@ -128,19 +160,63 @@ export default class App extends Vue {
     {
       icon: 'mdi-filter-remove',
       text: 'Show all',
-      hide: true
+      hide: true,
+      disabled: true,
     },
-    { icon: 'mdi-cog', text: 'Settings' },
-    { icon: 'mdi-help-circle', text: 'Help' },
+    {
+      icon: 'mdi-cog',
+      text: 'Settings',
+      disabled: true,
+    },
+    {
+      icon: 'mdi-help-circle',
+      text: 'Help',
+      disabled: true,
+    },
     {
       icon: 'mdi-chevron-up',
       'icon-alt': 'mdi-chevron-down',
       text: 'More',
       model: false,
       children: [
-        { icon: 'mdi-package-down', text: 'Export' }
+        {
+          icon: 'mdi-package-down',
+          text: 'Export',
+          disabled: true,
+        }
       ],
     }
   ]
+
+  tags: {'icon': string; 'label': string; 'type-icon': string}[] = []
+
+  server = new Server('http://localhost:8000', 'tridoc', 'pw123')
+
+  mounted () {
+    // this.server.countDocuments('', '', '').then((r: number) => alert('Documents found: ' + r))
+    this.server.getTags()
+      .then((r: {label: string; parameter?: { type: string }}[]) => {
+        this.tags = r.map(e => {
+          const result = {
+            icon: 'mdi-tag',
+            label: e.label,
+            'type-icon': ''
+          }
+          if (e.parameter) {
+            switch (e.parameter.type) {
+              case 'http://www.w3.org/2001/XMLSchema#decimal':
+                result['type-icon'] = 'mdi-pound'
+                break;
+              case 'http://www.w3.org/2001/XMLSchema#date':
+                result['type-icon'] = 'mdi-calendar'
+                break;
+              default:
+                break;
+            }
+          }
+          return result
+        });
+      })
+  }
 }
 </script>

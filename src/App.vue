@@ -112,51 +112,13 @@
       <v-icon>mdi-invert-colors</v-icon>
     </v-btn>-->
   </v-app-bar>
+
   <v-content app>
     <v-container class="fill-height" fluid>
     </v-container>
   </v-content>
-  <!--<v-btn bottom color="pink" dark fab fixed right @click="dialog = !dialog">
-    <v-icon>mdi-plus</v-icon>
-  </v-btn>
-  <v-dialog v-model="dialog" width="800px">
-    <v-card>
-      <v-card-title class="grey darken-2">Create contact</v-card-title>
-      <v-container>
-        <v-row class="mx-2">
-          <v-col class="align-center justify-space-between" cols="12">
-            <v-row align="center" class="mr-0">
-              <v-avatar size="40px" class="mx-3">
-                <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt />
-              </v-avatar>
-              <v-text-field placeholder="Name" />
-            </v-row>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field prepend-icon="mdi-account-card-details-outline" placeholder="Company" />
-          </v-col>
-          <v-col cols="6">
-            <v-text-field placeholder="Job title" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field prepend-icon="mdi-mail" placeholder="Email" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field type="tel" prepend-icon="mdi-phone" placeholder="(000) 000 - 0000" />
-          </v-col>
-          <v-col cols="12">
-            <v-text-field prepend-icon="mdi-text" placeholder="Notes" />
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-card-actions>
-        <v-btn text color="primary">More</v-btn>
-        <v-spacer />
-        <v-btn text color="primary" @click="dialog = false">Cancel</v-btn>
-        <v-btn text @click="dialog = false">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>-->
+
+  <error-dialog :error="error" :close="() => error = null" />
 </v-app>
 </template>
 
@@ -164,6 +126,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import TagCreator from './components/TagCreator.vue'
+import ErrorDialog from './components/Error.vue'
 
 interface Tag {
   'icon': string;
@@ -173,10 +136,13 @@ interface Tag {
 
 @Component({
   components: {
-    TagCreator
+    TagCreator,
+    ErrorDialog
   }
 })
 export default class App extends Vue {
+  error: { message: string; title?: string } | null = null
+  serverurl = 'http://192.168.1.6:8000'
   drawer = null
   navItems = [
     {
@@ -219,13 +185,14 @@ export default class App extends Vue {
     },
   ]
 
-  server = new Server('http://localhost:8000', 'tridoc', 'pw123')
+  server = new Server(this.serverurl, 'tridoc', 'pw123')
 
   deleteTag (label: string) {
     this.server.deleteTag(label)
       .then((r: {error?: string}) => {
         if (r.error) {
-          //
+          console.log(r)
+          this.error = { message: r.error, ...r }
         } else {
           this.reload()
         }
@@ -234,38 +201,43 @@ export default class App extends Vue {
 
   reload () {
     this.server.getTags()
-      .then((r: {label: string; parameter?: { type: string }}[]) => {
-        this.tags = r.map(e => {
-          const result = {
-            icon: 'mdi-tag',
-            label: e.label,
-            'type-icon': ''
-          }
-          if (e.parameter) {
-            switch (e.parameter.type) {
-              case 'http://www.w3.org/2001/XMLSchema#decimal':
-                result['type-icon'] = 'mdi-pound'
-                break;
-              case 'http://www.w3.org/2001/XMLSchema#date':
-                result['type-icon'] = 'mdi-calendar'
-                break;
-              default:
-                break;
+      .then((r: { label: string; parameter?: { type: string }; error?: string }[]) => {
+        if (r.error) {
+          console.log(r)
+          this.error = { message: r.error, ...r }
+        } else {
+          this.tags = r.map(e => {
+            const result = {
+              icon: 'mdi-tag',
+              label: e.label,
+              'type-icon': ''
             }
-          }
-          return result
-        });
-        this.tags.sort((a, b) => {
-          const labelA = a.label.toUpperCase();
-          const labelB = b.label.toUpperCase();
-          if (labelA < labelB) {
-            return -1;
-          }
-          if (labelA > labelB) {
-            return 1;
-          }
-          return 0;
-        })
+            if (e.parameter) {
+              switch (e.parameter.type) {
+                case 'http://www.w3.org/2001/XMLSchema#decimal':
+                  result['type-icon'] = 'mdi-pound'
+                  break;
+                case 'http://www.w3.org/2001/XMLSchema#date':
+                  result['type-icon'] = 'mdi-calendar'
+                  break;
+                default:
+                  break;
+              }
+            }
+            return result
+          });
+          this.tags.sort((a, b) => {
+            const labelA = a.label.toUpperCase();
+            const labelB = b.label.toUpperCase();
+            if (labelA < labelB) {
+              return -1;
+            }
+            if (labelA > labelB) {
+              return 1;
+            }
+            return 0;
+          })
+        }
       })
   }
 

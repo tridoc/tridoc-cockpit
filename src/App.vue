@@ -8,6 +8,10 @@
     <v-list nav dense>
       <v-subheader>TAGS</v-subheader>
       <v-list-item-group color="primary">
+        <tag-creator
+          :server="server"
+          @tagcreated="reload"
+        />
         <v-list-item
           v-for="(item, i) in tags"
           :key="i"
@@ -22,10 +26,6 @@
             <v-icon v-text="item['type-icon']" small></v-icon>
           </v-list-item-action>
         </v-list-item>
-        <tag-creator
-          :server="server"
-          @tagcreated="reload"
-        />
       </v-list-item-group>
     </v-list>
     <v-divider />
@@ -186,7 +186,7 @@ export default class App extends Vue {
     }
   ]
 
-  tags: {'icon': string; 'label': string; 'type-icon': string}[] = []
+  tags: {'icon': string; 'label': string; 'type-icon'?: string}[] = [];
 
   server = new Server('http://localhost:8000', 'tridoc', 'pw123')
 
@@ -213,6 +213,17 @@ export default class App extends Vue {
           }
           return result
         });
+        this.tags.sort((a, b) => {
+          const labelA = a.label.toUpperCase();
+          const labelB = b.label.toUpperCase();
+          if (labelA < labelB) {
+            return -1;
+          }
+          if (labelA > labelB) {
+            return 1;
+          }
+          return 0;
+        })
       })
   }
 

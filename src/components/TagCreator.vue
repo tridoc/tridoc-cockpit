@@ -1,12 +1,12 @@
 <template>
   <v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent max-width="600px">
     <template v-slot:activator="{ on }">
-      <v-list-item v-on="on">
+      <v-list-item class="secondary white--text" v-on="on">
         <v-list-item-icon>
-          <v-icon>mdi-tag-plus</v-icon>
+          <v-icon class="white--text" >mdi-tag-plus</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Create Tag</v-list-item-title>
+          <v-list-item-title class="white--text">Create Tag</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -27,6 +27,13 @@
                 label="Label"
                 required
               />
+            </v-row>
+            <v-row>
+              <v-radio-group v-model="type">
+                <v-radio label="Not parameterizable" :value="null" />
+                <v-radio label="Parameterizable with number / decimal" value="decimal" />
+                <v-radio label="Parameterizable with date" value="date" />
+              </v-radio-group>
             </v-row>
           </v-container>
         </v-form>
@@ -50,10 +57,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 })
 export default class TagCreator extends Vue {
   @Prop() server !: Server;
-  show = true
+  show = false
   valid = false
   label = ''
-  type = null
+  type: null | string = null
 
   labelRules: FormRule[] = [
     v => !!v || 'Label is required',

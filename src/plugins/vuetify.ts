@@ -14,8 +14,14 @@ export default new Vuetify({
         error: colors.red.base,
       },
       dark: {
-        primary: '#00685b',
-        secondary: '#c86852',
+        primary: {
+          base: '#00887b',
+          darken1: '#00887b',
+        },
+        secondary: {
+          base: '#ec8d79',
+          darken1: '#ffb39b',
+        },
         accent: '#f86158',
         error: colors.red.base,
       },

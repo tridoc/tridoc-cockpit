@@ -22,14 +22,10 @@
             <v-icon v-text="item['type-icon']" small></v-icon>
           </v-list-item-action>
         </v-list-item>
-        <v-list-item disabled @click="/**/">
-          <v-list-item-icon>
-            <v-icon>mdi-tag-plus</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Add Tag</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <tag-creator
+          :server="server"
+          @tagcreated="reload"
+        />
       </v-list-item-group>
     </v-list>
     <v-divider />
@@ -149,9 +145,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
+import TagCreator from './components/TagCreator.vue'
 
 @Component({
   components: {
+    TagCreator
   }
 })
 export default class App extends Vue {
@@ -192,8 +190,7 @@ export default class App extends Vue {
 
   server = new Server('http://localhost:8000', 'tridoc', 'pw123')
 
-  mounted () {
-    // this.server.countDocuments('', '', '').then((r: number) => alert('Documents found: ' + r))
+  reload () {
     this.server.getTags()
       .then((r: {label: string; parameter?: { type: string }}[]) => {
         this.tags = r.map(e => {
@@ -217,6 +214,11 @@ export default class App extends Vue {
           return result
         });
       })
+  }
+
+  mounted () {
+    // this.server.countDocuments('', '', '').then((r: number) => alert('Documents found: ' + r))
+    this.reload()
   }
 }
 </script>

@@ -1,6 +1,10 @@
 import Vue, { VNode } from 'vue'
 
 declare global {
+  interface FormRule {
+    (v: string): boolean | string;
+  }
+
   namespace JSX {
     // tslint:disable no-empty-interface
     interface Element extends VNode {}

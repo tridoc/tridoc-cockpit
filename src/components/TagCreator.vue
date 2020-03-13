@@ -16,6 +16,7 @@
       </v-card-title>
       <v-card-text>
         <v-form
+          lazy-validation
           v-model="valid"
           ref="form"
         >
@@ -30,9 +31,21 @@
             </v-row>
             <v-row>
               <v-radio-group v-model="type">
-                <v-radio label="Not parameterizable" :value="null" />
-                <v-radio label="Parameterizable with number / decimal" value="decimal" />
-                <v-radio label="Parameterizable with date" value="date" />
+                <v-radio value="simple">
+                  <template v-slot:label>
+                    <v-icon small left>mdi-tag</v-icon> Not parameterizable
+                  </template>
+                </v-radio>
+                <v-radio value="decimal">
+                  <template v-slot:label>
+                    <v-icon small left>mdi-pound</v-icon> Parameterizable with number / decimal
+                  </template>
+                </v-radio>
+                <v-radio value="date">
+                  <template v-slot:label>
+                    <v-icon small left>mdi-calendar</v-icon> Parameterizable with date
+                  </template>
+                </v-radio>
               </v-radio-group>
             </v-row>
           </v-container>
@@ -60,7 +73,7 @@ export default class TagCreator extends Vue {
   show = false
   valid = false
   label = ''
-  type: null | string = null
+  type: 'simple' | 'date' | 'decimal' = 'simple'
 
   labelRules: FormRule[] = [
     v => !!v || 'Label is required',
@@ -71,12 +84,14 @@ export default class TagCreator extends Vue {
   clear () {
     this.show = false
     this.label = ''
+    this.type = 'simple'
     this.$refs.form.resetValidation()
   }
 
   save () {
+    this.$refs.form.validate()
     if (this.valid) {
-      this.server.createTag(this.label, this.type)
+      this.server.createTag(this.label, this.type ? this.type !== 'simple' : null)
         .then((r: {error?: 'string'}) => {
           if (!r.error) {
             this.$emit('tagcreated')

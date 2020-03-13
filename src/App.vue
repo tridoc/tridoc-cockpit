@@ -12,25 +12,43 @@
           :server="server"
           @tagcreated="reload"
         />
-        <v-list-item
-          v-for="(item, i) in tags"
+
+        <v-menu
+          v-for="(tag, i) in tags"
           :key="i"
+          absolute
+          offset-y
+          style="max-width: 600px"
         >
-          <v-list-item-icon>
-            <v-icon v-text="item.icon"></v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.label"></v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-icon v-text="item['type-icon']" small></v-icon>
-          </v-list-item-action>
-        </v-list-item>
+          <template v-slot:activator="{ on }">
+            <v-list-item v-on="on">
+              <v-list-item-icon>
+                <v-icon v-text="tag.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="tag.label"></v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-icon v-text="tag['type-icon']" small></v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in tagActions"
+              :key="index"
+              @click="() => item.fn(tag)"
+            >
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
       </v-list-item-group>
     </v-list>
     <v-divider />
     <v-list nav dense>
-      <template v-for="item in items">
+      <template v-for="item in navItems">
         <v-list-group
           :disabled="item.disabled"
           v-if="item.children"
@@ -147,6 +165,12 @@ import { Component, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import TagCreator from './components/TagCreator.vue'
 
+interface Tag {
+  'icon': string;
+  'label': string;
+  'type-icon'?: string;
+}
+
 @Component({
   components: {
     TagCreator
@@ -154,7 +178,7 @@ import TagCreator from './components/TagCreator.vue'
 })
 export default class App extends Vue {
   drawer = null
-  items = [
+  navItems = [
     {
       icon: 'mdi-filter-remove',
       text: 'Show all',
@@ -186,9 +210,27 @@ export default class App extends Vue {
     }
   ]
 
-  tags: {'icon': string; 'label': string; 'type-icon'?: string}[] = [];
+  tags: Tag[] = [];
+
+  tagActions = [
+    {
+      name: 'Delete',
+      fn: (t: Tag) => this.deleteTag(t.label)
+    },
+  ]
 
   server = new Server('http://localhost:8000', 'tridoc', 'pw123')
+
+  deleteTag (label: string) {
+    this.server.deleteTag(label)
+      .then((r: {error?: string}) => {
+        if (r.error) {
+          //
+        } else {
+          this.reload()
+        }
+      })
+  }
 
   reload () {
     this.server.getTags()

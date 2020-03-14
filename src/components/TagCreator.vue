@@ -95,7 +95,7 @@ export default class TagCreator extends Vue {
     this.$refs.form.validate()
     if (this.valid) {
       this.server.createTag(this.label, this.type !== 'simple' ? this.type : null)
-        .then((r: {error?: 'string'}) => {
+        .then((r: {error?: string}) => {
           if (r.error) {
             this.$emit('error', r)
             this.clear()

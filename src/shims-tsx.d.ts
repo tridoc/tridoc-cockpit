@@ -2,7 +2,7 @@ import Vue, { VNode } from 'vue'
 
 declare global {
   interface FormRule {
-    (v: string): boolean | string;
+    (v: string): true | string;
   }
 
   namespace JSX {

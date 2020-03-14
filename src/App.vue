@@ -119,6 +119,15 @@
               <template v-slot:item.created="{ item }">
                 {{ calculateTimestamp(item.created) }}
               </template>
+              <template v-slot:item.actions="{ item }">
+                <v-icon
+                  small
+                  color="accent"
+                  @click="deleteDocument(item.identifier)"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
             </v-data-table>
           </v-card>
         </v-col>

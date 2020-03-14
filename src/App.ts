@@ -3,7 +3,6 @@ import Server from '@tridoc/frontend'
 import SettingsDialog from '@/components/Settings.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagList from '@/components/TagList.vue'
-import { DataOptions } from 'vuetify'
 
 interface Tag {
   'icon': string;
@@ -73,19 +72,11 @@ export default class App extends Vue {
   count= 0
 
   headers = [
-    {
-      text: 'Title',
-      value: 'title',
-    },
-    {
-      text: 'Created',
-      value: 'created',
-      align: 'end'
-    },
-    {
-      text: 'Identifier',
-      value: 'identifier',
-    },
+    { text: 'Title', value: 'title' },
+    { text: 'Tags', value: 'tags' },
+    { text: 'Created', value: 'created', align: 'end' },
+    { text: 'Identifier', value: 'identifier' },
+    { text: '', value: 'actions' },
   ];
 
   loading = true
@@ -133,7 +124,11 @@ export default class App extends Vue {
             this.error = { message: r.error, ...r }
           }
         })
-      cs.getDocuments('', '', '', this.options.itemsPerPage || '', ((this.options.page - 1) * this.options.itemsPerPage) || '')
+      let ipp: number | '' = ''
+      if (this.options.itemsPerPage > 0) {
+        ipp = this.options.itemsPerPage
+      }
+      cs.getDocuments('', '', '', ipp, ((this.options.page - 1) * ipp))
         .then((r) => {
           if ('error' in r) {
             console.log(r)
@@ -146,6 +141,21 @@ export default class App extends Vue {
             this.loading = false
           }
         })
+    }
+  }
+
+  deleteDocument (identifier: string) {
+    if (confirm('Are you sure you want to delete this Document?')) {
+      const cs = this.currentserver()
+      if (cs) {
+        cs.deleteDocument(identifier)
+          .then(r => {
+            if ('error' in r) {
+              this.error = { title: r.error, message: r.message, ...r }
+            }
+            this.reload()
+          })
+      }
     }
   }
 

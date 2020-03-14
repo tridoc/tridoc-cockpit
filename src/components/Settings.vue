@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent>
+<v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown">
   <template v-slot:activator="{ on }">
     <v-list-item v-on="on">
       <v-list-item-icon>
@@ -10,12 +10,23 @@
       </v-list-item-content>
     </v-list-item>
   </template>
-  <v-card>
+  <v-card :tile="$vuetify.breakpoint.smAndDown">
+    <v-toolbar dark color="primary" flat elevate-on-scroll v-if="$vuetify.breakpoint.smAndDown">
+      <v-btn icon dark @click="show = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+      <v-toolbar-title>Settings</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn dark text @click="show = false">Close</v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
     <v-card-title>
-      <span class="headline">Settings</span>
+      <span class="headline" v-if="$vuetify.breakpoint.mdAndUp">Settings</span>
     </v-card-title>
     <v-card-text>
       <v-expansion-panels
+        accordion
         v-model="icurrent"
       >
         <v-expansion-panel
@@ -28,7 +39,7 @@
               v-if="i === current"
               v-slot:actions
             >
-              <v-icon color="primary">mdi-check</v-icon>
+              <v-icon color="primary">mdi-check-circle</v-icon>
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -73,7 +84,7 @@
       </v-row>
       <v-divider></v-divider>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="$vuetify.breakpoint.mdAndUp">
         <v-spacer></v-spacer>
         <v-btn color="secondary darken-1" text @click="show = false">Close</v-btn>
       </v-card-actions>
@@ -143,7 +154,6 @@ export default class SettingsDialog extends Vue {
   save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
     if (valid) {
       this.$emit('save', { index, url, password })
-      this.show = false
     }
   }
 

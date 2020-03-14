@@ -10,7 +10,7 @@
       <v-list-item-group color="secondary">
 
         <tag-creator
-          :server="currentserver"
+          :server="currentserver()"
           @tagcreated="reload"
           @error="r => this.error = { title: r.error, message: r.message }"
         />
@@ -52,8 +52,9 @@
     <v-list nav dense>
       <settings-dialog
         :servers="servers"
-        :current="current"
+        :current="current()"
         @save="serverchange"
+        @delete="serverremove"
       />
       <template v-for="item in navItems">
         <v-list-group
@@ -160,16 +161,27 @@ export default class App extends Vue {
       url: string;
     }[] = []
 
-  current = 0
+  private _current = 0
 
-  get currentserver () {
+  current () {
+    console.log('gte current(): ', this._current, this.servers.length)
+    if (this._current >= this.servers.length) {
+      this._current = this.servers.length - 1
+    }
+    return this._current
+  }
+
+  setCurrent (c: number) {
+    this._current = c
+    console.log('this._current === c', this._current === c, c)
+  }
+
+  currentserver () {
     if (this.servers.length === 0) {
       return null
     }
-    if (this.current >= this.servers.length) {
-      this.current = this.servers.length - 1
-    }
-    return this.servers[this.current].server
+    console.log('currentserver(): t.c', this.current())
+    return this.servers[this.current()].server
   }
 
   drawer = null
@@ -209,7 +221,7 @@ export default class App extends Vue {
   ]
 
   deleteTag (label: string) {
-    this.currentserver.deleteTag(label)
+    this.currentserver().deleteTag(label)
       .then((r: {error?: string}) => {
         if (r.error) {
           console.log(r)
@@ -221,19 +233,30 @@ export default class App extends Vue {
   }
 
   serverchange ({ index, url, password }: { index: number; url: string; password: string }) {
-    this.current = index;
     this.servers[index] = {
       url,
       password,
       server: new Server(url, 'tridoc', password)
     };
+    this.setCurrent(index);
+    console.log('serverchange(): this.current() === index', this.current() === index)
+    console.log('serverchange(): index/url/pwd', index, url, password)
+    console.log('serverchange(): t.c', this.current())
+    console.log('serverchange():t.c/cs.u/s[c].p}', this.current(), this.currentserver().url, this.servers[this.current()].password)
+    this.store()
+    this.reload()
+  }
+
+  serverremove (index: number) {
+    console.log(index + 'removed')
+    this.servers.splice(index, 1)
     this.store()
     this.reload()
   }
 
   reload () {
     this.reset()
-    this.currentserver.getTags()
+    this.currentserver().getTags()
       .then((r: { label: string; parameter?: { type: string }; error?: string }[]) => {
         if (r.error) {
           this.error = { title: r.error, ...r }
@@ -293,11 +316,7 @@ export default class App extends Vue {
         server: new Server(url, 'tridoc', password)
       }))
     }
-    if (storedCurrent) {
-      this.current = storedCurrent
-    }
-    console.log(storedServers, storedCurrent)
-    console.log(this.servers, this.current)
+    this.setCurrent(storedCurrent)
     // This will collect stored data from toolbox
     const storedUrl = localStorage.getItem('server')
     const storedPassword = localStorage.getItem('password')
@@ -311,7 +330,7 @@ export default class App extends Vue {
   }
 
   store () {
-    localStorage.setItem('currentserver', this.current.toString())
+    localStorage.setItem('currentserver', this.current().toString())
     localStorage.setItem(
       'servers',
       JSON.stringify(this.servers.map(({ password, url }: { password: string; url: string }) => ({

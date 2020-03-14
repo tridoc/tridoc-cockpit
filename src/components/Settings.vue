@@ -32,6 +32,7 @@
         <v-expansion-panel
           v-for="(server, i) in iservers"
           :key="server.id"
+          :ref="(server.id + 1) * 1000 + i + 1"
         >
           <v-expansion-panel-header :disable-icon-rotate="i === current">
             {{ i + 1 }}: {{ server.url }}
@@ -69,7 +70,10 @@
               <v-row>
                 <v-spacer />
                 <v-col sm="auto">
-                  <v-btn color="primary darken-1" @click="save(i, server)">Save</v-btn>
+                  <v-btn color="secondary darken-1" text @click="remove(i)">Delete</v-btn>
+                </v-col>
+                <v-col sm="auto">
+                  <v-btn color="primary" @click="save(i, server)">Save</v-btn>
                 </v-col>
               </v-row>
             </v-form>
@@ -94,7 +98,7 @@
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 const validateUrl = (string = '') => {
   if (!string.startsWith('http://') || !string.startsWith('https://')) {
@@ -123,13 +127,18 @@ export default class SettingsDialog extends Vue {
       url: string;
     }[];
 
+  iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
+
+  @Watch('servers', { deep: true })
+  onServersChanged () {
+    this.iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
+  }
+
   @Prop() current !: number;
 
   counter () {
     return counterhelper()
   }
-
-  iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
 
   icurrent = this.current
 
@@ -152,9 +161,14 @@ export default class SettingsDialog extends Vue {
   ]
 
   save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
+    console.log(index, url, password)
     if (valid) {
       this.$emit('save', { index, url, password })
     }
+  }
+
+  remove (index: number) {
+    this.$emit('delete', index)
   }
 
   addRow () {
@@ -165,6 +179,7 @@ export default class SettingsDialog extends Vue {
       valid: false
     })
     this.icurrent = this.iservers.length - 1
+    this.save(this.icurrent, { password: '', url: '', valid: true })
   }
 }
 </script>

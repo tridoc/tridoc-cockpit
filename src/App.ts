@@ -54,13 +54,6 @@ export default class App extends Vue {
       disabled: true,
     },
     {
-      icon: 'mdi-help-circle',
-      text: 'Help',
-      disabled: true,
-    },
-    {
-      icon: 'mdi-chevron-up',
-      'icon-alt': 'mdi-chevron-down',
       text: 'More',
       model: false,
       children: [
@@ -68,7 +61,12 @@ export default class App extends Vue {
           icon: 'mdi-package-down',
           text: 'Export',
           disabled: true,
-        }
+        },
+        {
+          icon: 'mdi-help-circle',
+          text: 'Help',
+          disabled: true,
+        },
       ],
     }
   ]

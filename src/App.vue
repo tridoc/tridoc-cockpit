@@ -27,8 +27,8 @@
             v-if="item.children"
             :key="item.text"
             v-model="item.model"
-            :prepend-icon="item.model ? item.icon : item['icon-alt']"
-            append-icon
+            :prepend-icon="item.icon || ' '"
+            no-action
           >
             <template v-slot:activator>
               <v-list-item-content>

@@ -5,49 +5,13 @@
     :clipped="$vuetify.breakpoint.mdAndUp"
     app
   >
-    <v-list nav dense>
-      <v-subheader>TAGS</v-subheader>
-      <v-list-item-group color="secondary">
-
-        <tag-creator
-          :server="currentserver()"
-          @tagcreated="reload"
-          @error="r => this.error = { title: r.error, message: r.message }"
-        />
-
-        <v-menu
-          v-for="(tag, i) in tags"
-          :key="i"
-          absolute
-          offset-y
-          style="max-width: 600px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-list-item v-on="on">
-              <v-list-item-icon>
-                <v-icon v-text="tag.icon"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="tag.label"></v-list-item-title>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-icon v-text="tag['type-icon']" small></v-icon>
-              </v-list-item-action>
-            </v-list-item>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in tagActions"
-              :key="index"
-              @click="() => item.fn(tag)"
-            >
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-
-      </v-list-item-group>
-    </v-list>
+    <tag-list
+      :reload="reload"
+      :error="onError"
+      :deleteTag="deleteTag"
+      :currentserver="currentserver"
+      :tags="tags"
+    />
     <v-divider />
     <v-list nav dense>
       <settings-dialog

@@ -7,15 +7,33 @@ interface tdError {
 interface tdTag {
   label: string
   parameter?: {
-    type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date'
+    type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
   }
 }
 
 interface tdDocTag extends tdTag {
   parameter?: {
-    type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date'
-    value: string
+    type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
+    value: string;
   }
+}
+
+interface tdComment {
+  text: string;
+  created: string;
+}
+
+interface tdDoc {
+  identifier: string;
+  title?: string;
+  created: string;
+}
+
+interface tdDocMeta {
+  title?: string;
+  created: string;
+  tags?: tdTag[];
+  comments?: tdComment[];
 }
 
 declare module '@tridoc/frontend' {
@@ -26,7 +44,7 @@ declare module '@tridoc/frontend' {
     createTag(label: any, type: null | 'date' | 'decimal'): Promise< tdError | { [key: string]: any} >;
     deleteDocument(id: string): Promise< tdError | { [key: string]: any} >;
     deleteTag(label: string): Promise< tdError | { [key: string]: any} >;
-    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number, offset: number): Promise< tdError | { [key: string]: any} >;
+    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number | '', offset: number | ''): Promise< tdError | tdDoc[] >;
     getTags(): Promise< tdError | tdTag[] >;
     getTags(id: string): Promise< tdError | tdDocTag[] >;
     removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} >;

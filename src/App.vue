@@ -75,22 +75,54 @@
     </v-toolbar-title>
     <v-spacer/>
     <v-text-field
+      disabled=""
       flat
       solo-inverted
       hide-details
       prepend-inner-icon="mdi-magnify"
       label="Search"
     />
+    <v-btn icon
+        disabled
+      >
+      <v-icon>mdi-filter-remove</v-icon>
+    </v-btn>
+    <v-btn icon
+        @click="reload"
+      >
+      <v-icon>mdi-refresh</v-icon>
+    </v-btn>
     <v-spacer/>
-    <v-btn icon>
-      <v-icon
+    <v-btn icon
         @click="$vuetify.theme.dark = !$vuetify.theme.dark"
-      >mdi-invert-colors</v-icon>
+      >
+      <v-icon>mdi-invert-colors</v-icon>
     </v-btn>
   </v-app-bar>
 
   <v-content app>
-    <v-container class="fill-height" fluid>
+    <v-container class="sfill-height" fluid>
+      <v-row align="start">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-data-table
+              disable-sort
+              disable-filtering
+              :headers="headers"
+              :items="docs"
+              :options.sync="options"
+              :server-items-length="count"
+              :loading="loading"
+              item-key="identifier"
+              :footer-props="{ showFirstLastPage: true }"
+            >
+              <template v-slot:item.created="{ item }">
+                {{ calculateTimestamp(item.created) }}
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </v-content>
 
@@ -99,3 +131,9 @@
 </template>
 
 <script lang="ts" src="./App.ts" />
+
+<style scoped>
+.container.fill-height > .row {
+    max-width: unset;
+}
+</style>

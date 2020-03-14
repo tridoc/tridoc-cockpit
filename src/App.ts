@@ -1,8 +1,9 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Watch, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import SettingsDialog from '@/components/Settings.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagList from '@/components/TagList.vue'
+import { DataOptions } from 'vuetify'
 
 interface Tag {
   'icon': string;
@@ -49,11 +50,6 @@ export default class App extends Vue {
   drawer = null
   navItems = [
     {
-      icon: 'mdi-filter-remove',
-      text: 'Show all',
-      disabled: true,
-    },
-    {
       text: 'More',
       model: false,
       children: [
@@ -70,6 +66,90 @@ export default class App extends Vue {
       ],
     }
   ]
+
+  /* DOC LIST STUFF */
+
+  docs: tdDocMeta[] = []
+  count= 0
+
+  headers = [
+    {
+      text: 'Title',
+      value: 'title',
+    },
+    {
+      text: 'Created',
+      value: 'created',
+      align: 'end'
+    },
+    {
+      text: 'Identifier',
+      value: 'identifier',
+    },
+  ];
+
+  loading = true
+  options = {
+    page: 1,
+    itemsPerPage: 10,
+  }
+
+  @Watch('options')
+  onTableOptionsChange (oldO: { page: number; itemsPerPage: number }, newO: { page: number; itemsPerPage: number }) {
+    if (oldO.page !== newO.page || oldO.itemsPerPage !== newO.itemsPerPage) {
+      this.getDocuments()
+    }
+  }
+
+  calculateTimestamp (isoString: string) {
+    const date = new Date(isoString)
+    const nowTimeStamp = (new Date()).getTime()
+    const daysDiff = Math.floor((nowTimeStamp - date.getTime()) / (1000 * 60 * 60 * 24))
+    const year = date.getFullYear().toString().padStart(4, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+    switch (daysDiff) {
+      case 0:
+        return `Today ${hours}:${minutes}`
+      case 1:
+        return `Yesterday ${hours}:${minutes}`
+      default:
+        return `${year}-${month}-${day} ${hours}:${minutes}`
+    }
+  }
+
+  getDocuments () {
+    this.loading = true
+    const cs = this.currentserver()
+    if (cs) {
+      cs.countDocuments('', '', '')
+        .then((r) => {
+          if (typeof r === 'number') {
+            this.count = r
+          } else {
+            console.log(r)
+            this.error = { message: r.error, ...r }
+          }
+        })
+      cs.getDocuments('', '', '', this.options.itemsPerPage || '', ((this.options.page - 1) * this.options.itemsPerPage) || '')
+        .then((r) => {
+          if ('error' in r) {
+            console.log(r)
+            this.error = { message: r.error, ...r }
+          } else {
+            this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
+              title = title || 'Document ' + identifier
+              return { identifier, title, created }
+            })
+            this.loading = false
+          }
+        })
+    }
+  }
+
+  /* -------------- */
 
   tags: Tag[] = [];
 
@@ -107,6 +187,7 @@ export default class App extends Vue {
 
   reload () {
     this.reset()
+    this.getDocuments()
     const cs = this.currentserver()
     if (cs) {
       cs.getTags()
@@ -158,6 +239,7 @@ export default class App extends Vue {
 
   reset () {
     this.tags = []
+    this.docs = []
   }
 
   restore () {

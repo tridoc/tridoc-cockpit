@@ -120,13 +120,28 @@
                 {{ calculateTimestamp(item.created) }}
               </template>
               <template v-slot:item.actions="{ item }">
-                <v-icon
+                <v-btn
+                  class="ma-1"
                   small
+                  text
+                  outlined
+                  color="primary"
+                  @click="openDocument(item.identifier)"
+                >
+                  <v-icon small :left="!$vuetify.breakpoint.sm">mdi-open-in-new</v-icon>
+                  <span class="hidden-sm">Open</span>
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  small
+                  text
+                  outlined
                   color="accent"
                   @click="deleteDocument(item.identifier)"
                 >
-                  mdi-delete
-                </v-icon>
+                  <v-icon small :left="!$vuetify.breakpoint.sm">mdi-delete</v-icon>
+                  <span class="hidden-sm">Delete</span>
+                </v-btn>
               </template>
             </v-data-table>
           </v-card>

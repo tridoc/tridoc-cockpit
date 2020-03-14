@@ -92,6 +92,10 @@ export default class App extends Vue {
     }
   }
 
+  openDocument (identifier: string) {
+    window.open(this.servers[this.current()].url + '/doc/' + identifier, '_blank');
+  }
+
   calculateTimestamp (isoString: string) {
     const date = new Date(isoString)
     const nowTimeStamp = (new Date()).getTime()

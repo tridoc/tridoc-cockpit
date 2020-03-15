@@ -75,8 +75,8 @@ export default class App extends Vue {
     { text: 'Title', value: 'title' },
     { text: 'Tags', value: 'tags' },
     { text: 'Created', value: 'created', align: 'end' },
-    { text: 'Identifier', value: 'identifier' },
-    { text: '', value: 'actions' },
+    { text: 'Identifier', value: 'identifier', width: 1 },
+    { text: '', value: 'actions', width: 1 },
   ];
 
   loading = true
@@ -130,10 +130,12 @@ export default class App extends Vue {
           }
         })
       let ipp: number | '' = ''
+      let offset: number | '' = ''
       if (this.options.itemsPerPage > 0) {
         ipp = this.options.itemsPerPage
+        offset = (this.options.page - 1) * ipp
       }
-      cs.getDocuments('', '', '', ipp, ((this.options.page - 1) * ipp))
+      cs.getDocuments('', '', '', ipp, offset)
         .then((r) => {
           if ('error' in r) {
             console.log(r)
@@ -141,9 +143,19 @@ export default class App extends Vue {
           } else {
             this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
               title = title || 'Document ' + identifier
-              return { identifier, title, created }
+              return { identifier, title, created, tags: [{ label: '..' }] }
             })
-            this.loading = false
+            this.docs.forEach(doc => {
+              cs.getTags(doc.identifier)
+                .then(r => {
+                  if ('error' in r) {
+                    this.error = { title: r.error, message: r.message, ...r }
+                  } else {
+                    doc.tags = r
+                  }
+                  this.loading = false
+                })
+            });
           }
         })
     }

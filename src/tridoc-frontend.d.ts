@@ -30,6 +30,7 @@ interface tdDoc {
 }
 
 interface tdDocMeta {
+  identifier: string;
   title?: string;
   created: string;
   tags?: tdTag[];

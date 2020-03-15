@@ -116,32 +116,51 @@
               item-key="identifier"
               :footer-props="{ showFirstLastPage: true }"
             >
+              <template v-slot:item.tags="{ item }">
+                <v-chip-group>
+                  <v-chip
+                    v-for="tag in item.tags"
+                    :key="tag.label"
+                    label
+                  >
+                    <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
+                    <span v-else>{{ tag.label }}</span>
+                    <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
+                    <strong v-if="tag.parameter">{{tag.parameter.value}}</strong>
+                  </v-chip>
+                </v-chip-group>
+              </template>
               <template v-slot:item.created="{ item }">
                 {{ calculateTimestamp(item.created) }}
               </template>
+              <template v-slot:item.identifier="{ item }">
+                <pre>{{ item.identifier }}</pre>
+              </template>
               <template v-slot:item.actions="{ item }">
-                <v-btn
-                  class="ma-1"
-                  small
-                  text
-                  outlined
-                  color="primary"
-                  @click="openDocument(item.identifier)"
-                >
-                  <v-icon small :left="!$vuetify.breakpoint.sm">mdi-open-in-new</v-icon>
-                  <span class="hidden-sm">Open</span>
-                </v-btn>
-                <v-btn
-                  class="ma-1"
-                  small
-                  text
-                  outlined
-                  color="accent"
-                  @click="deleteDocument(item.identifier)"
-                >
-                  <v-icon small :left="!$vuetify.breakpoint.sm">mdi-delete</v-icon>
-                  <span class="hidden-sm">Delete</span>
-                </v-btn>
+                <div class="d-flex">
+                  <v-btn
+                    class="ma-1"
+                    small
+                    text
+                    outlined
+                    color="primary"
+                    @click="openDocument(item.identifier)"
+                  >
+                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-open-in-new</v-icon>
+                    <span :hidden="$vuetify.breakpoint.sm">Open</span>
+                  </v-btn>
+                  <v-btn
+                    class="ma-1"
+                    small
+                    text
+                    outlined
+                    color="accent"
+                    @click="deleteDocument(item.identifier)"
+                  >
+                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-delete</v-icon>
+                    <span :hidden="$vuetify.breakpoint.sm">Delete</span>
+                  </v-btn>
+                </div>
               </template>
             </v-data-table>
           </v-card>

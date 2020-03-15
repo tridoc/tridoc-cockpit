@@ -126,7 +126,7 @@
                     <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
                     <span v-else>{{ tag.label }}</span>
                     <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
-                    <strong v-if="tag.parameter">{{tag.parameter.value}}</strong>
+                    <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
                   </v-chip>
                 </v-chip-group>
               </template>

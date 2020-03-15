@@ -116,6 +116,24 @@ export default class App extends Vue {
     }
   }
 
+  calculateDatestamp (isoString: string) {
+    const date = new Date(isoString)
+    const year = date.getFullYear().toString().padStart(4, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const dayI = date.getDate()
+    const day = dayI.toString().padStart(2, '0')
+    const nowDate = (new Date()).getDate()
+    const daysDiff = nowDate - dayI
+    switch (daysDiff) {
+      case 0:
+        return 'Today'
+      case 1:
+        return 'Yesterday'
+      default:
+        return `${year}-${month}-${day}`
+    }
+  }
+
   getDocuments () {
     this.loading = true
     const cs = this.currentserver()

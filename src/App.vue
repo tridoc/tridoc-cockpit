@@ -143,23 +143,18 @@
                     small
                     text
                     outlined
-                    color="primary"
+                    color="primary darken-1"
                     @click="openDocument(item.identifier)"
                   >
                     <v-icon small :left="!$vuetify.breakpoint.sm">mdi-open-in-new</v-icon>
                     <span :hidden="$vuetify.breakpoint.sm">Open</span>
                   </v-btn>
-                  <v-btn
-                    class="ma-1"
-                    small
-                    text
-                    outlined
-                    color="accent"
-                    @click="deleteDocument(item.identifier)"
-                  >
-                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-delete</v-icon>
-                    <span :hidden="$vuetify.breakpoint.sm">Delete</span>
-                  </v-btn>
+                  <document-details
+                    :server="currentserver"
+                    :docMeta.sync="item"
+                    :error="error"
+                    @change="reload"
+                  />
                 </div>
               </template>
             </v-data-table>

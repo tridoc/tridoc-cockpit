@@ -3,6 +3,7 @@ import Server from '@tridoc/frontend'
 import SettingsDialog from '@/components/Settings.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagList from '@/components/TagList.vue'
+import DocumentDetails from '@/components/DocumentDetails.vue'
 
 interface Tag {
   'icon': string;
@@ -15,6 +16,7 @@ interface Tag {
     SettingsDialog,
     ErrorDialog,
     TagList,
+    DocumentDetails,
   }
 })
 export default class App extends Vue {
@@ -176,21 +178,6 @@ export default class App extends Vue {
             });
           }
         })
-    }
-  }
-
-  deleteDocument (identifier: string) {
-    if (confirm('Are you sure you want to delete this Document?')) {
-      const cs = this.currentserver()
-      if (cs) {
-        cs.deleteDocument(identifier)
-          .then(r => {
-            if ('error' in r) {
-              this.error = { title: r.error, message: r.message, ...r }
-            }
-            this.reload()
-          })
-      }
     }
   }
 

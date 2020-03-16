@@ -19,7 +19,7 @@
       "./node_modules/@types",
       "./node_modules/vuetify/types"
     ],
-    "paths": {"%/*": ["./src/*"]},
+    "paths": {"@/*": ["./src/*"]},
     "lib": [
       "esnext",
       "dom",

@@ -48,6 +48,7 @@ declare module '@tridoc/frontend' {
     getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number | '', offset: number | ''): Promise< tdError | tdDoc[] >;
     getTags(): Promise< tdError | tdTag[] >;
     getTags(id: string): Promise< tdError | tdDocTag[] >;
+    getMeta(id: string): Promise< tdError | tdDocMeta >;
     removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} >;
     setDocumentTitle(id: string, title: string): Promise< tdError | { [key: string]: any} >;
     uploadFile(file: any): Promise< tdError | { [key: string]: any} >;

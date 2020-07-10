@@ -146,7 +146,7 @@ export default class App extends Vue {
           if (typeof r === 'number') {
             this.count = r
           } else {
-            console.log(r)
+            // console.log(r)
             this.error = { message: r.error, ...r }
           }
         })
@@ -159,7 +159,7 @@ export default class App extends Vue {
       cs.getDocuments('', '', '', ipp, offset)
         .then((r) => {
           if ('error' in r) {
-            console.log(r)
+            // console.log(r)
             this.error = { message: r.error, ...r }
           } else {
             this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
@@ -192,7 +192,7 @@ export default class App extends Vue {
       cs.deleteTag(label)
         .then((r) => {
           if (r.error) {
-            console.log(r)
+            // console.log(r)
             this.error = { message: r.error, ...r }
           } else {
             this.reload()

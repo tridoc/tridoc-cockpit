@@ -52,5 +52,7 @@ declare module '@tridoc/frontend' {
     removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} >;
     setDocumentTitle(id: string, title: string): Promise< tdError | { [key: string]: any} >;
     uploadFile(file: any): Promise< tdError | { [key: string]: any} >;
+    url: string;
+    headers: Headers;
   }
 }

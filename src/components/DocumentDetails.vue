@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown">
+<v-dialog v-model="show" scrollable :fullscreen="true /*$vuetify.breakpoint.smAndDown*/">
     <template v-slot:activator="{ on }">
       <v-btn
         class="ma-1"
@@ -12,8 +12,8 @@
         <span :hidden="$vuetify.breakpoint.sm">Edit</span>
       </v-btn>
     </template>
-    <v-card :tile="$vuetify.breakpoint.smAndDown">
-      <v-toolbar dark color="primary" flat elevate-on-scroll v-if="$vuetify.breakpoint.smAndDown">
+    <v-card :tile="true /*$vuetify.breakpoint.smAndDown*/">
+      <v-toolbar dark color="primary" flat elevate-on-scroll v-if="true /*$vuetify.breakpoint.smAndDown*/">
         <v-btn icon dark @click="show = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -23,8 +23,8 @@
           <v-btn dark text @click="show = false">Close</v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card-title>
-        <span class="headline" v-if="$vuetify.breakpoint.mdAndUp">{{ meta.title || meta.identifier }}</span>
+      <v-card-title v-if="false /*$vuetify.breakpoint.mdAndUp*/">
+        <span class="headline">{{ meta.title || meta.identifier }}</span>
       </v-card-title>
       <v-card-text>
         <v-chip-group>
@@ -39,6 +39,23 @@
             <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
           </v-chip>
         </v-chip-group>
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          rounded
+          height="6"
+        />
+        <pdf
+          :src="pdfsrc()"
+          v-for="i in numPages"
+          :key="i"
+          :id="i"
+          :page="i"
+          :scale.sync="scale"
+          resize
+          style="width:100%;margin:20px auto;"
+          @loading="(b) => {console.log(b); loading = b}"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -68,8 +85,12 @@
 import Server from '@tridoc/frontend'
 import { Component, Prop, Vue, PropSync } from 'vue-property-decorator'
 
-@Component({
+import pdfvuer from 'pdfvuer'
 
+@Component({
+  components: {
+    pdf: pdfvuer
+  }
 })
 export default class DocumentDetails extends Vue {
   @Prop() server!: () => Server;
@@ -78,14 +99,29 @@ export default class DocumentDetails extends Vue {
 
   show = false
 
+  page = 1
+  numPages = 0
+  pdfdata = undefined as undefined|Promise<any>
+  errors = []
+  scale = 'page-width'
+  loading = false
+
+  console = console
+
+  pdfsrc () {
+    return {
+      url: ((this.server().url.startsWith('https://') || this.server().url.startsWith('http://')) ? this.server().url : 'https://' + this.server().url) + '/doc/' + this.meta.identifier,
+      httpHeaders: { Authorization: this.server().headers.get('Authorization') }
+    }
+  }
+
   calculateDatestamp (isoString: string) {
     const date = new Date(isoString)
     const year = date.getFullYear().toString().padStart(4, '0')
     const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const dayI = date.getDate()
-    const day = dayI.toString().padStart(2, '0')
-    const nowDate = (new Date()).getDate()
-    const daysDiff = nowDate - dayI
+    const day = date.getDate().toString().padStart(2, '0')
+    const now = new Date()
+    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
     switch (daysDiff) {
       case 0:
         return 'Today'
@@ -94,6 +130,13 @@ export default class DocumentDetails extends Vue {
       default:
         return `${year}-${month}-${day}`
     }
+  }
+
+  openDocument (identifier: string) {
+    const url =
+      (this.server().url.startsWith('https://') || this.server().url.startsWith('http://'))
+        ? this.server().url : 'https://' + this.server().url
+    window.open(url + '/doc/' + identifier, '_blank');
   }
 
   deleteDocument (identifier: string) {
@@ -113,8 +156,18 @@ export default class DocumentDetails extends Vue {
     }
   }
 
+  getPdf () {
+    const url = (
+      (this.server().url.startsWith('https://') || this.server().url.startsWith('http://'))
+        ? this.server().url : 'https://' + this.server().url) + '/doc/' + this.meta.identifier
+    this.pdfdata = pdfvuer.createLoadingTask({ url, httpHeaders: { Authorization: this.server().headers.get('Authorization') } });
+    (this.pdfdata as Promise<any>).then(pdf => {
+      this.numPages = pdf.numPages;
+    });
+  }
+
   mounted () {
-    this.show = this.meta.identifier === '0cticPtEmeDbLYJEpS2~t'
+    this.getPdf()
   }
 }
 </script>

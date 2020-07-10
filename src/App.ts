@@ -95,19 +95,21 @@ export default class App extends Vue {
   }
 
   openDocument (identifier: string) {
-    window.open(this.servers[this.current()].url + '/doc/' + identifier, '_blank');
+    const url =
+      (this.servers[this.current()].url.startsWith('https://') || this.servers[this.current()].url.startsWith('http://'))
+        ? this.servers[this.current()].url : 'https://' + this.servers[this.current()].url
+    window.open(url + '/doc/' + identifier, '_blank');
   }
 
   calculateTimestamp (isoString: string) {
     const date = new Date(isoString)
     const year = date.getFullYear().toString().padStart(4, '0')
     const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const dayI = date.getDate()
-    const day = dayI.toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
     const hours = date.getHours().toString().padStart(2, '0')
     const minutes = date.getMinutes().toString().padStart(2, '0')
-    const nowDate = (new Date()).getDate()
-    const daysDiff = nowDate - dayI
+    const now = new Date()
+    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
     switch (daysDiff) {
       case 0:
         return `Today ${hours}:${minutes}`
@@ -122,10 +124,9 @@ export default class App extends Vue {
     const date = new Date(isoString)
     const year = date.getFullYear().toString().padStart(4, '0')
     const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const dayI = date.getDate()
-    const day = dayI.toString().padStart(2, '0')
-    const nowDate = (new Date()).getDate()
-    const daysDiff = nowDate - dayI
+    const day = date.getDate().toString().padStart(2, '0')
+    const now = new Date()
+    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
     switch (daysDiff) {
       case 0:
         return 'Today'

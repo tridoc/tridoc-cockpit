@@ -161,7 +161,7 @@ export default class SettingsDialog extends Vue {
   ]
 
   save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
-    console.log(index, url, password)
+    // console.log(index, url, password)
     if (valid) {
       this.$emit('save', { index, url, password })
     }

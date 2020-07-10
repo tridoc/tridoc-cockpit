@@ -44,7 +44,7 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="5">
-            <v-chip-group>
+            <v-chip-group column>
               <v-chip
                 v-for="tag in meta.tags"
                 :key="tag.label"
@@ -262,6 +262,10 @@ export default class DocumentDetails extends Vue {
 </script>
 
 <style lang="scss">
+.scroll-x {
+  max-width: 100%;
+  overflow-x: auto;
+}
 
 .narrow {
   flex-grow: 0;

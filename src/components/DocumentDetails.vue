@@ -54,7 +54,7 @@
           :scale.sync="scale"
           resize
           style="width:100%;margin:20px auto;"
-          @loading="(b) => {console.log(b); loading = b}"
+          @loading="(b) => loading = b"
         />
       </v-card-text>
       <v-card-actions>
@@ -105,8 +105,6 @@ export default class DocumentDetails extends Vue {
   errors = []
   scale = 'page-width'
   loading = false
-
-  console = console
 
   pdfsrc () {
     return {

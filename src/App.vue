@@ -206,6 +206,29 @@
                   </v-btn>
                 </div>
               </template>
+              <template v-slot:footer>
+                <v-divider />
+                <div class="d-flex">
+                  <v-btn
+                    class="ma-1"
+                    outlined
+                    color="primary"
+                  >
+                    <span>Add File</span>
+                    <input @change="addFileInput" type="file"/>
+                  </v-btn>
+                  <v-spacer />
+                  <v-btn
+                    class="ma-1"
+                    outlined
+                    color="primary"
+                    @click="uploadAll"
+                  >
+                    <v-icon left>mdi-upload</v-icon>
+                    <span>Upload All</span>
+                  </v-btn>
+                </div>
+              </template>
             </v-data-table>
           </v-card>
         </v-col>
@@ -221,6 +244,19 @@
 <script lang="ts" src="./App.ts" />
 
 <style scoped>
+input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
 .container.fill-height > .row {
     max-width: unset;
 }

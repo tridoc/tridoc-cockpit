@@ -206,6 +206,22 @@ export default class App extends Vue {
     });
   }
 
+  addFileInput (e: InputEvent) {
+    const files = (e.target as HTMLInputElement).files;
+    if (!files) return;
+    ([...files]).forEach(f => {
+      if (f.type === 'application/pdf') {
+        this.uploadDocs.push({ loading: false, file: f })
+      }
+    });
+    (e.target as HTMLInputElement).value = '';
+    (e.target as HTMLInputElement).files = null
+  }
+
+  uploadAll () {
+    this.uploadDocs.forEach(this.uploadDocument)
+  }
+
   uploadDocument (file: TFile) {
     const cs = this.currentserver()
     if (cs) {

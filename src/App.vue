@@ -223,6 +223,7 @@
                     outlined
                     color="primary"
                     @click="uploadAll"
+                    :disabled="uploadDocs.length === 0"
                   >
                     <v-icon left>mdi-upload</v-icon>
                     <span>Upload All</span>

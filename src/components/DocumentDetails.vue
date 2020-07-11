@@ -44,6 +44,18 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="5">
+
+            <v-card-title class="px-0 text--primary">Metadata</v-card-title>
+
+            <v-text-field
+              outlined
+              label="Title"
+              v-model="meta.title"
+              @change="updateTitle"
+            />
+
+            <v-text-field outlined disabled label="ID" :value="meta.identifier"/>
+
             <v-chip-group column>
               <v-chip
                 v-for="tag in meta.tags"
@@ -56,21 +68,18 @@
                 <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
               </v-chip>
             </v-chip-group>
-            <v-progress-linear
-              v-if="loading"
-              indeterminate
-              rounded
-              height="6"
-            />
+
           </v-col>
 
           <v-col cols="12" md="7">
-            <v-toolbar dense>
+            <v-toolbar fdense class="tools">
               <v-spacer/>
+
               <v-btn icon @click="scaleDown">
                 <v-icon>mdi-magnify-minus-outline</v-icon>
               </v-btn>
               <v-text-field
+                v-if="$vuetify.breakpoint.smAndUp"
                 hide-details
                 dense
                 single-line
@@ -84,6 +93,9 @@
                 step="10"
                 class="narrow"
               />
+              <v-btn icon v-if="$vuetify.breakpoint.xs" @click="scaleOff">
+                1:1
+              </v-btn>
               <v-btn icon @click="scaleUp">
                 <v-icon>mdi-magnify-plus-outline</v-icon>
               </v-btn>
@@ -109,6 +121,15 @@
               </v-btn>
               -->
               <v-spacer/>
+
+              {{ numPages }} Pages
+
+              <v-progress-linear
+                :active="loading"
+                indeterminate
+                absolute
+                bottom
+              />
             </v-toolbar>
 
             <pdf
@@ -119,6 +140,7 @@
               :page="i"
               :scale.sync="scale"
               :resize="resize"
+              annotation
               @loading="loadingChange"
               class="pdf"
             />
@@ -152,7 +174,7 @@ export default class DocumentDetails extends Vue {
   pdfdata = undefined as undefined|Promise<any>
   errors = []
   scale = 'page-width' as string|number
-  loading = false
+  loading = true
   resize = true
 
   pdfsrc () {
@@ -203,7 +225,15 @@ export default class DocumentDetails extends Vue {
     }
   }
 
+  updateTitle () {
+    const cs = this.server()
+    if (cs) {
+      cs.setDocumentTitle(this.meta.identifier, this.meta.title || '')
+    }
+  }
+
   loadingChange (b: boolean) {
+    this.loading = b;
     if (!b || b) {
       const cv = document.getElementsByTagName('canvas')
       for (let i = 0; i < cv.length; i++) {
@@ -262,9 +292,10 @@ export default class DocumentDetails extends Vue {
 </script>
 
 <style lang="scss">
-.scroll-x {
-  max-width: 100%;
-  overflow-x: auto;
+.tools {
+  position: sticky;
+  top: 12px;
+  z-index: 1000;
 }
 
 .narrow {

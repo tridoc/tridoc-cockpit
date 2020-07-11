@@ -163,7 +163,7 @@ export default class App extends Vue {
             this.error = { message: r.error, ...r }
           } else {
             this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
-              title = title || 'Document ' + identifier
+              title = title || ''
               return { identifier, title, created, tags: [{ label: '..' }] }
             })
             this.docs.forEach(doc => {

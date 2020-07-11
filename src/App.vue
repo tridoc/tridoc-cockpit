@@ -116,6 +116,10 @@
               item-key="identifier"
               :footer-props="{ showFirstLastPage: true }"
             >
+              <template v-slot:item.title="{ item }">
+                {{ item.title }}
+                <i v-if="!item.title">Utitled Document</i>
+              </template>
               <template v-slot:item.tags="{ item }">
                 <v-chip-group>
                   <v-chip

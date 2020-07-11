@@ -38,9 +38,10 @@
             <v-list-item
               dense
               v-for="(child, i) in item.children"
-              :key="i"
-              link
               :disabled="child.disabled"
+              :key="i"
+              :href="child.href"
+              link
             >
               <v-list-item-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
@@ -54,6 +55,7 @@
             v-else-if="!item.hide"
             :disabled="item.disabled"
             :key="item.text"
+            :href="item.href"
             link
           >
             <v-list-item-action>

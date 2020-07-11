@@ -65,6 +65,11 @@ export default class App extends Vue {
           disabled: true,
         },
         {
+          icon: 'mdi-github',
+          text: 'Code on GitHub',
+          href: 'https://github.com/tridoc/tridoc-cockpit'
+        },
+        {
           icon: 'mdi-help-circle',
           text: 'Help',
           disabled: true,

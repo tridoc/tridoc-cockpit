@@ -11,6 +11,11 @@ interface Tag {
   'type-icon'?: string;
 }
 
+interface TFile {
+  loading: boolean;
+  file: File;
+}
+
 @Component({
   components: {
     SettingsDialog,
@@ -180,6 +185,60 @@ export default class App extends Vue {
           }
         })
     }
+  }
+
+  /* DOC UPLOAD STUFF */
+
+  log = console.log
+
+  uploadDocs: TFile[] = []
+
+  uploadHeaders = [
+    { text: 'Name', value: 'file.name' },
+    { text: '', value: 'actions', width: 1 },
+  ];
+
+  addFile (e: DragEvent) {
+    const droppedFiles = e.dataTransfer?.files;
+    if (!droppedFiles) return;
+    ([...droppedFiles]).forEach(f => {
+      if (f.type === 'application/pdf') {
+        this.uploadDocs.push({ loading: false, file: f })
+      }
+    });
+  }
+
+  uploadDocument (file: TFile) {
+    const cs = this.currentserver()
+    if (cs) {
+      file.loading = true
+      cs.uploadFile(file.file).then(r => {
+        if ('error' in r) {
+          this.error = { title: 'Could upload document', message: r.error }
+        } else {
+          cs.setDocumentTitle(
+            r.location.substring(r.location.lastIndexOf('/') + 1),
+            file.file.name.replace(/\.pdf$/, '')
+          ).then(r2 => {
+            if ('error' in r2) {
+              this.error = { title: 'Could not set title', message: r2.error }
+            }
+            this.reload()
+            this.removeUploadDocument(file)
+          })
+        }
+      }, e => {
+        this.error = { title: e.error || e, message: e.message || e };
+      }).finally(() => {
+        file.loading = false
+      })
+    }
+  }
+
+  removeUploadDocument (file: TFile) {
+    this.uploadDocs = this.uploadDocs.filter(f => {
+      return f !== file;
+    });
   }
 
   /* -------------- */

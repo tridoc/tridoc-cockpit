@@ -101,7 +101,7 @@
   </v-app-bar>
 
   <v-content app>
-    <v-container class="sfill-height" fluid>
+    <v-container class="sfill-height" fluid @drag.stop.prevent @dragstart.stop.prevent @dragend.stop.prevent @dragover.stop.prevent @dragenter.stop.prevent @dragleave.stop.prevent @drop.stop.prevent="addFile">
       <v-row align="start">
         <v-col cols="12">
           <v-card outlined>
@@ -115,10 +115,11 @@
               :loading="loading"
               item-key="identifier"
               :footer-props="{ showFirstLastPage: true }"
+              no-data-text="No documents found"
             >
               <template v-slot:item.title="{ item }">
                 {{ item.title }}
-                <i v-if="!item.title">Utitled Document</i>
+                <i v-if="!item.title">Untitled Document</i>
               </template>
               <template v-slot:item.tags="{ item }">
                 <v-chip-group>
@@ -165,6 +166,51 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row align="start">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-data-table
+              disable-sort
+              disable-filtering
+              :headers="uploadHeaders"
+              :items="uploadDocs"
+              item-key="file.name"
+              disable-pagination
+              hide-default-footer
+              no-data-text="Drop documents here to upload"
+            >
+              <template v-slot:item.actions="{ item }">
+                <div class="d-flex">
+                  <v-btn
+                    class="ma-1"
+                    small
+                    text
+                    outlined
+                    color="primary darken-1"
+                    @click="uploadDocument(item)"
+                    :loading="item.loading"
+                  >
+                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-upload</v-icon>
+                    <span :hidden="$vuetify.breakpoint.sm">Upload</span>
+                  </v-btn>
+                  <v-btn
+                    class="ma-1"
+                    small
+                    text
+                    outlined
+                    color="secondary darken-1"
+                    @click="removeUploadDocument(item)"
+                  >
+                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-close</v-icon>
+                    <span :hidden="$vuetify.breakpoint.sm">Cancel</span>
+                  </v-btn>
+                </div>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-spacer />
     </v-container>
   </v-content>
 

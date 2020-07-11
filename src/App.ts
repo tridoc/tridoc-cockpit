@@ -189,8 +189,6 @@ export default class App extends Vue {
 
   /* DOC UPLOAD STUFF */
 
-  log = console.log
-
   uploadDocs: TFile[] = []
 
   uploadHeaders = [

@@ -36,23 +36,3 @@ interface tdDocMeta {
   tags?: tdTag[];
   comments?: tdComment[];
 }
-
-declare module '@tridoc/frontend' {
-  export default class Server {
-    constructor(url: string, username: string, password: string);
-    addTag(id: string, label: string, type: string, value: string): Promise< tdError | { [key: string]: any} >;
-    countDocuments(query: string, tagsQuery: string, notTagsQuery: string): Promise< tdError | number >;
-    createTag(label: any, type: null | 'date' | 'decimal'): Promise< tdError | { [key: string]: any} >;
-    deleteDocument(id: string): Promise< tdError | { [key: string]: any} >;
-    deleteTag(label: string): Promise< tdError | { [key: string]: any} >;
-    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number | '', offset: number | ''): Promise< tdError | tdDoc[] >;
-    getTags(): Promise< tdError | tdTag[] >;
-    getTags(id: string): Promise< tdError | tdDocTag[] >;
-    getMeta(id: string): Promise< tdError | tdDocMeta >;
-    removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} >;
-    setDocumentTitle(id: string, title: string): Promise< tdError | { [key: string]: any} >;
-    uploadFile(file: any): Promise< tdError | { [key: string]: any} >;
-    url: string;
-    headers: Headers;
-  }
-}

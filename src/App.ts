@@ -157,7 +157,7 @@ export default class App extends Vue {
             this.count = r
           } else {
             // console.log(r)
-            this.error = { message: r.error, ...r }
+            this.error = { ...r }
           }
         })
       let ipp: number | '' = ''
@@ -170,7 +170,7 @@ export default class App extends Vue {
         .then((r) => {
           if ('error' in r) {
             // console.log(r)
-            this.error = { message: r.error, ...r }
+            this.error = { ...r }
           } else {
             this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
               title = title || ''
@@ -180,7 +180,7 @@ export default class App extends Vue {
               cs.getTags(doc.identifier)
                 .then(r => {
                   if ('error' in r) {
-                    this.error = { title: r.error, message: r.message, ...r }
+                    this.error = { title: r.error, ...r }
                   } else {
                     doc.tags = r
                   }
@@ -239,7 +239,7 @@ export default class App extends Vue {
             r.location.substring(r.location.lastIndexOf('/') + 1),
             file.file.name.replace(/\.pdf$/, '')
           ).then(r2 => {
-            if ('error' in r2) {
+            if (typeof r2 !== 'string' && r2.error) {
               this.error = { title: 'Could not set title', message: r2.error }
             }
             this.reload()

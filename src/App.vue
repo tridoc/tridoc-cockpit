@@ -64,6 +64,12 @@
             </v-list-item-content>
           </v-list-item>
         </template>
+        <v-list-item disabled v-if="currentserver()" stwo-line>
+          <v-list-item-content>
+            <v-list-item-subtitle>{{ currentserver().url }}</v-list-item-subtitle>
+            <!--<v-list-item-subtitle>with version: {{ version() }}</v-list-item-subtitle>-->
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </template>
   </v-navigation-drawer>
@@ -234,7 +240,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-spacer />
     </v-container>
   </v-content>
 
@@ -244,7 +249,7 @@
 
 <script lang="ts" src="./App.ts" />
 
-<style scoped>
+<style scoped lang="scss">
 input[type=file] {
   position: absolute;
   top: 0;
@@ -256,9 +261,5 @@ input[type=file] {
   padding: 0;
   cursor: pointer;
   opacity: 0;
-}
-
-.container.fill-height > .row {
-    max-width: unset;
 }
 </style>

@@ -161,7 +161,6 @@ export default class App extends Vue {
         [...this.search.matchAll(/(^|[^\\])##([^#\s/\\#"',;:?]+)\b/g)].forEach(nt => notTags.push(nt[2]));
         query = this.search.replace(/((^|[^\\#])#|(^|[^\\])##)[^#\s/\\#"',;:?]+\b/g, ' ').replace(/\s+/, ' ').replace(/\\#/, '#').trim()
       }
-      console.log(query, tags, notTags)
 
       cs.countDocuments(query, tags, notTags)
         .then((r) => {

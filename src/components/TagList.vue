@@ -86,6 +86,11 @@ export default class TagList extends Vue {
   x = 0
   y = 0
 
+  pretty (j: any) {
+    console.log(j)
+    return JSON.stringify(j) + ' ←'
+  }
+
   showMenu (activator: any, e: MouseEvent) {
     activator.value = true
     this.x = e.clientX

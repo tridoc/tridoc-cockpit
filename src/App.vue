@@ -7,10 +7,12 @@
   >
     <tag-list
       :reload="reload"
+      :getDocuments="getDocuments"
       :error="onError"
       :deleteTag="deleteTag"
       :currentserver="currentserver"
       :tags="tags"
+      :search.sync="search"
     />
     <template v-slot:append>
       <v-divider />

@@ -53,6 +53,8 @@ export default class App extends Vue {
     return this.servers[this.current()].server
   }
 
+  search = ''
+
   drawer = null
   navItems = [
     {
@@ -151,7 +153,17 @@ export default class App extends Vue {
     this.loading = true
     const cs = this.currentserver()
     if (cs) {
-      cs.countDocuments('', '', '')
+      let query = ''
+      const tags: string[] = []
+      const notTags: string[] = []
+      if (this.search) {
+        [...this.search.matchAll(/(^|[^\\#])#([^#\s/\\#"',;:?]+)\b/g)].forEach(nt => tags.push(nt[2]));
+        [...this.search.matchAll(/(^|[^\\])##([^#\s/\\#"',;:?]+)\b/g)].forEach(nt => notTags.push(nt[2]));
+        query = this.search.replace(/((^|[^\\#])#|(^|[^\\])##)[^#\s/\\#"',;:?]+\b/g, ' ').replace(/\s+/, ' ').replace(/\\#/, '#').trim()
+      }
+      console.log(query, tags, notTags)
+
+      cs.countDocuments(query, tags, notTags)
         .then((r) => {
           if (typeof r === 'number') {
             this.count = r
@@ -160,13 +172,14 @@ export default class App extends Vue {
             this.error = { ...r }
           }
         })
-      let ipp: number | '' = ''
-      let offset: number | '' = ''
+
+      let ipp: number|undefined;
+      let offset: number|undefined;
       if (this.options.itemsPerPage > 0) {
         ipp = this.options.itemsPerPage
         offset = (this.options.page - 1) * ipp
       }
-      cs.getDocuments('', '', '', ipp, offset)
+      cs.getDocuments(query, tags, notTags, ipp, offset)
         .then((r) => {
           if ('error' in r) {
             // console.log(r)

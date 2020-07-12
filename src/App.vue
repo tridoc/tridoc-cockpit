@@ -82,19 +82,33 @@
       tridoc Cockpit
     </v-toolbar-title>
     <v-spacer/>
-    <v-text-field
-      disabled=""
-      flat
-      solo-inverted
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      label="Search"
-    />
-    <v-btn icon
-        disabled
-      >
-      <v-icon>mdi-filter-remove</v-icon>
-    </v-btn>
+    <v-tooltip
+      bottom
+      open-on-focus
+      open-delay="1000"
+    >
+      <template v-slot:activator="{ on, attrs }">
+
+        <v-text-field
+          v-model="search"
+          @change="getDocuments"
+          flat
+          solo-inverted
+          hide-details
+          clearable
+          clear-icon="mdi-filter-remove"
+          prepend-inner-icon="mdi-magnify"
+          label="Search"
+          v-bind="attrs"
+          v-on="on"
+        />
+      </template>
+      Search for tags with <kbd>#tag</kbd>
+      <br>
+      Exclude tags with <kbd>##tag</kbd>
+      <br>
+      Search for a literal # with <kbd>\#</kbd>
+    </v-tooltip>
     <v-btn icon
         @click="reload"
       >

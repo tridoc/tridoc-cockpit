@@ -131,19 +131,20 @@
                 bottom
               />
             </v-toolbar>
-
-            <pdf
-              :src="pdfsrc()"
-              v-for="i in numPages"
-              :key="i"
-              :id="i"
-              :page="i"
-              :scale.sync="scale"
-              :resize="resize"
-              annotation
-              @loading="loadingChange"
-              class="pdf"
-            />
+            <div class="pdf-wrap">
+              <pdf
+                :src="pdfsrc()"
+                v-for="i in numPages"
+                :key="i"
+                :id="i"
+                :page="i"
+                :scale.sync="scale"
+                :resize="resize"
+                annotation
+                @loading="loadingChange"
+                :class="resize ? 'pdf' : 'pdf center'"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -303,8 +304,19 @@ export default class DocumentDetails extends Vue {
   flex-basis: 7em;
 }
 
+.pdf-wrap {
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 0 6px;
+  overflow-x: auto;
+}
+
 .pdf {
   width: 100%;
   margin: 20px auto;
+}
+
+.pdf.center {
+  width: fit-content;
 }
 </style>

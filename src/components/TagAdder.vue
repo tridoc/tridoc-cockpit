@@ -4,7 +4,6 @@
       <v-chip
         color="primary"
         label
-        disabled
         v-on="on">
           <v-icon left>mdi-tag-plus</v-icon>
           ADD

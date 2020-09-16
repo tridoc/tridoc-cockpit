@@ -59,7 +59,7 @@
             <v-chip-group column>
               <v-chip
                 v-for="tag in meta.tags"
-                :key="tag.label"
+                :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
                 label
               >
                 <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
@@ -67,7 +67,17 @@
                 <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
                 <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
               </v-chip>
+              <tag-adder
+                :meta="meta"
+                :server="server"
+              />
             </v-chip-group>
+
+            <ul>
+              <li v-for="comment in meta.comments" :key="comment.created">
+                {{ comment.text }} <code>@@ {{ comment.created }}</code>
+              </li>
+            </ul>
 
           </v-col>
 
@@ -155,12 +165,13 @@
 <script lang="ts">
 import Server from '@tridoc/frontend'
 import { Component, Prop, Vue, PropSync } from 'vue-property-decorator'
-
+import TagAdder from '@/components/TagAdder.vue'
 import pdfvuer from 'pdfvuer'
 
 @Component({
   components: {
-    pdf: pdfvuer
+    pdf: pdfvuer,
+    TagAdder,
   }
 })
 export default class DocumentDetails extends Vue {
@@ -286,8 +297,19 @@ export default class DocumentDetails extends Vue {
     });
   }
 
+  getComments () {
+    this.server().getComments(this.meta.identifier).then(j => {
+      if ('error' in j) {
+        console.warn('Error loading comments for ' + this.meta.identifier, j)
+      } else {
+        this.meta.comments = j
+      }
+    })
+  }
+
   mounted () {
     this.getPdf()
+    this.getComments()
   }
 }
 </script>

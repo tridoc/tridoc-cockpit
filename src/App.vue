@@ -149,7 +149,7 @@
                 <v-chip-group>
                   <v-chip
                     v-for="tag in item.tags"
-                    :key="tag.label"
+                    :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
                     label
                   >
                     <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>

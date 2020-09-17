@@ -40,7 +40,6 @@
           </v-chip>
         </v-chip-group>
         <v-divider class="my-6" />
-        <h2>Create new Tag</h2>
         <v-form
           lazy-validation
           v-model="valid"
@@ -48,7 +47,7 @@
         >
           <v-container>
             <v-row>
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-text-field
                   outlined
                   v-model="label"
@@ -57,8 +56,17 @@
                   required
                 />
               </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  outlined
+                  v-model="value"
+                  :rules="valRules"
+                  label="Value"
+                  required
+                />
+              </v-col>
               <v-col cols="12">
-                <v-radio-group v-model="type">
+                <v-radio-group v-model="type" :disabled="fixed">
                   <v-radio value="simple">
                     <template v-slot:label>
                       <v-icon small left>mdi-tag</v-icon> Not parameterizable
@@ -82,9 +90,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="secondary darken-1" text @click="clear">Cancel</v-btn>
-          <v-btn color="secondary darken-1" text @click="show = false">Close</v-btn>
-          <v-btn color="primary darken-1" text @click="save">Save</v-btn>
+          <v-btn color="secondary" @click="close">Close</v-btn>
+          <v-btn color="primary" @click="save">Add</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -92,7 +99,7 @@
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class TagAdder extends Vue {
@@ -103,11 +110,34 @@ export default class TagAdder extends Vue {
   valid = false
   label = ''
   type: 'simple' | 'date' | 'decimal' = 'simple'
+  value = ''
+  fixed = false
+
+  @Watch('label')
+  change (l: string) {
+    const exsists = this.allTags.find(t => t.label === l)
+    if (exsists) {
+      this.fixed = true
+      this.type = exsists.parameter
+        ? (exsists.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'
+          ? 'decimal'
+          : 'date')
+        : 'simple'
+    } else {
+      this.fixed = false
+    }
+  }
 
   labelRules: FormRule[] = [
     v => !!v || 'Label is required',
     v => !(/\s|\/|\\|#|"|'|,|;|:|\?/.test(v)) || 'The label must not contain any of the following: whitespace / \\ # " \' , ; : ?',
     v => !(/^[.]{1,2}$/.test(v)) || 'The label must not equal . (single dot) or .. (double dot)',
+  ]
+
+  valRules: FormRule[] = [
+    v => (this.type !== 'simple' || !!v) || 'Value is required',
+    v => (this.type !== 'decimal' || !isNaN(+v)) || 'Must be a number',
+    v => (this.type !== 'date' || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime()))) || 'Must be a date of format YYYY-MM-DD',
   ]
 
   clear () {

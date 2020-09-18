@@ -91,7 +91,7 @@ export default class App extends Vue {
     { text: 'Title', value: 'title' },
     { text: 'Tags', value: 'tags' },
     { text: 'Created', value: 'created', align: 'end' },
-    { text: 'Identifier', value: 'identifier', width: 1 },
+    // { text: 'Identifier', value: 'identifier', width: 1 },
     { text: '', value: 'actions', width: 1 },
   ];
 
@@ -106,6 +106,18 @@ export default class App extends Vue {
     if (oldO.page !== newO.page || oldO.itemsPerPage !== newO.itemsPerPage) {
       this.getDocuments()
     }
+  }
+
+  docscounter () {
+    return `${(this.options.page - 1) * this.options.itemsPerPage + 1}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
+  }
+
+  pagecounter () {
+    return `${this.options.page} of ${Math.ceil(this.count / this.options.itemsPerPage)}`
+  }
+
+  goToLastPage () {
+    this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
   }
 
   openDocument (identifier: string) {

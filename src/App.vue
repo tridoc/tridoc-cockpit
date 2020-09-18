@@ -140,24 +140,31 @@
               item-key="identifier"
               :footer-props="{ showFirstLastPage: true }"
               no-data-text="No documents found"
+              hide-default-footer
             >
               <template v-slot:item.title="{ item }">
                 {{ item.title }}
                 <i v-if="!item.title">Untitled Document</i>
               </template>
               <template v-slot:item.tags="{ item }">
-                <v-chip-group>
-                  <v-chip
-                    v-for="tag in item.tags"
-                    :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
-                    label
+                <div :style="$vuetify.breakpoint.mdAndUp ? 'max-width:40vw;' : 'max-width:80vw;'">
+                  <v-chip-group
+                    :show-arrows="$vuetify.breakpoint.mdAndUp"
+                    :dcolumn="!$vuetify.breakpoint.mdAndUp"
+                    column
                   >
-                    <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-                    <span v-else>{{ tag.label }}</span>
-                    <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
-                    <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
-                  </v-chip>
-                </v-chip-group>
+                    <v-chip
+                      v-for="tag in item.tags"
+                      :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
+                      label
+                    >
+                      <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
+                      <span v-else>{{ tag.label }}</span>
+                      <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
+                      <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
+                    </v-chip>
+                  </v-chip-group>
+                </div>
               </template>
               <template v-slot:item.created="{ item }">
                 {{ calculateTimestamp(item.created) }}
@@ -191,6 +198,44 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row justify="center">
+        <v-col cols="auto" align="center">
+          <v-btn
+            class="ma-2"
+            :disabled="options.page < 2"
+            @click="options.page = 1"
+            outlined text fab small>
+            <v-icon>mdi-page-first</v-icon>
+          </v-btn>
+          <v-btn
+            class="ma-2"
+            :disabled="options.page < 2"
+            @click="options.page--"
+            outlined text fab small>
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <span class="ma-2">
+            {{ docscounter() }}
+          </span>
+          <span class="ma-2">
+            page {{ pagecounter() }}
+          </span>
+          <v-btn
+            class="ma-2"
+            :disabled="options.page * options.itemsPerPage >= count"
+            @click="options.page++"
+            outlined text fab small>
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+          <v-btn
+            class="ma-2"
+            :disabled="options.page * options.itemsPerPage >= count"
+            @click="goToLastPage"
+            outlined text fab small>
+            <v-icon>mdi-page-last</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row align="start">
         <v-col cols="12">
           <v-card outlined>
@@ -202,6 +247,7 @@
               item-key="file.name"
               disable-pagination
               hide-default-footer
+              hide-default-header
               no-data-text="Drop documents here to upload"
             >
               <template v-slot:item.actions="{ item }">

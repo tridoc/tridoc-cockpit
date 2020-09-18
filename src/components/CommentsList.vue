@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <v-card outlined v-if="meta.comments.length > 0">
+    <v-card outlined v-if="meta.comments && meta.comments.length > 0">
       <div
         v-for="(comment, i) in meta.comments"
         :key="comment.created"
@@ -8,7 +8,7 @@
         <v-divider v-if="i !== 0" />
         <v-card-text style>
           <span style="white-space: pre;">{{ comment.text }}</span>
-          <code class="ml-2">{{ comment.created.replace('T', ' ').replace(/:\d{2}\.\d{3}/, ' ').replace('Z', 'UTC') }}</code>
+          <code class="ml-2">{{ comment.created.replace('T', ' ').replace(/:\d{2}\.\d{1,3}/, ' ').replace('Z', 'UTC') }}</code>
         </v-card-text>
       </div>
     </v-card>

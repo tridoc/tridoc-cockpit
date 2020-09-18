@@ -3,13 +3,13 @@
     <template v-slot:activator="{ on }">
       <v-btn
         class="ma-1"
-        text small outlined
+        small
         v-on="on"
         color="primary"
         @click="/**/"
       >
-        <v-icon small :left="!$vuetify.breakpoint.sm">mdi-pencil</v-icon>
-        <span :hidden="$vuetify.breakpoint.sm">Edit</span>
+        <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
+        <span :hidden="$vuetify.breakpoint.sm">Open</span>
       </v-btn>
     </template>
     <v-card tile>
@@ -54,9 +54,13 @@
               @change="updateTitle"
             />
 
-            <v-text-field outlined disabled label="ID" :value="meta.identifier"/>
-
             <v-chip-group column>
+              <tag-adder
+                :meta="meta"
+                @update:meta="m => $emit('update:docMeta', m)"
+                :server="server"
+              />
+              <v-divider class="ml-2 mr-4" vertical />
               <v-chip
                 v-for="tag in meta.tags"
                 :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
@@ -67,11 +71,6 @@
                 <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
                 <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
               </v-chip>
-              <tag-adder
-                :meta="meta"
-                @update:meta="m => $emit('update:docMeta', m)"
-                :server="server"
-              />
             </v-chip-group>
 
             <comments-list
@@ -79,6 +78,8 @@
               :meta="meta"
               @update:meta="m => $emit('update:docMeta', m)"
             />
+
+            <v-text-field outlined disabled label="ID" :value="meta.identifier"/>
           </v-col>
 
           <v-col cols="12" md="7">

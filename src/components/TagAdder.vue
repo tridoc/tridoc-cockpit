@@ -11,13 +11,13 @@
     </template>
     <v-card>
       <v-card-title>
-        <span class="headline">Add Tag to {{ meta.identifier }}</span>
+        <span class="headline">Add Tag to {{ docMeta.identifier }}</span>
       </v-card-title>
       <v-card-text>
         Has:
         <v-chip-group column>
           <v-chip
-            v-for="tag in meta.tags"
+            v-for="tag in docMeta.tags"
             :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
             label
           >
@@ -90,7 +90,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="secondary" @click="close">Close</v-btn>
+          <v-btn color="secondary" text @click="clear">Cancel</v-btn>
           <v-btn color="primary" @click="save">Add</v-btn>
         </v-card-actions>
       </v-card>
@@ -99,12 +99,12 @@
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class TagAdder extends Vue {
   @Prop() server !: () => Server
-  @Prop() meta !: tdDocMeta
+  @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
   show = false
   valid = false
@@ -134,10 +134,14 @@ export default class TagAdder extends Vue {
     v => !(/^[.]{1,2}$/.test(v)) || 'The label must not equal . (single dot) or .. (double dot)',
   ]
 
+  getType () {
+    return this.type
+  }
+
   valRules: FormRule[] = [
-    v => (this.type !== 'simple' || !!v) || 'Value is required',
-    v => (this.type !== 'decimal' || !isNaN(+v)) || 'Must be a number',
-    v => (this.type !== 'date' || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime()))) || 'Must be a date of format YYYY-MM-DD',
+    v => (this.getType() === 'simple' && !v) || this.getType() !== 'simple' || 'Value will be ignored',
+    v => (this.getType() === 'decimal' && !isNaN(+v)) || this.getType() !== 'decimal' || 'Must be a number',
+    v => (this.getType() === 'date' && (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime()))) || this.getType() !== 'date' || 'Must be a date of format YYYY-MM-DD',
   ]
 
   clear () {
@@ -147,17 +151,27 @@ export default class TagAdder extends Vue {
     (this.$refs.form as any).resetValidation()
   }
 
-  save () {
+  async save () {
     (this.$refs.form as any).validate()
     if (this.valid) {
-      this.server().createTag(this.label, this.type !== 'simple' ? this.type : undefined)
+      await this.reloadTags()
+      if (
+        this.allTags.findIndex(t => t.label === this.label) === -1 &&
+        confirm('This tag doesn’t exist yet. Do you want to create it?')
+      ) {
+        console.log('TODO')
+      }
+      this.server().addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
+          console.log('??', r)
           if (r.error) {
             this.$emit('error', r)
-            this.clear()
+            this.reload()
+            // this.clear()
           } else {
-            this.$emit('tagcreated')
-            this.clear()
+            this.$emit('tagadded')
+            this.reload()
+            // this.clear()
           }
         })
     }
@@ -181,18 +195,32 @@ export default class TagAdder extends Vue {
   }
 
   reloadTags () {
-    this.server().getTags()
+    return this.server().getTags()
       .then(r => {
         if (!('error' in r)) {
           this.allTags = r.filter(t => {
-            return !!t.parameter || (this.meta.tags || []).findIndex(mt => mt.label === t.label) === -1
+            return !!t.parameter || (this.docMeta.tags || []).findIndex(mt => mt.label === t.label) === -1
           })
         }
       })
   }
 
+  reload () {
+    this.server().getMeta(this.docMeta.identifier)
+      .then(r => {
+        console.log(r)
+        if (!('error' in r)) {
+          this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
+          this.$nextTick().then(() => console.log('ticked', this.docMeta.tags))
+          console.log(this.docMeta.tags)
+        }
+      }).then(() => {
+        this.reloadTags()
+      })
+  }
+
   created () {
-    this.reloadTags()
+    this.reload()
   }
 }
 </script>

@@ -180,7 +180,8 @@
                   </v-btn>
                   <document-details
                     :server="currentserver"
-                    :docMeta.sync="item"
+                    :docMeta="item"
+                    @update:docMeta="updateDoc"
                     :error="error"
                     @change="reload"
                   />

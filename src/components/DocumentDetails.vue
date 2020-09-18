@@ -69,6 +69,7 @@
               </v-chip>
               <tag-adder
                 :meta="meta"
+                @update:meta="m => $emit('update:docMeta', m)"
                 :server="server"
               />
             </v-chip-group>
@@ -180,6 +181,8 @@ export default class DocumentDetails extends Vue {
   @PropSync('error') err!: { message: string; title?: string } | null;
 
   show = false
+
+  console = console;
 
   page = 1
   numPages = 0
@@ -298,13 +301,13 @@ export default class DocumentDetails extends Vue {
   }
 
   getComments () {
-    this.server().getComments(this.meta.identifier).then(j => {
+    /* this.server().getComments(this.meta.identifier).then(j => {
       if ('error' in j) {
         console.warn('Error loading comments for ' + this.meta.identifier, j)
       } else {
         this.meta.comments = j
       }
-    })
+    }) */
   }
 
   mounted () {

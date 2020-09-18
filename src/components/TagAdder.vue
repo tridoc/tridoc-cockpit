@@ -169,20 +169,17 @@ export default class TagAdder extends Vue {
         return // see also comment further below
       } else if (this.allTags.findIndex(t => t.label === this.label) === -1) {
         if (confirm('This tag doesn’t exist yet. Do you want to create it?')) {
-          console.log('creating')
           await this.server().createTag(this.label, this.type !== 'simple' ? this.type : undefined)
             .then(r => {
               if ('error' in r) {
-                console.error(r)
+                console.error(r) // eslint-disable-line no-console
               }
-              console.log('created')
             })
         } else {
           this.reload();
           return;
         }
       }
-      console.log('adding')
       this.server().addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
           if (r.error) {

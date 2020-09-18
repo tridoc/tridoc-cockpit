@@ -216,7 +216,6 @@ export default class TagAdder extends Vue {
       .then(r => {
         if (!('error' in r)) {
           this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
-          this.$nextTick().then(() => console.log('ticked', this.docMeta.tags))
         }
       }).then(() => {
         this.reloadTags()

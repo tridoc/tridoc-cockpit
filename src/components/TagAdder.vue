@@ -22,6 +22,8 @@
             v-for="tag in docMeta.tags"
             :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
             label
+            close
+            @click:close="removeTag(tag.label)"
           >
             <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
             <span v-else>{{ tag.label }}</span>
@@ -162,7 +164,10 @@ export default class TagAdder extends Vue {
     this.valid = (this.$refs.form as any).validate()
     if (this.valid) {
       await this.reloadTags()
-      if (this.allTags.findIndex(t => t.label === this.label) === -1) {
+      if ((this.docMeta.tags || []).findIndex(t => t.label === this.label) !== -1) {
+        alert('Tag has already been added to the document')
+        return // see also comment further below
+      } else if (this.allTags.findIndex(t => t.label === this.label) === -1) {
         if (confirm('This tag doesn’t exist yet. Do you want to create it?')) {
           console.log('creating')
           await this.server().createTag(this.label, this.type !== 'simple' ? this.type : undefined)
@@ -193,6 +198,13 @@ export default class TagAdder extends Vue {
     }
   }
 
+  removeTag (label: string) {
+    if (confirm(`Do you want to remove tag "${label}" from the Document?
+This Action cannot be undone`)) {
+      this.server().removeTag(this.docMeta.identifier, label).then(this.reload)
+    }
+  }
+
   calculateDatestamp (isoString: string) {
     const date = new Date(isoString)
     const year = date.getFullYear().toString().padStart(4, '0')
@@ -215,7 +227,7 @@ export default class TagAdder extends Vue {
       .then(r => {
         if (!('error' in r)) {
           this.allTags = r.filter(t => {
-            return !!t.parameter || (this.docMeta.tags || []).findIndex(mt => mt.label === t.label) === -1
+            return /* !!t.parameter || */ (this.docMeta.tags || []).findIndex(mt => mt.label === t.label) === -1 // while it is possible to add a paramterisable tag multiple times to a document, it's not possible to remove only selct ones of them, thus tridoc-cockpit discourages this.
           })
         }
       })

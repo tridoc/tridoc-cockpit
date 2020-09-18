@@ -10,9 +10,11 @@
       </v-chip>
     </template>
     <v-card>
-      <v-card-title>
-        <span class="headline">Add Tag to {{ docMeta.identifier }}</span>
-      </v-card-title>
+      <v-card-title class="headline">Manage Tags</v-card-title>
+      <v-card-subtitle>
+        {{ docMeta.title }}
+        <kbd class="mx-2">{{ docMeta.identifier }}</kbd>
+      </v-card-subtitle>
       <v-card-text>
         Has:
         <v-chip-group column>
@@ -33,15 +35,16 @@
             v-for="tag in allTags"
             :key="tag.label"
             label
+            @click="label = tag.label"
           >
             <v-icon small class="mr-3" v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? 'mdi-pound' : 'mdi-calendar' }}</v-icon>
             <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
             <span v-else>{{ tag.label }}</span>
           </v-chip>
         </v-chip-group>
-        <v-divider class="my-6" />
+        <v-divider class="mt-2 mb-3" />
         <v-form
-          lazy-validation
+          jlazy-validation
           v-model="valid"
           ref="form"
         >
@@ -63,10 +66,14 @@
                   :rules="valRules"
                   label="Value"
                   required
+                  :disabled="this.type === 'simple'"
+                  :messages="this.type === 'simple' ? 'Value will be ignored for simple tags' : ''"
                 />
               </v-col>
-              <v-col cols="12">
-                <v-radio-group v-model="type" :disabled="fixed">
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="mt-0">
+                <v-radio-group v-model="type" :disabled="fixed" class="mt-0">
                   <v-radio value="simple">
                     <template v-slot:label>
                       <v-icon small left>mdi-tag</v-icon> Not parameterizable
@@ -139,7 +146,7 @@ export default class TagAdder extends Vue {
   }
 
   valRules: FormRule[] = [
-    v => (this.getType() === 'simple' && !v) || this.getType() !== 'simple' || 'Value will be ignored',
+    // v => (this.getType() === 'simple' && !v) || this.getType() !== 'simple' || 'Value will be ignored',
     v => (this.getType() === 'decimal' && !isNaN(+v)) || this.getType() !== 'decimal' || 'Must be a number',
     v => (this.getType() === 'date' && (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime()))) || this.getType() !== 'date' || 'Must be a date of format YYYY-MM-DD',
   ]
@@ -152,26 +159,25 @@ export default class TagAdder extends Vue {
   }
 
   async save () {
-    (this.$refs.form as any).validate()
+    this.valid = (this.$refs.form as any).validate()
     if (this.valid) {
       await this.reloadTags()
       if (
         this.allTags.findIndex(t => t.label === this.label) === -1 &&
         confirm('This tag doesn’t exist yet. Do you want to create it?')
       ) {
-        console.log('TODO')
+        alert('Not yet implemented, but working on it!\nPlease create Tag first via "Create Tag" Button in Sidebar.')
       }
       this.server().addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
-          console.log('??', r)
           if (r.error) {
             this.$emit('error', r)
             this.reload()
             // this.clear()
           } else {
             this.$emit('tagadded')
-            this.reload()
-            // this.clear()
+            this.reload();
+            (this.$refs.form as any).reset()
           }
         })
     }
@@ -208,11 +214,9 @@ export default class TagAdder extends Vue {
   reload () {
     this.server().getMeta(this.docMeta.identifier)
       .then(r => {
-        console.log(r)
         if (!('error' in r)) {
           this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
           this.$nextTick().then(() => console.log('ticked', this.docMeta.tags))
-          console.log(this.docMeta.tags)
         }
       }).then(() => {
         this.reloadTags()

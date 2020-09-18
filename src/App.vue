@@ -282,3 +282,11 @@ input[type=file] {
   opacity: 0;
 }
 </style>
+
+<style lang="scss">
+code,
+pre,
+kbd {
+  font-family: 'Roboto Mono', monospace;
+}
+</style>

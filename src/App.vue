@@ -149,7 +149,7 @@
                 <v-chip-group>
                   <v-chip
                     v-for="tag in item.tags"
-                    :key="tag.label"
+                    :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
                     label
                   >
                     <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
@@ -180,7 +180,8 @@
                   </v-btn>
                   <document-details
                     :server="currentserver"
-                    :docMeta.sync="item"
+                    :docMeta="item"
+                    @update:docMeta="updateDoc"
                     :error="error"
                     @change="reload"
                   />
@@ -279,5 +280,13 @@ input[type=file] {
   padding: 0;
   cursor: pointer;
   opacity: 0;
+}
+</style>
+
+<style lang="scss">
+code,
+pre,
+kbd {
+  font-family: 'Roboto Mono', monospace;
 }
 </style>

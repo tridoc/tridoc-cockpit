@@ -27,6 +27,8 @@ interface TFile {
 export default class App extends Vue {
   error: { message: string; title?: string } | null = null
 
+  console = console;
+
   servers: {
       server: Server;
       password: string;
@@ -202,6 +204,10 @@ export default class App extends Vue {
           }
         })
     }
+  }
+
+  updateDoc (m: tdDocMeta) {
+    this.docs.splice(this.docs.findIndex(d => d.identifier === m.identifier), 1, m)
   }
 
   /* DOC UPLOAD STUFF */

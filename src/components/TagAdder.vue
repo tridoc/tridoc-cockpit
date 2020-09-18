@@ -162,12 +162,22 @@ export default class TagAdder extends Vue {
     this.valid = (this.$refs.form as any).validate()
     if (this.valid) {
       await this.reloadTags()
-      if (
-        this.allTags.findIndex(t => t.label === this.label) === -1 &&
-        confirm('This tag doesn’t exist yet. Do you want to create it?')
-      ) {
-        alert('Not yet implemented, but working on it!\nPlease create Tag first via "Create Tag" Button in Sidebar.')
+      if (this.allTags.findIndex(t => t.label === this.label) === -1) {
+        if (confirm('This tag doesn’t exist yet. Do you want to create it?')) {
+          console.log('creating')
+          await this.server().createTag(this.label, this.type !== 'simple' ? this.type : undefined)
+            .then(r => {
+              if ('error' in r) {
+                console.error(r)
+              }
+              console.log('created')
+            })
+        } else {
+          this.reload();
+          return;
+        }
       }
+      console.log('adding')
       this.server().addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
           if (r.error) {

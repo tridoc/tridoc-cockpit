@@ -207,9 +207,7 @@ export default class App extends Vue {
   }
 
   updateDoc (m: tdDocMeta) {
-    console.log(m, this.docs.findIndex(d => d.identifier === m.identifier))
     this.docs.splice(this.docs.findIndex(d => d.identifier === m.identifier), 1, m)
-    console.log(this.docs)
   }
 
   /* DOC UPLOAD STUFF */

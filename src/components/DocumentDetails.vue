@@ -74,12 +74,11 @@
               />
             </v-chip-group>
 
-            <ul>
-              <li v-for="comment in meta.comments" :key="comment.created">
-                {{ comment.text }} <code>@@ {{ comment.created }}</code>
-              </li>
-            </ul>
-
+            <comments-list
+              :server="server"
+              :meta="meta"
+              @update:meta="m => $emit('update:docMeta', m)"
+            />
           </v-col>
 
           <v-col cols="12" md="7">
@@ -167,12 +166,14 @@
 import Server from '@tridoc/frontend'
 import { Component, Prop, Vue, PropSync } from 'vue-property-decorator'
 import TagAdder from '@/components/TagAdder.vue'
+import CommentsList from '@/components/CommentsList.vue'
 import pdfvuer from 'pdfvuer'
 
 @Component({
   components: {
     pdf: pdfvuer,
     TagAdder,
+    CommentsList,
   }
 })
 export default class DocumentDetails extends Vue {

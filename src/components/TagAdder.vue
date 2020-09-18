@@ -5,8 +5,8 @@
         color="primary"
         label
         v-on="on">
-          <v-icon left>mdi-tag-plus</v-icon>
-          ADD
+          <v-icon left>mdi-pencil</v-icon>
+          <strong>EDIT TAGS</strong>
       </v-chip>
     </template>
     <v-card>
@@ -46,7 +46,7 @@
         </v-chip-group>
         <v-divider class="mt-2 mb-3" />
         <v-form
-          jlazy-validation
+          lazy-validation
           v-model="valid"
           ref="form"
         >

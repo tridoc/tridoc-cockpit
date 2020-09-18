@@ -134,11 +134,10 @@
               disable-filtering
               :headers="headers"
               :items="docs"
-              :options.sync="options"
+              :options="options"
               :server-items-length="count"
               :loading="loading"
               item-key="identifier"
-              :footer-props="{ showFirstLastPage: true }"
               no-data-text="No documents found"
               hide-default-footer
             >
@@ -203,14 +202,14 @@
           <v-btn
             class="ma-2"
             :disabled="options.page < 2"
-            @click="options.page = 1"
+            @click="pagination.first()"
             outlined text fab small>
             <v-icon>mdi-page-first</v-icon>
           </v-btn>
           <v-btn
             class="ma-2"
             :disabled="options.page < 2"
-            @click="options.page--"
+            @click="pagination.prev()"
             outlined text fab small>
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -223,14 +222,14 @@
           <v-btn
             class="ma-2"
             :disabled="options.page * options.itemsPerPage >= count"
-            @click="options.page++"
+            @click="pagination.next()"
             outlined text fab small>
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
           <v-btn
             class="ma-2"
             :disabled="options.page * options.itemsPerPage >= count"
-            @click="goToLastPage"
+            @click="pagination.last()"
             outlined text fab small>
             <v-icon>mdi-page-last</v-icon>
           </v-btn>

@@ -101,12 +101,30 @@ export default class App extends Vue {
     itemsPerPage: 10,
   }
 
-  @Watch('options')
-  onTableOptionsChange (oldO: { page: number; itemsPerPage: number }, newO: { page: number; itemsPerPage: number }) {
-    if (oldO.page !== newO.page || oldO.itemsPerPage !== newO.itemsPerPage) {
+  pagination = {
+    first: () => {
+      this.options.page = 1
       this.getDocuments()
-    }
+    },
+    prev: () => {
+      this.options.page -= 1
+      this.getDocuments()
+    },
+    next: () => {
+      this.options.page += 1
+      this.getDocuments()
+    },
+    last: () => {
+      this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
+      this.$nextTick().then(this.getDocuments)
+    },
   }
+
+  /* @Watch('options')
+  onTableOptionsChange (o: any) {
+    alert('reloading: ' + o.page)
+    this.getDocuments()
+  } */
 
   docscounter () {
     return `${(this.options.page - 1) * this.options.itemsPerPage + 1}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
@@ -114,10 +132,6 @@ export default class App extends Vue {
 
   pagecounter () {
     return `${this.options.page} of ${Math.ceil(this.count / this.options.itemsPerPage)}`
-  }
-
-  goToLastPage () {
-    this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
   }
 
   openDocument (identifier: string) {

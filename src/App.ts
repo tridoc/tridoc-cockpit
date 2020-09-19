@@ -116,6 +116,7 @@ export default class App extends Vue {
       this.getDocuments()
     },
     last: () => {
+      // console.warn(this.count) // WHY IS THIS 0?
       this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
       this.$nextTick().then(this.getDocuments)
     },
@@ -128,7 +129,7 @@ export default class App extends Vue {
   } */
 
   docscounter () {
-    return `${(this.options.page - 1) * this.options.itemsPerPage + 1}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
+    return `${Math.min((this.options.page - 1) * this.options.itemsPerPage + 1, this.count)}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
   }
 
   pagecounter () {
@@ -195,6 +196,9 @@ export default class App extends Vue {
         .then((r) => {
           if (typeof r === 'number') {
             this.count = r
+            if (r === 0) {
+              this.loading = false
+            }
           } else {
             // console.log(r)
             this.error = { ...r }

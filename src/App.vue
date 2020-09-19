@@ -99,6 +99,7 @@
           hide-details
           clearable
           clear-icon="mdi-filter-remove"
+          @click:clear="search = ''; reload()"
           prepend-inner-icon="mdi-magnify"
           label="Search"
           v-bind="attrs"

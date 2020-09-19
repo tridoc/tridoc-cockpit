@@ -85,6 +85,7 @@ export default class App extends Vue {
   /* DOC LIST STUFF */
 
   docs: tdDocMeta[] = []
+  open = ''
   count= 0
 
   headers = [

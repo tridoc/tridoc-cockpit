@@ -1,17 +1,5 @@
 <template>
-<v-dialog v-model="show" scrollable fullscreen>
-    <template v-slot:activator="{ on }">
-      <v-btn
-        class="ma-1"
-        small
-        v-on="on"
-        color="primary"
-        @click="/**/"
-      >
-        <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
-        <span :hidden="$vuetify.breakpoint.sm">Open</span>
-      </v-btn>
-    </template>
+<v-dialog :value="show" scrollable fullscreen>
     <v-card tile>
       <v-toolbar style="flex: 0;" dark color="primary" flat elevate-on-scroll>
         <v-btn icon dark @click="show = false">
@@ -184,8 +172,7 @@ export default class DocumentDetails extends Vue {
   @Prop() server!: () => Server;
   @PropSync('docMeta') meta!: tdDocMeta;
   @PropSync('error') err!: { message: string; title?: string } | null;
-
-  show = false
+  @PropSync('open') show!: boolean;
   opened = false
 
   @Watch('show')

@@ -13,7 +13,7 @@
       </v-btn>
     </template>
     <v-card tile>
-      <v-toolbar dark color="primary" flat elevate-on-scroll>
+      <v-toolbar style="flex: 0;" dark color="primary" flat elevate-on-scroll>
         <v-btn icon dark @click="show = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -45,7 +45,12 @@
         <v-row>
           <v-col cols="12" md="5">
 
-            <v-card-title class="px-0 text--primary">Metadata</v-card-title>
+            <v-card-title class="px-0 text--primary">
+              Metadata
+            </v-card-title>
+            <v-card-subtitle class="px-0 mb-6">
+              <kbd>{{ docMeta.identifier }}</kbd>
+            </v-card-subtitle>
 
             <v-text-field
               outlined
@@ -54,7 +59,7 @@
               @change="updateTitle"
             />
 
-            <v-chip-group column>
+            <v-chip-group column class="mb-8">
               <tag-adder
                 :meta="meta"
                 @update:meta="m => $emit('update:docMeta', m)"
@@ -78,8 +83,6 @@
               :meta="meta"
               @update:meta="m => $emit('update:docMeta', m)"
             />
-
-            <v-text-field outlined disabled label="ID" :value="meta.identifier"/>
           </v-col>
 
           <v-col cols="12" md="7">
@@ -165,7 +168,7 @@
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
-import { Component, Prop, Vue, PropSync } from 'vue-property-decorator'
+import { Component, Prop, Vue, PropSync, Watch } from 'vue-property-decorator'
 import TagAdder from '@/components/TagAdder.vue'
 import CommentsList from '@/components/CommentsList.vue'
 import pdfvuer from 'pdfvuer'
@@ -183,6 +186,16 @@ export default class DocumentDetails extends Vue {
   @PropSync('error') err!: { message: string; title?: string } | null;
 
   show = false
+  opened = false
+
+  @Watch('show')
+  openFirstTime () {
+    if (!this.opened) {
+      this.opened = true
+      this.getPdf()
+      this.getComments()
+    }
+  }
 
   console = console;
 
@@ -310,11 +323,6 @@ export default class DocumentDetails extends Vue {
         this.meta.comments = j
       }
     }) */
-  }
-
-  mounted () {
-    this.getPdf()
-    this.getComments()
   }
 }
 </script>

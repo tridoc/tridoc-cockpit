@@ -1,12 +1,18 @@
 <template>
   <div class="mt-3">
-    <v-card outlined v-if="meta.comments && meta.comments.length > 0">
+    <v-card outlined :loading="loading">
+      <v-card-text v-if="loading">
+        Loading Comments
+      </v-card-text>
+      <v-card-text v-else-if="!meta.comments || meta.comments.length === 0">
+        No Comments found
+      </v-card-text>
       <div
         v-for="(comment, i) in meta.comments"
         :key="comment.created"
       >
         <v-divider v-if="i !== 0" />
-        <v-card-text style>
+        <v-card-text>
           <span style="white-space: pre;">{{ comment.text }}</span>
           <code class="ml-2">{{ comment.created.replace('T', ' ').replace(/:\d{2}\.\d{1,3}/, ' ').replace('Z', 'UTC') }}</code>
         </v-card-text>
@@ -49,6 +55,8 @@ export default class CommentsList extends Vue {
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
 
+  loading = true
+
   comment = ''
   valid = false
   commentRules: FormRule[] = [
@@ -87,6 +95,7 @@ export default class CommentsList extends Vue {
   reload () {
     this.server().getMeta(this.docMeta.identifier)
       .then(r => {
+        this.loading = false
         if (!('error' in r)) {
           this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
         }

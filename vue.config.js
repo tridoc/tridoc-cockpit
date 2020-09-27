@@ -3,4 +3,7 @@ module.exports = {
     'vuetify'
   ],
   publicPath: './',
+  configureWebpack: {
+    devtool: 'source-map'
+  }
 }

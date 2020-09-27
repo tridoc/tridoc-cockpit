@@ -53,7 +53,6 @@
                 @update:meta="m => $emit('update:docMeta', m)"
                 :server="server"
               />
-              <v-divider class="ml-2 mr-4" vertical />
               <v-chip
                 v-for="tag in meta.tags"
                 :key="tag.label + (tag.parameter ? tag.parameter.value : '')"

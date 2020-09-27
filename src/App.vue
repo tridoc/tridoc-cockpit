@@ -215,14 +215,14 @@
           <v-btn
             class="ma-2"
             :disabled="options.page < 2"
-            @click="pagination.first()"
+            @click="paginationFirst()"
             outlined text fab small>
             <v-icon>mdi-page-first</v-icon>
           </v-btn>
           <v-btn
             class="ma-2"
             :disabled="options.page < 2"
-            @click="pagination.prev()"
+            @click="paginationPrev()"
             outlined text fab small>
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -235,14 +235,14 @@
           <v-btn
             class="ma-2"
             :disabled="options.page * options.itemsPerPage >= count"
-            @click="pagination.next()"
+            @click="paginationNext()"
             outlined text fab small>
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
           <v-btn
             class="ma-2"
             :disabled="options.page * options.itemsPerPage >= count"
-            @click="pagination.last()"
+            @click="paginationLast()"
             outlined text fab small>
             <v-icon>mdi-page-last</v-icon>
           </v-btn>

@@ -102,31 +102,25 @@ export default class App extends Vue {
     itemsPerPage: 10,
   }
 
-  pagination = {
-    first: () => {
-      this.options.page = 1
-      this.getDocuments()
-    },
-    prev: () => {
-      this.options.page -= 1
-      this.getDocuments()
-    },
-    next: () => {
-      this.options.page += 1
-      this.getDocuments()
-    },
-    last: () => {
-      // console.warn(this.count) // WHY IS THIS 0?
-      this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
-      this.$nextTick().then(this.getDocuments)
-    },
+  paginationFirst () {
+    this.options.page = 1
+    this.getDocuments()
   }
 
-  /* @Watch('options')
-  onTableOptionsChange (o: any) {
-    alert('reloading: ' + o.page)
+  paginationPrev () {
+    this.options.page -= 1
     this.getDocuments()
-  } */
+  }
+
+  paginationNext () {
+    this.options.page += 1
+    this.getDocuments()
+  }
+
+  paginationLast () {
+    this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
+    this.$nextTick().then(this.getDocuments)
+  }
 
   docscounter () {
     return `${Math.min((this.options.page - 1) * this.options.itemsPerPage + 1, this.count)}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
@@ -196,6 +190,7 @@ export default class App extends Vue {
         .then((r) => {
           if (typeof r === 'number') {
             this.count = r
+            this.options.page = Math.min(this.options.page, Math.ceil(this.count / this.options.itemsPerPage))
             if (r === 0) {
               this.loading = false
             }

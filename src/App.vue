@@ -5,15 +5,38 @@
     :clipped="$vuetify.breakpoint.mdAndUp"
     app
   >
-    <tag-list
-      :reload="reload"
-      :getDocuments="getDocuments"
-      :error="onError"
-      :deleteTag="deleteTag"
-      :currentserver="currentserver"
-      :tags="tags"
-      :search.sync="search"
-    />
+    <v-list nav dense>
+      <v-subheader>TAGS</v-subheader>
+      <v-list-item-group color="secondary">
+
+        <tag-creator
+          :server="currentserver()"
+          @tagcreated="reload"
+          @error="onError({ title: r.error, message: r.message })"
+        />
+
+        <tag-filter
+          v-for="(tag) in tags"
+          :key="tag.label"
+          :tag="tag"
+          :reload="reload"
+          :getDocuments="getDocuments"
+          :error="onError"
+          :deleteTag="deleteTag"
+          :currentserver="currentserver"
+          :tags="tags"
+          :search.sync="search"
+        />
+
+        <v-btn
+          text autline block
+          @click="clearTags"
+        >
+          Clear Tag Filters
+        </v-btn>
+
+      </v-list-item-group>
+    </v-list>
     <template v-slot:append>
       <v-divider />
       <v-list nav dense>
@@ -84,34 +107,18 @@
       tridoc Cockpit
     </v-toolbar-title>
     <v-spacer/>
-    <v-tooltip
-      bottom
-      open-on-focus
-      open-delay="1000"
-    >
-      <template v-slot:activator="{ on, attrs }">
-
-        <v-text-field
-          v-model="search"
-          @change="getDocuments"
-          flat
-          solo-inverted
-          hide-details
-          clearable
-          clear-icon="mdi-filter-remove"
-          @click:clear="search = ''; reload()"
-          prepend-inner-icon="mdi-magnify"
-          label="Search"
-          v-bind="attrs"
-          v-on="on"
-        />
-      </template>
-      Search for tags with <kbd>#tag</kbd>
-      <br>
-      Exclude tags with <kbd>##tag</kbd>
-      <br>
-      Search for a literal # with <kbd>\#</kbd>
-    </v-tooltip>
+    <v-text-field
+      v-model="search.text"
+      @change="getDocuments"
+      flat
+      solo-inverted
+      hide-details
+      clearable
+      clear-icon="mdi-filter-remove"
+      @click:clear="search.text = ''; reload()"
+      prepend-inner-icon="mdi-magnify"
+      label="Search"
+    />
     <v-btn icon
         @click="reload"
       >
@@ -314,6 +321,17 @@
                 </div>
               </template>
             </v-data-table>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row align="start">
+        <v-col cols="12">
+          <v-card outlined>
+            <pre>{{ inspect(search.text) }}</pre>
+            <v-divider/>
+            <pre>{{ inspect(search.tags) }}</pre>
+            <v-divider/>
+            <pre>{{ inspect(search.nottags) }}</pre>
           </v-card>
         </v-col>
       </v-row>

@@ -2,8 +2,13 @@ import { Component, Watch, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import SettingsDialog from '@/components/Settings.vue'
 import ErrorDialog from '@/components/Error.vue'
-import TagList from '@/components/TagList.vue'
+import TagCreator from '@/components/TagCreator.vue'
+import TagFilter from '@/components/TagFilter.vue'
 import DocumentDetails from '@/components/DocumentDetails.vue'
+
+import '@/global-types.ts'
+
+import { inspect } from 'util'
 
 interface Tag {
   'icon': string;
@@ -20,7 +25,8 @@ interface TFile {
   components: {
     SettingsDialog,
     ErrorDialog,
-    TagList,
+    TagCreator,
+    TagFilter,
     DocumentDetails,
   }
 })
@@ -28,6 +34,7 @@ export default class App extends Vue {
   error: { message: string; title?: string } | null = null
 
   console = console;
+  inspect = inspect;
 
   servers: {
       server: Server;
@@ -55,7 +62,17 @@ export default class App extends Vue {
     return this.servers[this.current()].server
   }
 
-  search = ''
+  search: Search = {
+    text: '',
+    tags: [],
+    nottags: []
+  }
+
+  clearTags () {
+    this.search.tags = []
+    this.search.nottags = []
+    this.getDocuments()
+  }
 
   drawer = null
   navItems = [
@@ -177,16 +194,7 @@ export default class App extends Vue {
     this.loading = true
     const cs = this.currentserver()
     if (cs) {
-      let query = ''
-      const tags: string[] = []
-      const notTags: string[] = []
-      if (this.search) {
-        [...this.search.matchAll(/(^|[^\\#])#([^#\s/\\#"',;:?]+)\b/g)].forEach(nt => tags.push(nt[2]));
-        [...this.search.matchAll(/(^|[^\\])##([^#\s/\\#"',;:?]+)\b/g)].forEach(nt => notTags.push(nt[2]));
-        query = this.search.replace(/((^|[^\\#])#|(^|[^\\])##)[^#\s/\\#"',;:?]+\b/g, ' ').replace(/\s+/, ' ').replace(/\\#/, '#').trim()
-      }
-
-      cs.countDocuments(query, tags, notTags)
+      cs.countDocuments(this.search.text, this.search.tags, this.search.nottags)
         .then((r) => {
           if (typeof r === 'number') {
             this.count = r
@@ -206,7 +214,7 @@ export default class App extends Vue {
         ipp = this.options.itemsPerPage
         offset = (this.options.page - 1) * ipp
       }
-      cs.getDocuments(query, tags, notTags, ipp, offset)
+      cs.getDocuments(this.search.text, this.search.tags, this.search.nottags, ipp, offset)
         .then((r) => {
           if ('error' in r) {
             // console.log(r)
@@ -304,7 +312,7 @@ export default class App extends Vue {
     });
   }
 
-  /* -------------- */
+  /* TAGS STUFF */
 
   tags: Tag[] = [];
 
@@ -322,6 +330,8 @@ export default class App extends Vue {
         })
     }
   }
+
+  /* -------------- */
 
   serverchange ({ index, url, password }: { index: number; url: string; password: string }) {
     this.servers[index] = {

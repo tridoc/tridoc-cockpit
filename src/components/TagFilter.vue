@@ -82,8 +82,6 @@ export default class TagFilter extends Vue {
   @Prop() tag!: Tag
   @PropSync('search') dnsearch!: Search
 
-  log = console.log
-
   get status () {
     const yes = this.dnsearch.tags.filter(t => {
       return t[0] === this.tag.label && (t[1] === undefined || t[1] === '') && (t[2] === undefined || t[2] === '')

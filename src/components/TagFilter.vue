@@ -1,25 +1,32 @@
 <template>
-<v-card outlined>
-  <v-icon v-text="tag['type-icon'] || tag.icon"/>
-  <span>{{ tag.label }}</span>
-  <v-divider/>
-  <v-btn
-    icon small
-    :color="status[0].indexOf(tag.label) !== -1 ? 'primary' : ''"
-    @click="includeTag"
-  >
-    <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
-  </v-btn>
-  <v-btn
-    icon small
-    :color="status[2].indexOf(tag.label) !== -1 ? 'primary' : ''"
-    @click="excludeTag"
-  >
-    <v-icon>{{ status[2].indexOf(tag.label) !== -1 ? 'mdi-close-box' : 'mdi-close-box-outline' }}</v-icon>
-  </v-btn>
-  <v-btn outlined text small v-if="tag['type-icon']">Add Range Filter</v-btn>
-  <v-divider/>
-  <span>{{ status }}</span>
+<v-card outlined class="my-2">
+  <div class="top">
+    <div>
+      <v-icon v-text="tag['type-icon'] || tag.icon"/>
+      {{ tag.label }}
+    </div>
+    <div>
+      <v-btn
+        icon small
+        :color="status[0].indexOf(tag.label) !== -1 ? 'primary' : ''"
+        @click="includeTag"
+      >
+        <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
+      </v-btn>
+      <v-btn
+        icon small
+        :color="status[2].indexOf(tag.label) !== -1 ? 'primary' : ''"
+        @click="excludeTag"
+      >
+        <v-icon>{{ status[2].indexOf(tag.label) !== -1 ? 'mdi-close-box' : 'mdi-close-box-outline' }}</v-icon>
+      </v-btn>
+    </div>
+  </div>
+  <div class="bottom" v-if="tag['type-icon']">
+    <v-btn outlined text small>Add Range Filter</v-btn>
+    <v-divider/>
+    <span>{{ status }}</span>
+  </div>
   <!-- <v-divider/>
   <v-icon>mdi-check-box-outline</v-icon>
   <v-icon>mdi-close-box-outline</v-icon>
@@ -101,3 +108,10 @@ export default class TagFilter extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

@@ -37,8 +37,11 @@
       :maximum.sync="t[2]"
       :include.sync="t[3]"
       :remove="removeRange"
+      :toggle="toggleRange"
+      :change="getDocuments"
       :type="tag['type-icon'] === 'mdi-pound' ? 'number' : 'date'"
     />
+    <!-- Note that these min and max values above don’t get synced upwards themselfes, but as they’re passed by reference it seems to work. (I think) -->
     <v-divider/>
     <div class="bottom">
       <v-btn
@@ -135,20 +138,33 @@ export default class TagFilter extends Vue {
 
   addRange () {
     this.dnsearch.tags.push([this.tag.label, undefined, undefined])
+    this.getDocuments()
   }
 
   removeRange (min: (string|number|undefined), max: (string|number|undefined), include: boolean) {
-    console.log('Removing Range @' + this.tag.label, min, max, include)
     if (include) {
       this.dnsearch.tags.splice(this.dnsearch.tags.indexOf([this.tag.label, min, max]), 1)
     } else {
       this.dnsearch.nottags.splice(this.dnsearch.nottags.indexOf([this.tag.label, min, max]), 1)
     }
+    this.getDocuments()
+  }
+
+  toggleRange (min: (string|number|undefined), max: (string|number|undefined), wasInclude: boolean) {
+    if (wasInclude) {
+      this.dnsearch.tags.splice(this.dnsearch.tags.indexOf([this.tag.label, min, max]), 1)
+      this.dnsearch.nottags.push([this.tag.label, min, max])
+    } else {
+      this.dnsearch.nottags.splice(this.dnsearch.nottags.indexOf([this.tag.label, min, max]), 1)
+      this.dnsearch.tags.push([this.tag.label, min, max])
+    }
+    this.getDocuments()
   }
 
   askDeleteTag () {
     if (confirm(`Delete Tag “${this.tag.label}”?\nThis action cannot be undone.`)) {
       this.deleteTag(this.tag.label)
+      this.reload()
     }
   }
 }

@@ -114,6 +114,7 @@
     <v-btn
       icon
       color="primary"
+       @click="() => toggle(min, max, inc)"
     >
       <v-icon>{{ inc ? 'mdi-check-box-outline' : 'mdi-close-box-outline' }}</v-icon>
     </v-btn>
@@ -132,6 +133,14 @@ export default class TagRangeInput extends Vue {
   @Prop() type!: 'number'|'date'
 
   @Prop() remove!: (min: (string|number|undefined), max: (string|number|undefined), include: boolean) => void
+  @Prop() toggle!: (min: (string|number|undefined), max: (string|number|undefined), include: boolean) => void
+  @Prop() change!: () => void
+
+  @Watch('min')
+  @Watch('max')
+  changeM () {
+    this.change()
+  }
 
   minMenu = false
   maxMenu = false

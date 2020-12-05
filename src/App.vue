@@ -28,6 +28,13 @@
           :search.sync="search"
         />
 
+        <v-btn
+          text autline block
+          @click="clearTags"
+        >
+          Clear Tag Filters
+        </v-btn>
+
       </v-list-item-group>
     </v-list>
     <template v-slot:append>

@@ -64,8 +64,14 @@ export default class App extends Vue {
 
   search: Search = {
     text: '',
-    tags: [['clarion', undefined, undefined]],
-    nottags: [['clariin', undefined, undefined]]
+    tags: [],
+    nottags: []
+  }
+
+  clearTags () {
+    this.search.tags = []
+    this.search.nottags = []
+    this.getDocuments()
   }
 
   drawer = null

@@ -14,7 +14,7 @@
   "main": "src/js/index.js",
   "dependencies": {
     "@babel/compat-data": "^7.10.4",
-    "@tridoc/frontend": "^2.1.0",
+    "@tridoc/frontend": "^2.1.1",
     "core-js": "^3.6.4",
     "pdfvuer": "^1.6.1",
     "vue": "^2.6.11",

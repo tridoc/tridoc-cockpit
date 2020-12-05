@@ -79,6 +79,7 @@ export default class TagFilter extends Vue {
     } else {
       this.dnsearch.tags.push([this.tag.label, undefined, undefined]) // Add it otherwise
     }
+    this.getDocuments()
   }
 
   excludeTag () {
@@ -96,6 +97,7 @@ export default class TagFilter extends Vue {
     } else {
       this.dnsearch.nottags.push([this.tag.label, undefined, undefined]) // Add it otherwise
     }
+    this.getDocuments()
   }
 }
 </script>

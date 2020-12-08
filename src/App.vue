@@ -29,10 +29,20 @@
         />
 
         <v-btn
-          text autline block
+          block outlined text small
+          class="my-2"
+          color="red"
           @click="clearTags"
         >
           Clear Tag Filters
+        </v-btn>
+        <v-btn
+          block outlined text small
+          class="my-2"
+          color="red"
+          @click="clearSearch"
+        >
+          Clear All Filters
         </v-btn>
 
       </v-list-item-group>

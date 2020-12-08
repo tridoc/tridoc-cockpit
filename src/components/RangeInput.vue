@@ -108,7 +108,7 @@
   <div class="bottom">
     <v-btn
       text small
-      class="ma-1"
+      class="ma-1 ml-2"
        @click="() => remove(min, max, inc)"
     >Remove</v-btn>
     <v-btn

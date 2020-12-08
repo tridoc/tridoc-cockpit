@@ -74,6 +74,13 @@ export default class App extends Vue {
     this.getDocuments()
   }
 
+  clearSearch () {
+    this.search.tags = []
+    this.search.nottags = []
+    this.search.text = ''
+    this.getDocuments()
+  }
+
   drawer = null
   navItems = [
     {

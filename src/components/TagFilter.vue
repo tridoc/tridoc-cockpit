@@ -1,27 +1,28 @@
 <template>
 <v-card outlined class="my-2">
   <div class="top">
-    <div>
-      <v-icon v-text="tag['type-icon'] || tag.icon"/>
-      {{ tag.label }}
-    </div>
-    <div>
+    <div class="label ml-2">{{ tag.label }}</div>
+    <v-spacer/>
+    <div class="buttons">
       <v-btn
-        icon
+        icon small
+        class="ma-1"
         color="red accent-1"
         @click="askDeleteTag"
       >
-        <v-icon>mdi-delete</v-icon>
+        <v-icon small>mdi-delete</v-icon>
       </v-btn>
       <v-btn
-        icon
+        icon small
+        class="my-1"
         :color="status[0].indexOf(tag.label) !== -1 ? 'primary' : ''"
         @click="includeTag"
       >
         <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
       </v-btn>
       <v-btn
-        icon
+        icon small
+        class="my-1 mr-1"
         :color="status[1].indexOf(tag.label) !== -1 ? 'primary' : ''"
         @click="excludeTag"
       >
@@ -32,7 +33,7 @@
   <div v-if="tag['type-icon']">
     <range-input
       v-for="(t,i) in status[2]"
-      :key="'y_' + i"
+      :key="(t[3] ? 'y' : 'n' ) + '_' + i"
       :minimum.sync="t[1]"
       :maximum.sync="t[2]"
       :include.sync="t[3]"
@@ -48,7 +49,10 @@
         outlined text small
         class="ma-1"
         @click="addRange"
-      >Add Range Filter</v-btn>
+      >
+        <v-icon small left>{{ tag['type-icon'] }}</v-icon>
+        Add Range Filter
+      </v-btn>
     </div>
   </div>
   <!-- <v-divider/>
@@ -177,5 +181,17 @@ export default class TagFilter extends Vue {
 .bottom {
   display: flex;
   justify-content: space-around;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.label {
+  // height: 36px;
+  line-height: 36px;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 </style>

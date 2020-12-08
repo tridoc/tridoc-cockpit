@@ -1,14 +1,14 @@
 <template>
   <v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent max-width="600px">
     <template v-slot:activator="{ on }">
-      <v-list-item class="secondary white--text" v-on="on">
-        <v-list-item-icon>
-          <v-icon class="white--text" >mdi-tag-plus</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title class="white--text">Create Tag</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+      <v-btn
+        block noutlined ntext
+        color="primary"
+        v-on="on"
+      >
+        <v-icon left>mdi-tag-plus</v-icon>
+        Create Tag
+      </v-btn>
     </template>
     <v-card>
       <v-card-title>

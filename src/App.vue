@@ -3,7 +3,7 @@
   <v-navigation-drawer
     v-model="drawer"
     :clipped="$vuetify.breakpoint.mdAndUp"
-    app
+    app width="288"
   >
     <v-list nav dense>
       <v-subheader>TAGS</v-subheader>
@@ -31,7 +31,7 @@
         <v-btn
           block outlined text small
           class="my-2"
-          color="red"
+          color="error accent-1"
           @click="clearTags"
         >
           Clear Tag Filters
@@ -39,7 +39,7 @@
         <v-btn
           block outlined text small
           class="my-2"
-          color="red"
+          color="error accent-1"
           @click="clearSearch"
         >
           Clear All Filters
@@ -112,9 +112,11 @@
   </v-navigation-drawer>
 
   <v-app-bar :clipped-left="true" app color="primary" :flat="$vuetify.breakpoint.mdAndUp" dark>
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer">
+      <v-icon>mdi-tag-multiple</v-icon>
+    </v-app-bar-nav-icon>
     <v-toolbar-title style="width: 300px" class="hidden-sm-and-down">
-      tridoc Cockpit
+      <strong>tridoc</strong>
     </v-toolbar-title>
     <v-spacer/>
     <v-text-field
@@ -124,7 +126,7 @@
       solo-inverted
       hide-details
       clearable
-      clear-icon="mdi-filter-remove"
+      dclear-icon="mdi-filter-remove"
       @click:clear="search.text = ''; reload()"
       prepend-inner-icon="mdi-magnify"
       label="Search"
@@ -202,16 +204,23 @@
                 <pre>{{ item.identifier }}</pre>
               </template>
               <template v-slot:item.actions="{ item }">
-                <div class="d-flex">
-                  <v-btn
-                    class="ma-1"
-                    outlined text small
-                    color="primary darken-1"
-                    @click.stop="openDocument(item.identifier)"
-                    link
-                  >
-                    <v-icon small>mdi-open-in-new</v-icon>
-                  </v-btn>
+                <div class="d-flex ml-n7 mr-n3">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="ma-1"
+                        outlined text small
+                        color="primary darken-1"
+                        @click.stop="openDocument(item.identifier)"
+                        link
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon small>mdi-open-in-new</v-icon>
+                      </v-btn>
+                    </template>
+                    <small>Open document directly<br>Opens in new Tab</small>
+                  </v-tooltip>
                   <v-btn
                     class="ma-1"
                     small
@@ -280,29 +289,27 @@
               no-data-text="Drop documents here to upload"
             >
               <template v-slot:item.actions="{ item }">
-                <div class="d-flex">
+                <div class="mr-n3">
                   <v-btn
                     class="ma-1"
                     small
                     text
                     outlined
-                    color="primary darken-1"
+                    color="error accent-1"
+                    @click="removeUploadDocument(item)"
+                  >
+                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-close</v-icon>
+                    <span :hidden="$vuetify.breakpoint.sm">Cancel</span>
+                  </v-btn>
+                  <v-btn
+                    class="ma-1"
+                    small
+                    color="primary"
                     @click="uploadDocument(item)"
                     :loading="item.loading"
                   >
                     <v-icon small :left="!$vuetify.breakpoint.sm">mdi-upload</v-icon>
                     <span :hidden="$vuetify.breakpoint.sm">Upload</span>
-                  </v-btn>
-                  <v-btn
-                    class="ma-1"
-                    small
-                    text
-                    outlined
-                    color="secondary darken-1"
-                    @click="removeUploadDocument(item)"
-                  >
-                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-close</v-icon>
-                    <span :hidden="$vuetify.breakpoint.sm">Cancel</span>
                   </v-btn>
                 </div>
               </template>
@@ -310,8 +317,8 @@
                 <v-divider />
                 <div class="d-flex">
                   <v-btn
-                    class="ma-1"
-                    outlined
+                    class="ma-2"
+                    outlined small text
                     color="primary"
                   >
                     <span>Add File</span>
@@ -319,8 +326,8 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    class="ma-1"
-                    outlined
+                    class="ma-2"
+                    outlined small text
                     color="primary"
                     @click="uploadAll"
                     :disabled="uploadDocs.length === 0"
@@ -363,5 +370,10 @@ code,
 pre,
 kbd {
   font-family: 'Roboto Mono', monospace;
+}
+
+.v-application .error--text.text--accent-1 {
+    color: #ab1407 !important;
+    caret-color: #ab1407 !important;
 }
 </style>

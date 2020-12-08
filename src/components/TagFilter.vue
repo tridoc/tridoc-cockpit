@@ -4,30 +4,51 @@
     <div class="label ml-2">{{ tag.label }}</div>
     <v-spacer/>
     <div class="buttons">
-      <v-btn
-        icon small
-        class="ma-1"
-        color="red accent-1"
-        @click="askDeleteTag"
-      >
-        <v-icon small>mdi-delete</v-icon>
-      </v-btn>
-      <v-btn
-        icon small
-        class="my-1"
-        :color="status[0].indexOf(tag.label) !== -1 ? 'primary' : ''"
-        @click="includeTag"
-      >
-        <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon small
-        class="my-1 mr-1"
-        :color="status[1].indexOf(tag.label) !== -1 ? 'primary' : ''"
-        @click="excludeTag"
-      >
-        <v-icon>{{ status[1].indexOf(tag.label) !== -1 ? 'mdi-close-box' : 'mdi-close-box-outline' }}</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon small
+            class="ma-1"
+            color="red accent-1"
+            @click="askDeleteTag"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon small>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        <small>Delete this tag</small>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon small
+            class="my-1"
+            :color="status[0].indexOf(tag.label) !== -1 ? 'primary' : ''"
+            @click="includeTag"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
+          </v-btn>
+        </template>
+        <small>Show only Documents with this tag</small>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon small
+            class="my-1 mr-1"
+            :color="status[1].indexOf(tag.label) !== -1 ? 'primary' : ''"
+            @click="excludeTag"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>{{ status[1].indexOf(tag.label) !== -1 ? 'mdi-close-box' : 'mdi-close-box-outline' }}</v-icon>
+          </v-btn>
+        </template>
+        <small>Show only Documents without this tag</small>
+      </v-tooltip>
     </div>
   </div>
   <div v-if="tag['type-icon']">
@@ -44,24 +65,14 @@
     />
     <!-- Note that these min and max values above don’t get synced upwards themselfes, but as they’re passed by reference it seems to work. (I think) -->
     <v-divider/>
-    <div class="bottom">
-      <v-btn
-        outlined text small
-        class="ma-1"
-        @click="addRange"
-      >
-        <v-icon small left>{{ tag['type-icon'] }}</v-icon>
-        Add Range Filter
-      </v-btn>
-    </div>
+    <v-btn
+      text small block
+      @click="addRange"
+    >
+      <v-icon small left>{{ tag['type-icon'] }}</v-icon>
+      Add Range Filter
+    </v-btn>
   </div>
-  <!-- <v-divider/>
-  <v-icon>mdi-check-box-outline</v-icon>
-  <v-icon>mdi-close-box-outline</v-icon>
-  <v-icon>mdi-checkbox-blank-outline</v-icon>
-  <v-icon>mdi-plus-box-outline</v-icon>
-  <v-icon>mdi-minus-box-outline</v-icon>
-  <v-icon>mdi-checkbox-blank-outline</v-icon> -->
 </v-card>
 </template>
 
@@ -176,11 +187,6 @@ export default class TagFilter extends Vue {
 .top {
   display: flex;
   justify-content: space-between;
-}
-
-.bottom {
-  display: flex;
-  justify-content: space-around;
 }
 
 .buttons {

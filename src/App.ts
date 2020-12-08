@@ -116,7 +116,6 @@ export default class App extends Vue {
     { text: 'Title', value: 'title' },
     { text: 'Tags', value: 'tags' },
     { text: 'Created', value: 'created', align: 'end' },
-    // { text: 'Identifier', value: 'identifier', width: 1 },
     { text: '', value: 'actions', width: 1 },
   ];
 
@@ -257,7 +256,7 @@ export default class App extends Vue {
 
   uploadHeaders = [
     { text: 'Name', value: 'file.name' },
-    { text: '', value: 'actions', width: 1 },
+    { text: '', value: 'actions', align: 'end' },
   ];
 
   addFile (e: DragEvent) {

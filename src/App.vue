@@ -334,17 +334,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <!-- <v-row align="start">
-        <v-col cols="12">
-          <v-card outlined>
-            <pre>{{ inspect(search.text) }}</pre>
-            <v-divider/>
-            <pre>{{ inspect(search.tags) }}</pre>
-            <v-divider/>
-            <pre>{{ inspect(search.nottags) }}</pre>
-          </v-card>
-        </v-col>
-      </v-row> -->
     </v-container>
   </v-content>
 

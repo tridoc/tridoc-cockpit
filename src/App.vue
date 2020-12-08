@@ -334,7 +334,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row align="start">
+      <!-- <v-row align="start">
         <v-col cols="12">
           <v-card outlined>
             <pre>{{ inspect(search.text) }}</pre>
@@ -344,7 +344,7 @@
             <pre>{{ inspect(search.nottags) }}</pre>
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
     </v-container>
   </v-content>
 

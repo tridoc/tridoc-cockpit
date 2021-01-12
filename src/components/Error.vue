@@ -1,23 +1,22 @@
 <template>
-<v-dialog
-  :value="!!error"
->
-  <v-card color="error" dark>
-    <v-card-title class="headline">{{ title }}</v-card-title>
-
-    <v-card-text>{{ message }}</v-card-text>
-
-    <v-card-actions>
+  <v-card v-if="!!error" color="error" class="elevation-0 mt-3 pa-3" dark>
+    <v-row class="ma-0">
+      <div>
+        <strong>{{ title }}</strong>
+        <br>
+        {{ message }}
+      </div>
       <v-spacer></v-spacer>
-      <v-btn
-        text
-        @click="close"
-      >
-        Close
-      </v-btn>
-    </v-card-actions>
+      <div class="vert">
+        <v-btn
+          color="error darken-3"
+          @click="close"
+        >
+          Dismiss
+        </v-btn>
+      </div>
+    </v-row>
   </v-card>
-</v-dialog>
 </template>
 
 <script lang="ts">
@@ -45,3 +44,11 @@ export default class ErrorDialog extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.vert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+</style>

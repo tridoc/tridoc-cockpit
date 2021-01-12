@@ -36,7 +36,7 @@ export default class App extends Vue {
   console = console;
   inspect = inspect;
 
-  settingsOpen = true;
+  settingsOpen = false;
 
   viewSettings = {
     darkMode: this.$vuetify.theme.dark,
@@ -93,29 +93,6 @@ export default class App extends Vue {
   }
 
   drawer = null
-  navItems = [
-    {
-      text: 'More',
-      model: false,
-      children: [
-        {
-          icon: 'mdi-package-down',
-          text: 'Export',
-          disabled: true,
-        },
-        {
-          icon: 'mdi-github',
-          text: 'Code on GitHub',
-          href: 'https://github.com/tridoc/tridoc-cockpit'
-        },
-        {
-          icon: 'mdi-help-circle',
-          text: 'Help',
-          disabled: true,
-        },
-      ],
-    }
-  ]
 
   /* DOC LIST STUFF */
 

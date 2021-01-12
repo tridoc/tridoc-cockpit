@@ -3,6 +3,7 @@
   v-model="show"
   class="top"
   width="432"
+  temporary
 >
   <v-app-bar fixed dark color="primary" flat elevate-on-scroll>
     <v-toolbar-title>Settings</v-toolbar-title>
@@ -14,7 +15,7 @@
     </v-toolbar-items>
   </v-app-bar>
 
-  <v-content app class="scroll">
+  <v-content class="scroll">
     <v-container
       class="px-4 pb-0"
       fluid
@@ -49,8 +50,10 @@
           />
         </v-col>
       </v-row>
+
       <v-row><v-col><v-divider/></v-col></v-row>
-      <v-row class="mb-3">
+
+      <v-row class="mb-4 mx-6">
         <v-col>
           <v-btn color="primary darken-1" block outlined @click="addRow">Add Server</v-btn>
         </v-col>
@@ -95,6 +98,17 @@
           </v-col>
         </v-row>
       </v-form>
+
+      <v-row><v-col><v-divider/></v-col></v-row>
+
+      <v-row class="mb-3">
+        <v-col>
+          <v-btn block outlined disabled>
+            <v-icon left>mdi-package-down</v-icon>
+            Export Backup
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </v-content>
 </v-navigation-drawer>
@@ -169,7 +183,7 @@ export default class SettingsDrawer extends Vue {
   ]
 
   save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
-    console.log(index, url, valid)
+    // console.log(index, url, valid)
     if (valid) {
       this.$emit('save', { index, url, password })
     }
@@ -200,6 +214,8 @@ export default class SettingsDrawer extends Vue {
 }
 
 .scroll {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   // margin-top: 56px;
   // max-height: calc(100vh - 56px);
   overflow-y: auto;

@@ -50,52 +50,7 @@
     <template v-slot:append>
       <v-divider />
       <v-list nav dense>
-        <template v-for="item in navItems">
-          <v-list-group
-            :disabled="item.disabled"
-            v-if="item.children"
-            :key="item.text"
-            v-model="item.model"
-            :prepend-icon="item.icon || ' '"
-            no-action
-          >
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item-content>
-            </template>
-            <v-list-item
-              dense
-              v-for="(child, i) in item.children"
-              :disabled="child.disabled"
-              :key="i"
-              :href="child.href"
-              link
-            >
-              <v-list-item-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>{{ child.text }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-group>
-          <v-list-item
-            v-else-if="!item.hide"
-            :disabled="item.disabled"
-            :key="item.text"
-            :href="item.href"
-            link
-          >
-            <v-list-item-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.text }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-        <v-list-item disabled v-if="currentserver()" stwo-line>
+        <v-list-item disabled v-if="currentserver()">
           <v-list-item-content>
             <v-list-item-subtitle>{{ currentserver().url }}</v-list-item-subtitle>
             <!--<v-list-item-subtitle>with version: {{ version() }}</v-list-item-subtitle>-->
@@ -114,7 +69,7 @@
     @delete="serverremove"
   />
 
-  <v-app-bar :clipped-left="true" app color="primary" :flat="$vuetify.breakpoint.mdAndUp" dark>
+  <v-app-bar :clipped-left="true" app color="primary" elevate-on-scroll dark>
     <v-app-bar-nav-icon @click.stop="settingsOpen = !settingsOpen">
       <v-icon >mdi-cog</v-icon>
     </v-app-bar-nav-icon>
@@ -137,21 +92,22 @@
       prepend-inner-icon="mdi-magnify"
       label="Search"
     />
-    <v-btn icon
-        @click="reload"
-      >
+    <v-btn icon @click="reload">
       <v-icon>mdi-refresh</v-icon>
     </v-btn>
     <v-spacer/>
-    <v-btn icon
-        @click="$vuetify.theme.dark = !$vuetify.theme.dark"
-      >
-      <v-icon>mdi-invert-colors</v-icon>
+    <v-btn icon disabled>
+      <v-icon>mdi-help-circle</v-icon>
     </v-btn>
   </v-app-bar>
 
   <v-content app>
     <v-container class="sfill-height" fluid @drag.stop.prevent @dragstart.stop.prevent @dragend.stop.prevent @dragover.stop.prevent @dragenter.stop.prevent @dragleave.stop.prevent @drop.stop.prevent="addFile">
+      <v-row class="mt-n3" align="start">
+        <v-col class="py-0" cols="12">
+          <error-dialog :error="error" :close="() => error = null" />
+        </v-col>
+      </v-row>
       <v-row align="start">
         <v-col cols="12">
           <v-card outlined>
@@ -349,8 +305,6 @@
       </v-row>
     </v-container>
   </v-content>
-
-  <error-dialog :error="error" :close="() => error = null" />
 </v-app>
 </template>
 

@@ -68,11 +68,25 @@
       >
         <v-row dense class="mx-n3">
           <v-col cols="auto">
-            <v-btn :color="(i === current) || (!servers[i] || !servers[i].url || !servers[i].password || servers[i].url !== server.url || servers[i].password !== server.password) ? 'primary darken-1' : ''" class="m" icon @click="save(i, server)">
-              <v-icon v-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
-              <v-icon v-else-if="!servers[i] || !servers[i].url || !servers[i].password || servers[i].url !== server.url || servers[i].password !== server.password">mdi-content-save</v-icon>
-              <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
-            </v-btn>
+            <v-tooltip bottom open-delay="500">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  :color="(i === current) || isModified(server, i) ? 'primary darken-1' : ''"
+                  class="m"
+                  @click="save(i, server)"
+                >
+                  <v-icon v-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
+                  <v-icon v-else-if="isModified(server, i)">mdi-content-save</v-icon>
+                  <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
+                </v-btn>
+              </template>
+              <span v-if="i === current">Selected</span>
+              <span v-else-if="isModified(server, i)">Save changes</span>
+              <span v-else>Select</span>
+            </v-tooltip>
           </v-col>
           <v-col>
             <v-text-field
@@ -94,9 +108,21 @@
             />
           </v-col>
           <v-col cols="auto">
-            <v-btn color="red accent-1" class="m" icon text @click="remove(i)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+            <v-tooltip bottom open-delay="500">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  color="red accent-1"
+                  class="m"
+                  @click="remove(i)"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </template>
+              Remove
+            </v-tooltip>
           </v-col>
         </v-row>
       </v-form>
@@ -137,9 +163,7 @@ const counterhelper = (() => {
   return () => i++
 })()
 
-@Component({
-
-})
+@Component({})
 export default class SettingsDrawer extends Vue {
   @Prop() servers !: {
       server: Server;
@@ -202,6 +226,10 @@ export default class SettingsDrawer extends Vue {
       url: '',
       valid: false
     })
+  }
+
+  isModified (server: { id: number; valid: boolean; password: string; url: string }, i: number) {
+    return (!this.servers[i] || !this.servers[i].url || !this.servers[i].password || this.servers[i].url !== server.url || this.servers[i].password !== server.password)
   }
 }
 </script>

@@ -72,9 +72,18 @@
   <help-drawer :open.sync="helpOpen"/>
 
   <v-app-bar :clipped-left="true" app color="primary" elevate-on-scroll dark>
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer">
-      <v-icon>mdi-tag-multiple</v-icon>
-    </v-app-bar-nav-icon>
+    <v-tooltip bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-app-bar-nav-icon
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="drawer = !drawer"
+        >
+          <v-icon>mdi-tag-multiple</v-icon>
+        </v-app-bar-nav-icon>
+      </template>
+      Tag filters
+    </v-tooltip>
     <v-toolbar-title style="width: 300px" class="hidden-sm-and-down">
       <strong>tridoc</strong>
     </v-toolbar-title>
@@ -91,16 +100,46 @@
       prepend-inner-icon="mdi-magnify"
       label="Search"
     />
-    <v-btn icon @click="reload">
-      <v-icon>mdi-refresh</v-icon>
-    </v-btn>
+    <v-tooltip bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+          @click="reload"
+        >
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+      </template>
+      Refresh
+    </v-tooltip>
     <v-spacer/>
-    <v-btn icon @click.stop="helpOpen = !helpOpen">
-      <v-icon>mdi-help-circle</v-icon>
-    </v-btn>
-    <v-app-bar-nav-icon @click.stop="settingsOpen = !settingsOpen">
-      <v-icon >mdi-cog</v-icon>
-    </v-app-bar-nav-icon>
+    <v-tooltip bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="helpOpen = !helpOpen"
+        >
+          <v-icon>mdi-help-circle</v-icon>
+        </v-btn>
+      </template>
+      Help & About
+    </v-tooltip>
+    <v-tooltip bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="settingsOpen = !settingsOpen"
+        >
+          <v-icon >mdi-cog</v-icon>
+        </v-btn>
+      </template>
+      Settings
+    </v-tooltip>
   </v-app-bar>
 
   <v-content app>

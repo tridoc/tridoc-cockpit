@@ -55,9 +55,9 @@
 
       <v-row><v-col><v-divider/></v-col></v-row>
 
-      <v-row class="mb-4 mx-6">
+      <v-row class="mb-4">
         <v-col>
-          <v-btn color="primary darken-1" block outlined @click="addRow">Add Server</v-btn>
+          <v-btn color="primary" block @click="addRow">Add Server</v-btn>
         </v-col>
       </v-row>
       <v-form
@@ -105,7 +105,7 @@
 
       <v-row class="mb-3">
         <v-col>
-          <v-btn block outlined disabled>
+          <v-btn block disabled>
             <v-icon left>mdi-package-down</v-icon>
             Export Backup
           </v-btn>

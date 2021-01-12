@@ -1,15 +1,15 @@
 <template>
-  <v-card v-if="!!error" color="error" class="elevation-0 mt-3 pa-3" dark>
-    <v-row class="ma-0">
+  <v-card v-if="!!error" :color="color" class="elevation-0 mt-3 pa-3" dark>
+    <v-row class="ma-0 nowrap">
       <div>
         <strong>{{ title }}</strong>
         <br>
-        {{ message }}
+        <span>{{ message }}</span>
       </div>
       <v-spacer></v-spacer>
       <div class="vert">
         <v-btn
-          color="error darken-3"
+          :color="color+ ' darken-3'"
           @click="close"
         >
           Dismiss
@@ -26,7 +26,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 })
 export default class ErrorDialog extends Vue {
-  @Prop() error!: { message: string; title?: string } | null
+  @Prop() error!: { message: string; title?: string; color?: string } | null
   @Prop() close!: () => void
 
   get title () {
@@ -42,10 +42,23 @@ export default class ErrorDialog extends Vue {
     }
     return '...'
   }
+
+  get color () {
+    if (this.error !== null) {
+      return this.error.color || 'error'
+    }
+    return '...'
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+.nowrap {
+  flex-wrap: nowrap;
+  span {
+    white-space: pre-line;
+  }
+}
 .vert {
   display: flex;
   flex-direction: column;

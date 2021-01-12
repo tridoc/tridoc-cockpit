@@ -33,7 +33,7 @@ interface TFile {
   }
 })
 export default class App extends Vue {
-  error: { message: string; title?: string } | null = null
+  error: { message: string; title?: string; color?: string } | null = null
 
   console = console;
   inspect = inspect;
@@ -189,9 +189,9 @@ export default class App extends Vue {
   }
 
   getDocuments () {
-    this.loading = true
     const cs = this.currentserver()
     if (cs) {
+      this.loading = true
       cs.countDocuments(this.search.text, this.search.tags, this.search.nottags)
         .then((r) => {
           if (typeof r === 'number') {
@@ -217,6 +217,7 @@ export default class App extends Vue {
           if ('error' in r) {
             // console.log(r)
             this.error = { ...r }
+            this.loading = false
           } else {
             this.docs = r.map(({ identifier, title, created }: { identifier: string; title?: string; created: string }) => {
               title = title || ''
@@ -235,6 +236,13 @@ export default class App extends Vue {
             });
           }
         })
+    } else {
+      this.error = {
+        title: 'No server configured',
+        message: 'Please add one via the settings.\nIf you’re new here, have a look at the help.',
+        color: 'warning darken-1',
+      }
+      this.loading = false
     }
   }
 
@@ -406,8 +414,8 @@ export default class App extends Vue {
   }
 
   restore () {
-    const storedServers = JSON.parse(localStorage.getItem('servers') || '');
-    const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0');
+    const storedServers = JSON.parse(localStorage.getItem('servers') || 'false');
+    const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0', 10);
     if (storedServers) {
       this.servers = storedServers.map(({ password, url }: { password: string; url: string }) => ({
         password,

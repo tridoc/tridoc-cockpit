@@ -361,6 +361,10 @@ input[type=file] {
 </style>
 
 <style lang="scss">
+* {
+  will-change: auto !important;
+}
+
 code,
 pre,
 kbd {

@@ -50,12 +50,6 @@
     <template v-slot:append>
       <v-divider />
       <v-list nav dense>
-        <settings-dialog
-          :servers="servers"
-          :current="current()"
-          @save="serverchange"
-          @delete="serverremove"
-        />
         <template v-for="item in navItems">
           <v-list-group
             :disabled="item.disabled"
@@ -111,7 +105,19 @@
     </template>
   </v-navigation-drawer>
 
+  <settings-drawer
+    :open.sync="settingsOpen"
+    :view.sync="viewSettings"
+    :servers="servers"
+    :current="current()"
+    @save="serverchange"
+    @delete="serverremove"
+  />
+
   <v-app-bar :clipped-left="true" app color="primary" :flat="$vuetify.breakpoint.mdAndUp" dark>
+    <v-app-bar-nav-icon @click.stop="settingsOpen = !settingsOpen">
+      <v-icon >mdi-cog</v-icon>
+    </v-app-bar-nav-icon>
     <v-app-bar-nav-icon @click.stop="drawer = !drawer">
       <v-icon>mdi-tag-multiple</v-icon>
     </v-app-bar-nav-icon>

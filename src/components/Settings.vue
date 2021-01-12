@@ -1,104 +1,108 @@
 <template>
-<v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown">
-  <template v-slot:activator="{ on }">
-    <v-list-item v-on="on">
-      <v-list-item-icon>
-        <v-icon >mdi-cog</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>Settings</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </template>
-  <v-card :tile="$vuetify.breakpoint.smAndDown">
-    <v-toolbar dark color="primary" flat elevate-on-scroll v-if="$vuetify.breakpoint.smAndDown">
+<v-navigation-drawer
+  v-model="show"
+  class="top"
+  width="432"
+>
+  <v-app-bar fixed dark color="primary" flat elevate-on-scroll>
+    <v-toolbar-title>Settings</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-items>
       <v-btn icon dark @click="show = false">
         <v-icon>mdi-close</v-icon>
       </v-btn>
-      <v-toolbar-title>Settings</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn dark text @click="show = false">Close</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-    <v-card-title>
-      <span class="headline" v-if="$vuetify.breakpoint.mdAndUp">Settings</span>
-    </v-card-title>
-    <v-card-text>
-      <v-expansion-panels
-        accordion
-        v-model="icurrent"
-      >
-        <v-expansion-panel
-          v-for="(server, i) in iservers"
-          :key="server.id"
-          :ref="(server.id + 1) * 1000 + i + 1"
-        >
-          <v-expansion-panel-header :disable-icon-rotate="i === current">
-            {{ i + 1 }}: {{ server.url }}
-            <template
-              v-if="i === current"
-              v-slot:actions
-            >
-              <v-icon color="primary">mdi-check-circle</v-icon>
-            </template>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-form v-model="server.valid">
-              <v-row>
-                <v-col sm="12" md="6">
-                  <v-text-field
-                    outlined
-                    full-width
-                    v-model="server.url"
-                    :rules="urlRules"
-                    label="Server URL"
-                    required
-                  />
-                </v-col>
-                <v-col sm="12" md="6">
-                  <v-text-field
-                    outlined
-                    full-width
-                    v-model="server.password"
-                    :rules="passwordRules"
-                    label="Password"
-                    required
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-spacer />
-                <v-col sm="auto">
-                  <v-btn color="secondary darken-1" text @click="remove(i)">Delete</v-btn>
-                </v-col>
-                <v-col sm="auto">
-                  <v-btn color="primary" @click="save(i, server)">Save</v-btn>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+    </v-toolbar-items>
+  </v-app-bar>
+
+  <v-content app class="scroll">
+    <v-container
+      class="px-4 pb-0"
+      fluid
+    >
       <v-row>
-        <v-spacer />
-        <v-col sm="auto">
-          <v-btn color="primary darken-1" text @click="addRow">Add</v-btn>
+        <v-col class="pt-4">
+          <v-label for="dmswitch">
+            Dark Mode
+          </v-label>
+        </v-col>
+        <v-col cols="auto">
+          <v-switch
+            id="dmswitch"
+            v-model="viewSettings.darkMode"
+            class="my-0 ml-2 mr-n3"
+            inset hide-details
+          />
         </v-col>
       </v-row>
-      <v-divider></v-divider>
-      </v-card-text>
-      <v-card-actions v-if="$vuetify.breakpoint.mdAndUp">
-        <v-spacer></v-spacer>
-        <v-btn color="secondary darken-1" text @click="show = false">Close</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-row>
+        <v-col class="pt-4">
+          <v-label for="dmswitch">
+            Dense
+          </v-label>
+        </v-col>
+        <v-col cols="auto">
+          <v-switch
+            id="dmswitch"
+            v-model="viewSettings.dense"
+            class="my-0 ml-2 mr-n3"
+            inset hide-details
+          />
+        </v-col>
+      </v-row>
+      <v-row><v-col><v-divider/></v-col></v-row>
+      <v-row class="mb-3">
+        <v-col>
+          <v-btn color="primary darken-1" block outlined @click="addRow">Add Server</v-btn>
+        </v-col>
+      </v-row>
+      <v-form
+        v-model="server.valid"
+        v-for="(server, i) in iservers"
+        :key="server.id"
+        :ref="(server.id + 1) * 1000 + i + 1"
+      >
+        <v-row dense class="mx-n3">
+          <v-col cols="auto">
+            <v-btn :color="(i === current) || (!servers[i] || !servers[i].url || !servers[i].password || servers[i].url !== server.url || servers[i].password !== server.password) ? 'primary darken-1' : ''" class="m" icon @click="save(i, server)">
+              <v-icon v-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
+              <v-icon v-else-if="!servers[i] || !servers[i].url || !servers[i].password || servers[i].url !== server.url || servers[i].password !== server.password">mdi-content-save</v-icon>
+              <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-text-field
+              outlined
+              v-model="server.url"
+              :rules="urlRules"
+              label="Server URL"
+              required
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              outlined
+              type="password"
+              v-model="server.password"
+              :rules="passwordRules"
+              label="Password"
+              required
+            />
+          </v-col>
+          <v-col cols="auto">
+            <v-btn color="red accent-1" class="m" icon text @click="remove(i)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-container>
+  </v-content>
+</v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Server from '@tridoc/frontend'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 const validateUrl = (string = '') => {
   if (!string.startsWith('http://') || !string.startsWith('https://')) {
@@ -120,12 +124,18 @@ const counterhelper = (() => {
 @Component({
 
 })
-export default class SettingsDialog extends Vue {
+export default class SettingsDrawer extends Vue {
   @Prop() servers !: {
       server: Server;
       password: string;
       url: string;
     }[];
+
+  @PropSync('open') show !: boolean;
+  @PropSync('view') viewSettings !: {
+    darkMode: boolean;
+    dense: boolean;
+  };
 
   iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
 
@@ -141,8 +151,6 @@ export default class SettingsDialog extends Vue {
   }
 
   icurrent = this.current
-
-  show = false
   valid = false
 
   urlRules: FormRule[] = [
@@ -161,7 +169,7 @@ export default class SettingsDialog extends Vue {
   ]
 
   save (index: number, { url, password, valid }: { url: string; password: string; valid: true }) {
-    // console.log(index, url, password)
+    console.log(index, url, valid)
     if (valid) {
       this.$emit('save', { index, url, password })
     }
@@ -178,8 +186,26 @@ export default class SettingsDialog extends Vue {
       url: '',
       valid: false
     })
-    this.icurrent = this.iservers.length - 1
-    this.save(this.icurrent, { password: '', url: '', valid: true })
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.top {
+  z-index: 900;
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-height: 100vh;
+}
+
+.scroll {
+  // margin-top: 56px;
+  // max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.m {
+  margin-top: 10px;
+}
+</style>

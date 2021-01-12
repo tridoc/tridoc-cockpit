@@ -1,5 +1,5 @@
 <template>
-<v-dialog :value="show" scrollable fullscreen>
+<v-dialog :value="show" class="modal" scrollable fullscreen>
     <v-card tile>
       <v-toolbar style="flex: 0;" dark color="primary" flat elevate-on-scroll>
         <v-btn icon dark @click="show = false">
@@ -29,16 +29,13 @@
           </v-btn>
         <!--</v-toolbar-items>-->
       </v-toolbar>
-      <v-card-text>
-        <v-row>
-          <v-col cols="12" md="5">
+      <v-card-text class="pa-0">
+        <v-row class="layout ma-0">
+          <v-col :class="$vuetify.breakpoint.mdAndUp ? 'col' : ''" cols="12" md="5">
 
-            <v-card-title class="px-0 text--primary">
-              Metadata
-            </v-card-title>
-            <v-card-subtitle class="px-0 mb-6">
-              <kbd>{{ docMeta.identifier }}</kbd>
-            </v-card-subtitle>
+            <div class="pb-3">
+              <code>{{ docMeta.identifier }}</code>
+            </div>
 
             <v-text-field
               outlined
@@ -71,9 +68,8 @@
               @update:meta="m => $emit('update:docMeta', m)"
             />
           </v-col>
-
-          <v-col cols="12" md="7">
-            <v-toolbar fdense class="tools">
+          <v-col :class="$vuetify.breakpoint.mdAndUp ? 'col x pb-0' : 'pb-0'" cols="12" md="7">
+            <v-toolbar fdense  :class="$vuetify.breakpoint.mdAndUp ? 'tools' : 'tools flush'">
               <v-spacer/>
 
               <v-btn icon @click="scaleDown">
@@ -132,20 +128,18 @@
                 bottom
               />
             </v-toolbar>
-            <div class="pdf-wrap">
-              <pdf
-                :src="pdfsrc()"
-                v-for="i in numPages"
-                :key="i"
-                :id="i"
-                :page="i"
-                :scale.sync="scale"
-                :resize="resize"
-                annotation
-                @loading="loadingChange"
-                :class="resize ? 'pdf' : 'pdf center'"
-              />
-            </div>
+            <pdf
+              :src="pdfsrc()"
+              v-for="i in numPages"
+              :key="i"
+              :id="i"
+              :page="i"
+              :scale.sync="scale"
+              :resize="resize"
+              annotation
+              @loading="loadingChange"
+              :class="resize ? 'pdf' : 'pdf center'"
+            />
           </v-col>
         </v-row>
       </v-card-text>
@@ -316,8 +310,16 @@ export default class DocumentDetails extends Vue {
 <style lang="scss">
 .tools {
   position: sticky;
-  top: 12px;
+  top: 0;
   z-index: 1000;
+}
+
+.tools.flush {
+  width: calc(100% + 24px);
+  max-width: calc(100% + 24px);
+  margin: 0 -12px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .narrow {
@@ -329,15 +331,28 @@ export default class DocumentDetails extends Vue {
   width: calc(100% + 12px);
   margin: 0 -6px;
   padding: 0 6px;
-  overflow-x: auto;
+  overflow: auto;
 }
 
 .pdf {
   width: 100%;
-  margin: 20px auto;
+  margin: 16px auto;
 }
 
 .pdf.center {
   width: fit-content;
+}
+
+.layout {
+  height: 100%;
+}
+
+.col {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.col.x {
+  overflow-x: auto;
 }
 </style>

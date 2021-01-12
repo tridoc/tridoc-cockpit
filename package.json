@@ -16,7 +16,7 @@
     "@babel/compat-data": "^7.12.7",
     "@tridoc/frontend": "^2.1.2",
     "core-js": "^3.8.2",
-    "pdfvuer": "^1.7.5",
+    "pdfvuer": "^1.6.1",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^8.5.1",

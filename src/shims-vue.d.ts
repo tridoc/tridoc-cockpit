@@ -11,3 +11,4 @@ declare module 'util' {
   function inspect (obj: any): string;
 }
 
+declare module 'pdfvuer';

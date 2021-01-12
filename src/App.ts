@@ -138,7 +138,7 @@ export default class App extends Vue {
   }
 
   docscounter () {
-    return `${Math.min((this.options.page - 1) * this.options.itemsPerPage + 1, this.count)}—${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
+    return `${Math.max((this.options.page - 1) * this.options.itemsPerPage + 1, 0)} to ${Math.min(this.options.page * this.options.itemsPerPage, this.count)} of ${this.count}`
   }
 
   pagecounter () {
@@ -189,6 +189,7 @@ export default class App extends Vue {
   }
 
   getDocuments () {
+    this.search.text = this.search.text || '' // This fixes it sometimes being null, which messes up results
     const cs = this.currentserver()
     if (cs) {
       this.loading = true
@@ -196,7 +197,7 @@ export default class App extends Vue {
         .then((r) => {
           if (typeof r === 'number') {
             this.count = r
-            this.options.page = Math.min(this.options.page, Math.ceil(this.count / this.options.itemsPerPage))
+            this.options.page = Math.min(Math.max(this.options.page, 1), Math.ceil(this.count / this.options.itemsPerPage))
             if (r === 0) {
               this.loading = false
             }

@@ -138,12 +138,12 @@
 
   <v-content app>
     <v-container class="sfill-height" fluid @drag.stop.prevent @dragstart.stop.prevent @dragend.stop.prevent @dragover.stop.prevent @dragenter.stop.prevent @dragleave.stop.prevent @drop.stop.prevent="addFile">
-      <v-row class="mt-n3" align="start">
+      <v-row align="start">
         <v-col class="py-0" cols="12">
           <error-dialog :error="error" :close="() => error = null" />
         </v-col>
       </v-row>
-      <v-row align="start">
+      <v-row class="mt-3" align="start">
         <v-col cols="12">
           <v-card outlined>
             <document-details

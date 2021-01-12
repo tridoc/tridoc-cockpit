@@ -78,13 +78,13 @@
                   class="m"
                   @click="save(i, server)"
                 >
-                  <v-icon v-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
-                  <v-icon v-else-if="isModified(server, i)">mdi-content-save</v-icon>
+                  <v-icon v-if="isModified(server, i)">mdi-content-save</v-icon>
+                  <v-icon v-else-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
                   <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
                 </v-btn>
               </template>
-              <span v-if="i === current">Selected</span>
-              <span v-else-if="isModified(server, i)">Save changes</span>
+              <span v-if="isModified(server, i)">Save changes</span>
+              <span v-else-if="i === current">Selected</span>
               <span v-else>Select</span>
             </v-tooltip>
           </v-col>

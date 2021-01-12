@@ -5,48 +5,42 @@
     :clipped="$vuetify.breakpoint.mdAndUp"
     app width="288"
   >
-    <v-list nav dense>
+    <div class="pa-3">
       <v-subheader>TAGS</v-subheader>
-      <v-list-item-group color="secondary">
-
-        <tag-creator
-          :server="currentserver()"
-          @tagcreated="reload"
-          @error="onError({ title: r.error, message: r.message })"
-        />
-
-        <tag-filter
-          v-for="(tag) in tags"
-          :key="tag.label"
-          :tag="tag"
-          :reload="reload"
-          :getDocuments="getDocuments"
-          :error="onError"
-          :deleteTag="deleteTag"
-          :currentserver="currentserver"
-          :tags="tags"
-          :search.sync="search"
-        />
-
-        <v-btn
-          block outlined text small
-          class="my-2"
-          color="error accent-1"
-          @click="clearTags"
-        >
-          Clear Tag Filters
-        </v-btn>
-        <v-btn
-          block outlined text small
-          class="my-2"
-          color="error accent-1"
-          @click="clearSearch"
-        >
-          Clear All Filters
-        </v-btn>
-
-      </v-list-item-group>
-    </v-list>
+      <tag-creator
+        :server="currentserver()"
+        @tagcreated="reload"
+        @error="onError({ title: r.error, message: r.message })"
+      />
+      <tag-filter
+        v-for="(tag) in tags"
+        :key="tag.label"
+        :tag="tag"
+        :reload="reload"
+        :getDocuments="getDocuments"
+        :error="onError"
+        :deleteTag="deleteTag"
+        :currentserver="currentserver"
+        :tags="tags"
+        :search.sync="search"
+      />
+      <v-btn
+        block outlined text small
+        class="my-2"
+        color="error accent-1"
+        @click="clearTags"
+      >
+        Clear Tag Filters
+      </v-btn>
+      <v-btn
+        block outlined text small
+        class="my-2"
+        color="error accent-1"
+        @click="clearSearch"
+      >
+        Clear All Filters
+      </v-btn>
+    </div>
     <template v-slot:append>
       <v-divider />
       <v-list nav dense>
@@ -71,7 +65,7 @@
 
   <help-drawer :open.sync="helpOpen"/>
 
-  <v-app-bar :clipped-left="true" app color="primary" elevate-on-scroll dark>
+  <v-app-bar clipped-left app color="primary" elevate-on-scroll dark>
     <v-tooltip bottom open-delay="500">
       <template v-slot:activator="{ on, attrs }">
         <v-app-bar-nav-icon
@@ -376,5 +370,9 @@ kbd {
 .v-application .error--text.text--accent-1 {
     color: #ab1407 !important;
     caret-color: #ab1407 !important;
+}
+
+.theme--dark.v-navigation-drawer .theme--dark.v-card {
+  background-color: #363636;
 }
 </style>

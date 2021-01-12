@@ -69,10 +69,9 @@
     @delete="serverremove"
   />
 
+  <help-drawer :open.sync="helpOpen"/>
+
   <v-app-bar :clipped-left="true" app color="primary" elevate-on-scroll dark>
-    <v-app-bar-nav-icon @click.stop="settingsOpen = !settingsOpen">
-      <v-icon >mdi-cog</v-icon>
-    </v-app-bar-nav-icon>
     <v-app-bar-nav-icon @click.stop="drawer = !drawer">
       <v-icon>mdi-tag-multiple</v-icon>
     </v-app-bar-nav-icon>
@@ -96,9 +95,12 @@
       <v-icon>mdi-refresh</v-icon>
     </v-btn>
     <v-spacer/>
-    <v-btn icon disabled>
+    <v-btn icon @click.stop="helpOpen = !helpOpen">
       <v-icon>mdi-help-circle</v-icon>
     </v-btn>
+    <v-app-bar-nav-icon @click.stop="settingsOpen = !settingsOpen">
+      <v-icon >mdi-cog</v-icon>
+    </v-app-bar-nav-icon>
   </v-app-bar>
 
   <v-content app>

@@ -1,6 +1,7 @@
 import { Component, Watch, Vue } from 'vue-property-decorator'
 import Server from '@tridoc/frontend'
 import SettingsDrawer from '@/components/Settings.vue'
+import HelpDrawer from '@/components/Help.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagCreator from '@/components/TagCreator.vue'
 import TagFilter from '@/components/TagFilter.vue'
@@ -24,6 +25,7 @@ interface TFile {
 @Component({
   components: {
     SettingsDrawer,
+    HelpDrawer,
     ErrorDialog,
     TagCreator,
     TagFilter,
@@ -42,6 +44,8 @@ export default class App extends Vue {
     darkMode: this.$vuetify.theme.dark,
     dense: false,
   }
+
+  helpOpen = false;
 
   @Watch('viewSettings.darkMode') changeDarkmode (n: boolean) {
     this.$vuetify.theme.dark = n

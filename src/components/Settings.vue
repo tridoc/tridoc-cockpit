@@ -1,9 +1,11 @@
 <template>
 <v-navigation-drawer
   v-model="show"
+  app
+  mobile-breakpoint="0"
   class="top"
-  width="432"
-  temporary
+  :width="$vuetify.breakpoint.smAndUp ? 432 : '100vw'"
+  temporary right absolute
 >
   <v-app-bar fixed dark color="primary" flat elevate-on-scroll>
     <v-toolbar-title>Settings</v-toolbar-title>
@@ -37,7 +39,7 @@
       </v-row>
       <v-row>
         <v-col class="pt-4">
-          <v-label for="dmswitch">
+          <v-label disabled for="dmswitch">
             Dense
           </v-label>
         </v-col>
@@ -46,7 +48,7 @@
             id="dmswitch"
             v-model="viewSettings.dense"
             class="my-0 ml-2 mr-n3"
-            inset hide-details
+            inset hide-details disabled
           />
         </v-col>
       </v-row>
@@ -209,7 +211,7 @@ export default class SettingsDrawer extends Vue {
   z-index: 900;
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   max-height: 100vh;
 }
 

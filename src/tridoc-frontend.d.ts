@@ -5,17 +5,17 @@ interface tdError {
 }
 
 interface tdTag {
-  label: string
+  label: string;
   parameter?: {
     type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
-  }
+  };
 }
 
 interface tdDocTag extends tdTag {
   parameter?: {
     type: 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
     value: string;
-  }
+  };
 }
 
 interface tdComment {

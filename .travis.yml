@@ -5,6 +5,7 @@ node_js:
 script:
   - npm i
   - npm run-script build
+  - cp ./dist/index.html ./dist/404.html # This allows slash-routing
 deploy:
   provider: pages
   skip-cleanup: true

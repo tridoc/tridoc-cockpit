@@ -2,7 +2,9 @@ module.exports = {
   transpileDependencies: [
     'vuetify'
   ],
-  publicPath: './',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/tridoc-cockpit/'
+    : '/',
   configureWebpack: {
     devtool: 'source-map'
   }

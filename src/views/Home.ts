@@ -1,5 +1,5 @@
 import { Component, Watch, Vue } from 'vue-property-decorator'
-import Server from '@tridoc/frontend'
+import type Server from '@tridoc/frontend'
 import SettingsDrawer from '@/components/Settings.vue'
 import HelpDrawer from '@/components/Help.vue'
 import ErrorDialog from '@/components/Error.vue'
@@ -49,32 +49,6 @@ export default class App extends Vue {
 
   @Watch('viewSettings.darkMode') changeDarkmode (n: boolean) {
     this.$vuetify.theme.dark = n
-  }
-
-  servers: {
-      server: Server;
-      password: string;
-      url: string;
-    }[] = []
-
-  private _current = 0
-
-  current () {
-    if (this._current >= this.servers.length) {
-      this._current = this.servers.length - 1
-    }
-    return this._current
-  }
-
-  setCurrent (c: number) {
-    this._current = c
-  }
-
-  currentserver () {
-    if (this.servers.length === 0) {
-      return null
-    }
-    return this.servers[this.current()].server
   }
 
   search: Search = {
@@ -147,8 +121,8 @@ export default class App extends Vue {
 
   openDocument (identifier: string) {
     const url =
-      (this.servers[this.current()].url.startsWith('https://') || this.servers[this.current()].url.startsWith('http://'))
-        ? this.servers[this.current()].url : 'https://' + this.servers[this.current()].url
+      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
+        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url
     window.open(url + '/doc/' + identifier, '_blank');
   }
 
@@ -190,7 +164,7 @@ export default class App extends Vue {
 
   getDocuments () {
     this.search.text = this.search.text || '' // This fixes it sometimes being null, which messes up results
-    const cs = this.currentserver()
+    const cs = this.$store.getters.server.server as Server
     if (cs) {
       this.loading = true
       cs.countDocuments(this.search.text, this.search.tags, this.search.nottags)
@@ -287,7 +261,7 @@ export default class App extends Vue {
   }
 
   uploadDocument (file: TFile) {
-    const cs = this.currentserver()
+    const cs = this.$store.getters.server.server as Server
     if (cs) {
       file.loading = true
       cs.uploadFile(file.file).then(r => {
@@ -324,13 +298,13 @@ export default class App extends Vue {
   tags: Tag[] = [];
 
   deleteTag (label: string) {
-    const cs = this.currentserver()
+    const cs = this.$store.getters.server.server as Server
     if (cs) {
       cs.deleteTag(label)
         .then((r) => {
           if (r.error) {
             // console.log(r)
-            this.error = { message: r.error, ...r }
+            this.error = { ...r, message: r.error }
           } else {
             this.reload()
           }
@@ -341,18 +315,13 @@ export default class App extends Vue {
   /* -------------- */
 
   serverchange ({ index, url, password }: { index: number; url: string; password: string }) {
-    this.servers[index] = {
-      url,
-      password,
-      server: new Server(url, 'tridoc', password)
-    };
-    this.setCurrent(index);
+    this.$store.commit('selectServer', { url, password })
     this.store()
     this.reload()
   }
 
   serverremove (index: number) {
-    this.servers.splice(index, 1)
+    this.$store.commit('removeServer', { index })
     this.store()
     this.reload()
   }
@@ -360,12 +329,12 @@ export default class App extends Vue {
   reload () {
     this.reset()
     this.getDocuments()
-    const cs = this.currentserver()
+    const cs = this.$store.getters.server.server as Server
     if (cs) {
       cs.getTags()
         .then((r) => {
           if ('error' in r) {
-            this.error = { title: r.error, message: r.message, ...r }
+            this.error = { title: r.error, ...r }
           } else {
             this.tags = r.map(e => {
               const result = {
@@ -418,30 +387,18 @@ export default class App extends Vue {
     const storedServers = JSON.parse(localStorage.getItem('servers') || 'false');
     const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0', 10);
     if (storedServers) {
-      this.servers = storedServers.map(({ password, url }: { password: string; url: string }) => ({
-        password,
-        url,
-        server: new Server(url, 'tridoc', password)
-      }))
-    }
-    this.setCurrent(storedCurrent)
-    // This will collect stored data from toolbox
-    const storedUrl = localStorage.getItem('server')
-    const storedPassword = localStorage.getItem('password')
-    if (storedUrl && storedPassword) {
-      this.servers.push({
-        password: storedPassword,
-        url: storedUrl,
-        server: new Server(storedUrl, 'tridoc', storedPassword)
+      storedServers.forEach(({ password, url }: { password: string; url: string }) => {
+        this.$store.commit('addServer', { password, url })
       })
     }
+    this.$store.commit('currentServer', { index: storedCurrent })
   }
 
   store () {
-    localStorage.setItem('currentserver', this.current().toString())
+    localStorage.setItem('currentserver', this.$store.state.currentServer?.toString() || '')
     localStorage.setItem(
       'servers',
-      JSON.stringify(this.servers.map(({ password, url }) => ({
+      JSON.stringify(this.$store.state.servers.map(({ password, url }) => ({
         password,
         url
       })))

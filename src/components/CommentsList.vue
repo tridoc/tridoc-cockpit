@@ -46,12 +46,11 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
 import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
+import type Server from '@tridoc/frontend'
 
 @Component({})
 export default class CommentsList extends Vue {
-  @Prop() server !: () => Server
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
 
@@ -66,7 +65,7 @@ export default class CommentsList extends Vue {
   async add () {
     this.valid = (this.$refs.form as any).validate()
     if (this.valid) {
-      this.server().addComment(this.docMeta.identifier, this.comment)
+      this.$store.getters.server.server.addComment(this.docMeta.identifier, this.comment)
         .then(() => {
           (this.$refs.form as any).reset()
           this.reload()
@@ -93,7 +92,7 @@ export default class CommentsList extends Vue {
   }
 
   reload () {
-    this.server().getMeta(this.docMeta.identifier)
+    (this.$store.getters.server.server as Server).getMeta(this.docMeta.identifier)
       .then(r => {
         this.loading = false
         if (!('error' in r)) {

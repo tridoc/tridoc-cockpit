@@ -93,7 +93,6 @@ export default class TagFilter extends Vue {
   @Prop() getDocuments!: () => void
   @Prop() error!: ({ title, message }: { title: string; message: string }) => void
   @Prop() deleteTag!: (label: string) => void
-  @Prop() currentserver!: () => Server | null
   @Prop() tag!: Tag
   @PropSync('search') dnsearch!: Search
 

@@ -65,14 +65,13 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
+import type Server from '@tridoc/frontend'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
 
 })
 export default class TagCreator extends Vue {
-  @Prop() server !: Server;
   show = false
   valid = false
   label = ''
@@ -93,8 +92,9 @@ export default class TagCreator extends Vue {
 
   save () {
     (this.$refs.form as any).validate()
-    if (this.valid) {
-      this.server.createTag(this.label, this.type !== 'simple' ? this.type : undefined)
+    const cs = this.$store.getters.server.server as Server
+    if (cs && this.valid) {
+      cs.createTag(this.label, this.type !== 'simple' ? this.type : undefined)
         .then((r: {error?: string}) => {
           if (r.error) {
             this.$emit('error', r)

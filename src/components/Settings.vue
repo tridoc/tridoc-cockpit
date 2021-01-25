@@ -74,17 +74,17 @@
                   icon
                   v-bind="attrs"
                   v-on="on"
-                  :color="(i === current) || isModified(server, i) ? 'primary darken-1' : ''"
+                  :color="(i === $store.state.currentServer) || isModified(server, i) ? 'primary darken-1' : ''"
                   class="m"
                   @click="save(i, server)"
                 >
                   <v-icon v-if="isModified(server, i)">mdi-content-save</v-icon>
-                  <v-icon v-else-if="i === current">mdi-checkbox-marked-circle-outline</v-icon>
+                  <v-icon v-else-if="i === $store.state.currentServer">mdi-checkbox-marked-circle-outline</v-icon>
                   <v-icon v-else>mdi-checkbox-blank-circle-outline</v-icon>
                 </v-btn>
               </template>
               <span v-if="isModified(server, i)">Save changes</span>
-              <span v-else-if="i === current">Selected</span>
+              <span v-else-if="i === $store.state.currentServer">Selected</span>
               <span v-else>Select</span>
             </v-tooltip>
           </v-col>
@@ -143,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
+import type Server from '@tridoc/frontend'
 import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 const validateUrl = (string = '') => {
@@ -165,32 +165,24 @@ const counterhelper = (() => {
 
 @Component({})
 export default class SettingsDrawer extends Vue {
-  @Prop() servers !: {
-      server: Server;
-      password: string;
-      url: string;
-    }[];
-
   @PropSync('open') show !: boolean;
   @PropSync('view') viewSettings !: {
     darkMode: boolean;
     dense: boolean;
   };
 
-  iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
+  // If Vetur was working correctly, the following two `: { password: string; url: string }` would be unnecceasiry. Added them to soothe vs-code’s concerns.
+  iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, password, url }));
 
   @Watch('servers', { deep: true })
   onServersChanged () {
-    this.iservers = this.servers.map(({ password, url }) => ({ id: this.counter(), valid: false, password, url }));
+    this.iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, password, url }));
   }
-
-  @Prop() current !: number;
 
   counter () {
     return counterhelper()
   }
 
-  icurrent = this.current
   valid = false
 
   urlRules: FormRule[] = [
@@ -229,7 +221,7 @@ export default class SettingsDrawer extends Vue {
   }
 
   isModified (server: { id: number; valid: boolean; password: string; url: string }, i: number) {
-    return (!this.servers[i] || !this.servers[i].url || !this.servers[i].password || this.servers[i].url !== server.url || this.servers[i].password !== server.password)
+    return (!this.$store.state.servers[i] || !this.$store.state.servers[i].url || !this.$store.state.servers[i].password || this.$store.state.servers[i].url !== server.url || this.$store.state.servers[i].password !== server.password)
   }
 }
 </script>

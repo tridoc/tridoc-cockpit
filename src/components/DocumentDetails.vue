@@ -48,7 +48,6 @@
               <tag-adder
                 :meta="meta"
                 @update:meta="m => $emit('update:docMeta', m)"
-                :server="server"
               />
               <v-chip
                 v-for="tag in meta.tags"
@@ -63,7 +62,6 @@
             </v-chip-group>
 
             <comments-list
-              :server="server"
               :meta="meta"
               @update:meta="m => $emit('update:docMeta', m)"
             />
@@ -148,7 +146,7 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
+import type Server from '@tridoc/frontend'
 import { Component, Prop, Vue, PropSync, Watch } from 'vue-property-decorator'
 import TagAdder from '@/components/TagAdder.vue'
 import CommentsList from '@/components/CommentsList.vue'
@@ -162,7 +160,6 @@ import pdfvuer from 'pdfvuer'
   }
 })
 export default class DocumentDetails extends Vue {
-  @Prop() server!: () => Server;
   @PropSync('docMeta') meta!: tdDocMeta;
   @PropSync('error') err!: { message: string; title?: string } | null;
   @PropSync('open') show!: boolean;
@@ -189,8 +186,8 @@ export default class DocumentDetails extends Vue {
 
   pdfsrc () {
     return {
-      url: ((this.server().url.startsWith('https://') || this.server().url.startsWith('http://')) ? this.server().url : 'https://' + this.server().url) + '/doc/' + this.meta.identifier,
-      httpHeaders: { Authorization: this.server().headers.get('Authorization') }
+      url: ((this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://')) ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + this.meta.identifier,
+      httpHeaders: { Authorization: this.$store.getters.server.headers.get('Authorization') }
     }
   }
 
@@ -213,20 +210,20 @@ export default class DocumentDetails extends Vue {
 
   openDocument (identifier: string) {
     const url =
-      (this.server().url.startsWith('https://') || this.server().url.startsWith('http://'))
-        ? this.server().url : 'https://' + this.server().url
+      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
+        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url
     window.open(url + '/doc/' + identifier, '_blank');
   }
 
   deleteDocument (identifier: string) {
     if (confirm('Are you sure you want to delete this Document?')) {
       this.show = false
-      const cs = this.server()
+      const cs = this.$store.getters.server.server as Server
       if (cs) {
         cs.deleteDocument(identifier)
           .then(r => {
             if ('error' in r) {
-              this.err = { title: r.error, message: r.message, ...r }
+              this.err = { ...r, title: r.error, message: r.message }
             } else {
               this.$emit('change')
             }
@@ -236,7 +233,7 @@ export default class DocumentDetails extends Vue {
   }
 
   updateTitle () {
-    const cs = this.server()
+    const cs = this.$store.getters.server.server as Server
     if (cs) {
       cs.setDocumentTitle(this.meta.identifier, this.meta.title || '')
     }
@@ -287,16 +284,16 @@ export default class DocumentDetails extends Vue {
 
   getPdf () {
     const url = (
-      (this.server().url.startsWith('https://') || this.server().url.startsWith('http://'))
-        ? this.server().url : 'https://' + this.server().url) + '/doc/' + this.meta.identifier
-    this.pdfdata = pdfvuer.createLoadingTask({ url, httpHeaders: { Authorization: this.server().headers.get('Authorization') } });
+      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
+        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + this.meta.identifier
+    this.pdfdata = pdfvuer.createLoadingTask({ url, httpHeaders: { Authorization: this.$store.getters.server.server.headers.get('Authorization') } });
     (this.pdfdata as Promise<any>).then(pdf => {
       this.numPages = pdf.numPages;
     });
   }
 
   getComments () {
-    /* this.server().getComments(this.meta.identifier).then(j => {
+    /* (this.$store.getters.server.server as Server).getComments(this.meta.identifier).then(j => {
       if ('error' in j) {
         console.warn('Error loading comments for ' + this.meta.identifier, j)
       } else {

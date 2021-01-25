@@ -107,12 +107,11 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
+import type Server from '@tridoc/frontend'
 import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class TagAdder extends Vue {
-  @Prop() server !: () => Server
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
   show = false
@@ -124,11 +123,11 @@ export default class TagAdder extends Vue {
 
   @Watch('label')
   change (l: string) {
-    const exsists = this.allTags.find(t => t.label === l)
-    if (exsists) {
+    const exists = this.allTags.find(t => t.label === l)
+    if (exists) {
       this.fixed = true
-      this.type = exsists.parameter
-        ? (exsists.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'
+      this.type = exists.parameter
+        ? (exists.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'
           ? 'decimal'
           : 'date')
         : 'simple'
@@ -162,14 +161,15 @@ export default class TagAdder extends Vue {
 
   async save () {
     this.valid = (this.$refs.form as any).validate()
-    if (this.valid) {
+    const cs = this.$store.getters.server.server as Server
+    if (cs && this.valid) {
       await this.reloadTags()
       if ((this.docMeta.tags || []).findIndex(t => t.label === this.label) !== -1) {
         alert('Tag has already been added to the document')
         return // see also comment further below
       } else if (this.allTags.findIndex(t => t.label === this.label) === -1) {
         if (confirm('This tag doesn’t exist yet. Do you want to create it?')) {
-          await this.server().createTag(this.label, this.type !== 'simple' ? this.type : undefined)
+          await cs.createTag(this.label, this.type !== 'simple' ? this.type : undefined)
             .then(r => {
               if ('error' in r) {
                 console.error(r) // eslint-disable-line no-console
@@ -180,7 +180,7 @@ export default class TagAdder extends Vue {
           return;
         }
       }
-      this.server().addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
+      cs.addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
           if (r.error) {
             this.$emit('error', r)
@@ -196,9 +196,10 @@ export default class TagAdder extends Vue {
   }
 
   removeTag (label: string) {
-    if (confirm(`Do you want to remove tag "${label}" from the Document?
+    const cs = this.$store.getters.server.server as Server
+    if (cs && confirm(`Do you want to remove tag "${label}" from the Document?
 This Action cannot be undone`)) {
-      this.server().removeTag(this.docMeta.identifier, label).then(this.reload)
+      cs.removeTag(this.docMeta.identifier, label).then(this.reload)
     }
   }
 
@@ -220,25 +221,31 @@ This Action cannot be undone`)) {
   }
 
   reloadTags () {
-    return this.server().getTags()
-      .then(r => {
-        if (!('error' in r)) {
-          this.allTags = r.filter(t => {
-            return /* !!t.parameter || */ (this.docMeta.tags || []).findIndex(mt => mt.label === t.label) === -1 // while it is possible to add a paramterisable tag multiple times to a document, it's not possible to remove only selct ones of them, thus tridoc-cockpit discourages this.
-          })
-        }
-      })
+    const cs = this.$store.getters.server.server as Server
+    if (cs) {
+      return cs.getTags()
+        .then(r => {
+          if (!('error' in r)) {
+            this.allTags = r.filter(t => {
+              return /* !!t.parameter || */ (this.docMeta.tags || []).findIndex(mt => mt.label === t.label) === -1 // while it is possible to add a paramterisable tag multiple times to a document, it's not possible to remove only selct ones of them, thus tridoc-cockpit discourages this.
+            })
+          }
+        })
+    }
   }
 
   reload () {
-    this.server().getMeta(this.docMeta.identifier)
-      .then(r => {
-        if (!('error' in r)) {
-          this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
-        }
-      }).then(() => {
-        this.reloadTags()
-      })
+    const cs = this.$store.getters.server.server as Server
+    if (cs) {
+      cs.getMeta(this.docMeta.identifier)
+        .then(r => {
+          if (!('error' in r)) {
+            this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
+          }
+        }).then(() => {
+          this.reloadTags()
+        })
+    }
   }
 
   created () {

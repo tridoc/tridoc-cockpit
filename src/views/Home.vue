@@ -8,7 +8,6 @@
     <div class="pa-3">
       <v-subheader>TAGS</v-subheader>
       <tag-creator
-        :server="currentserver()"
         @tagcreated="reload"
         @error="onError({ title: r.error, message: r.message })"
       />
@@ -20,7 +19,6 @@
         :getDocuments="getDocuments"
         :error="onError"
         :deleteTag="deleteTag"
-        :currentserver="currentserver"
         :tags="tags"
         :search.sync="search"
       />
@@ -44,9 +42,9 @@
     <template v-slot:append>
       <v-divider />
       <v-list nav dense>
-        <v-list-item disabled v-if="currentserver()">
+        <v-list-item disabled v-if="$store.getters.server">
           <v-list-item-content>
-            <v-list-item-subtitle>{{ currentserver().url }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ $store.getters.server.url }}</v-list-item-subtitle>
             <!--<v-list-item-subtitle>with version: {{ version() }}</v-list-item-subtitle>-->
           </v-list-item-content>
         </v-list-item>
@@ -57,8 +55,6 @@
   <settings-drawer
     :open.sync="settingsOpen"
     :view.sync="viewSettings"
-    :servers="servers"
-    :current="current()"
     @save="serverchange"
     @delete="serverremove"
   />
@@ -149,7 +145,6 @@
             <document-details
               v-for="item in docs"
               :key="item.identifier"
-              :server="currentserver"
               :docMeta="item"
               @update:docMeta="updateDoc"
               :error="error"

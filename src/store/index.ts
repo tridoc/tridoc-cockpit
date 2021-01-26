@@ -14,6 +14,10 @@ export default new Vuex.Store({
   state: {
     servers,
     currentServer: null as null | number,
+    viewSettings: {
+      darkMode: false,
+      dense: false,
+    }
   },
   getters: {
     server: (state) => {
@@ -78,10 +82,28 @@ export default new Vuex.Store({
         return
       }
       state.servers.splice(index, 1)
-    }
+    },
+    viewSettings (state, { darkMode, dense }: { darkMode?: boolean; dense?: boolean }) {
+      console.log('Setting viewSettings', darkMode, dense)
+      if (darkMode !== undefined) state.viewSettings.darkMode = darkMode
+      if (dense !== undefined) state.viewSettings.dense = dense
+      localStorage.setItem('viewSettings', JSON.stringify(state.viewSettings))
+    },
   },
   actions: {
-  },
-  modules: {
+    restore ({ commit }) {
+      const storedServers = JSON.parse(localStorage.getItem('servers') || 'false');
+      const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0', 10);
+      if (storedServers) {
+        storedServers.forEach(({ password, url }: { password: string; url: string }) => {
+          commit('addServer', { password, url })
+        })
+      }
+      commit('currentServer', { index: storedCurrent })
+      const storedViewSettings = JSON.parse(localStorage.getItem('viewSettings') || 'false')
+      if (storedViewSettings) {
+        commit('viewSettings', storedViewSettings)
+      }
+    }
   }
 })

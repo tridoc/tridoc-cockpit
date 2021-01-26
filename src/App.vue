@@ -9,19 +9,13 @@ import '@/global-types.ts'
 
 @Component({})
 export default class App extends Vue {
-  restore () {
-    const storedServers = JSON.parse(localStorage.getItem('servers') || 'false');
-    const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0', 10);
-    if (storedServers) {
-      storedServers.forEach(({ password, url }: { password: string; url: string }) => {
-        this.$store.commit('addServer', { password, url })
-      })
-    }
-    this.$store.commit('currentServer', { index: storedCurrent })
+  @Watch('$store.state.viewSettings.darkMode')
+  changeDarkmode (n: boolean) {
+    this.$vuetify.theme.dark = n
   }
 
   created () {
-    this.restore()
+    this.$store.dispatch('restore')
   }
 }
 </script>

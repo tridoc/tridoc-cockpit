@@ -33,17 +33,7 @@ interface TFile {
 export default class Home extends Vue {
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
-
-  viewSettings = {
-    darkMode: this.$vuetify.theme.dark,
-    dense: false,
-  }
-
   helpOpen = false;
-
-  @Watch('viewSettings.darkMode') changeDarkmode (n: boolean) {
-    this.$vuetify.theme.dark = n
-  }
 
   search: Search = {
     text: '',

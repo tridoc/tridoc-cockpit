@@ -54,7 +54,6 @@
 
   <settings-drawer
     :open.sync="settingsOpen"
-    :view.sync="viewSettings"
     @save="serverchange"
     @delete="serverremove"
   />

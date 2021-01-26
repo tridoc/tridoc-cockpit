@@ -31,7 +31,8 @@
         <v-col cols="auto">
           <v-switch
             id="dmswitch"
-            v-model="viewSettings.darkMode"
+            :value="$store.state.viewSettings.darkMode"
+            @change="e => $store.commit('viewSettings', { darkMode: e })"
             class="my-0 ml-2 mr-n3"
             inset hide-details
           />
@@ -46,9 +47,10 @@
         <v-col cols="auto">
           <v-switch
             id="dmswitch"
-            v-model="viewSettings.dense"
+            :value="$store.state.viewSettings.dense"
+            @change="e => $store.commit('viewSettings', { dense: e })"
             class="my-0 ml-2 mr-n3"
-            inset hide-details disabled
+            inset hide-details sdisabled
           />
         </v-col>
       </v-row>
@@ -165,10 +167,6 @@ const counterhelper = (() => {
 @Component({})
 export default class SettingsDrawer extends Vue {
   @PropSync('open') show !: boolean;
-  @PropSync('view') viewSettings !: {
-    darkMode: boolean;
-    dense: boolean;
-  };
 
   // If Vetur was working correctly, the following two `: { password: string; url: string }` would be unnecceasiry. Added them to soothe vs-code’s concerns.
   iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, password, url }));

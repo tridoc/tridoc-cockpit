@@ -179,7 +179,7 @@
       </v-toolbar>
 
       <v-col :class="$vuetify.breakpoint.mdAndUp ? 'col pa-0' : 'pa-0'" cols="12" md="7">
-        <v-sheet color="grey lighten-2" :class="($vuetify.breakpoint.mdAndUp ? 'col ' : '') + (resize ? 'y pa-0' : 'x y pa-0')">
+        <v-sheet :color="this.$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-2'" :class="($vuetify.breakpoint.mdAndUp ? 'col ' : '') + (resize ? 'y pa-0' : 'x y pa-0')">
           <div :class="resize ? 'px-3' : 'fit px-3'">
             <pdf
               :src="pdfsrc()"

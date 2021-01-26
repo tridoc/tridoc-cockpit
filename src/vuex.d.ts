@@ -1,3 +1,5 @@
+/* THIS ONLY WORKS WHEN REMOVING THE CONFLICTING TYPE Store<any> from /node_modules/vuex/types/vue.d.ts AND WAS THUS COMMENTED.
+
 // 1. Make sure to import 'vue' before declaring augmented types
 import Vue from 'vue'
 import { Store } from 'vuex'
@@ -20,3 +22,4 @@ declare module 'vue/types/vue' {
     $store: Store<State>
   }
 }
+*/

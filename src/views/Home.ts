@@ -386,7 +386,7 @@ export default class Home extends Vue {
     localStorage.setItem('currentserver', this.$store.state.currentServer?.toString() || '')
     localStorage.setItem(
       'servers',
-      JSON.stringify(this.$store.state.servers.map(({ password, url }) => ({
+      JSON.stringify(this.$store.state.servers.map(({ password, url }: { url: string; password?: string }) => ({
         password,
         url
       })))

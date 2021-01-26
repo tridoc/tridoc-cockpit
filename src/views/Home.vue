@@ -142,7 +142,7 @@
       <v-row class="mt-3" align="start">
         <v-col cols="12">
           <v-card outlined>
-            <document-details
+            <!--<document-details
               v-for="item in docs"
               :key="item.identifier"
               :docMeta="item"
@@ -151,7 +151,7 @@
               @change="reload"
               :open="open === item.identifier"
               @update:open="open = ''"
-            />
+            />-->
             <v-data-table
               disable-sort
               disable-filtering
@@ -163,7 +163,7 @@
               item-key="identifier"
               no-data-text="No documents found"
               hide-default-footer
-              @click:row="i => open = i.identifier"
+              @click:row="i => openDocumentView(i.identifier)"
             >
               <template v-slot:item.title="{ item }">
                 {{ item.title }}
@@ -217,7 +217,7 @@
                     class="ma-1"
                     small
                     color="primary"
-                    @click.stop="open = item.identifier"
+                    :href="`/doc/${item.identifier}?s=${$store.getters.server.url}`"
                   >
                     <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
                     <span :hidden="$vuetify.breakpoint.sm">Open</span>
@@ -352,26 +352,5 @@ input[type=file] {
   padding: 0;
   cursor: pointer;
   opacity: 0;
-}
-</style>
-
-<style lang="scss">
-* {
-  will-change: auto !important;
-}
-
-code,
-pre,
-kbd {
-  font-family: 'Roboto Mono', monospace;
-}
-
-.v-application .error--text.text--accent-1 {
-    color: #ab1407 !important;
-    caret-color: #ab1407 !important;
-}
-
-.theme--dark.v-navigation-drawer .theme--dark.v-card {
-  background-color: #363636;
 }
 </style>

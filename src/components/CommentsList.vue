@@ -51,6 +51,7 @@ import type Server from '@tridoc/frontend'
 
 @Component({})
 export default class CommentsList extends Vue {
+  @Prop() id!: string;
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
 
@@ -65,7 +66,7 @@ export default class CommentsList extends Vue {
   async add () {
     this.valid = (this.$refs.form as any).validate()
     if (this.valid) {
-      this.$store.getters.server.server.addComment(this.docMeta.identifier, this.comment)
+      this.$store.getters.server.server.addComment(this.id, this.comment)
         .then(() => {
           (this.$refs.form as any).reset()
           this.reload()
@@ -92,11 +93,11 @@ export default class CommentsList extends Vue {
   }
 
   reload () {
-    (this.$store.getters.server.server as Server).getMeta(this.docMeta.identifier)
+    (this.$store.getters.server.server as Server).getMeta(this.id)
       .then(r => {
         this.loading = false
         if (!('error' in r)) {
-          this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
+          this.$emit('update:meta', { ...r, identifier: this.id })
         }
       })
   }

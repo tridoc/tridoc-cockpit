@@ -32,7 +32,7 @@ interface TFile {
     DocumentDetails,
   }
 })
-export default class App extends Vue {
+export default class Home extends Vue {
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
 
@@ -71,7 +71,6 @@ export default class App extends Vue {
   /* DOC LIST STUFF */
 
   docs: tdDocMeta[] = []
-  open = ''
   count= 0
 
   headers = [
@@ -113,6 +112,10 @@ export default class App extends Vue {
 
   pagecounter () {
     return `${this.options.page} of ${Math.ceil(this.count / this.options.itemsPerPage)}`
+  }
+
+  openDocumentView (identifier: string) {
+    this.$router.push({ path: `/doc/${identifier}`, query: { s: this.$store.getters.server.url } })
   }
 
   openDocument (identifier: string) {
@@ -379,17 +382,6 @@ export default class App extends Vue {
     this.docs = []
   }
 
-  restore () {
-    const storedServers = JSON.parse(localStorage.getItem('servers') || 'false');
-    const storedCurrent = parseInt(localStorage.getItem('currentserver') || '0', 10);
-    if (storedServers) {
-      storedServers.forEach(({ password, url }: { password: string; url: string }) => {
-        this.$store.commit('addServer', { password, url })
-      })
-    }
-    this.$store.commit('currentServer', { index: storedCurrent })
-  }
-
   store () {
     localStorage.setItem('currentserver', this.$store.state.currentServer?.toString() || '')
     localStorage.setItem(
@@ -402,7 +394,6 @@ export default class App extends Vue {
   }
 
   created () {
-    this.restore()
     this.reload()
   }
 

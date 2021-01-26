@@ -13,7 +13,7 @@
       <v-card-title class="headline">Manage Tags</v-card-title>
       <v-card-subtitle>
         {{ docMeta.title }}
-        <kbd class="mx-2">{{ docMeta.identifier }}</kbd>
+        <kbd class="mx-2">{{ id }}</kbd>
       </v-card-subtitle>
       <v-card-text>
         Has:
@@ -108,10 +108,11 @@
 
 <script lang="ts">
 import type Server from '@tridoc/frontend'
-import { Component, PropSync, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class TagAdder extends Vue {
+  @Prop() id!: string;
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
   show = false
@@ -180,7 +181,7 @@ export default class TagAdder extends Vue {
           return;
         }
       }
-      cs.addTag(this.docMeta.identifier, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
+      cs.addTag(this.id, this.label, this.type !== 'simple' ? this.type : undefined, this.type !== 'simple' ? this.value : undefined)
         .then((r: {error?: string}) => {
           if (r.error) {
             this.$emit('error', r)
@@ -199,7 +200,7 @@ export default class TagAdder extends Vue {
     const cs = this.$store.getters.server.server as Server
     if (cs && confirm(`Do you want to remove tag "${label}" from the Document?
 This Action cannot be undone`)) {
-      cs.removeTag(this.docMeta.identifier, label).then(this.reload)
+      cs.removeTag(this.id, label).then(this.reload)
     }
   }
 
@@ -237,10 +238,10 @@ This Action cannot be undone`)) {
   reload () {
     const cs = this.$store.getters.server.server as Server
     if (cs) {
-      cs.getMeta(this.docMeta.identifier)
+      cs.getMeta(this.id)
         .then(r => {
           if (!('error' in r)) {
-            this.$emit('update:meta', { ...r, identifier: this.docMeta.identifier })
+            this.$emit('update:meta', { ...r, identifier: this.id })
           }
         }).then(() => {
           this.reloadTags()

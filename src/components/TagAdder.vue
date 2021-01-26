@@ -108,7 +108,7 @@
 
 <script lang="ts">
 import type Server from '@tridoc/frontend'
-import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
+import { Component, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class TagAdder extends Vue {

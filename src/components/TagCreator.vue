@@ -66,11 +66,9 @@
 
 <script lang="ts">
 import type Server from '@tridoc/frontend'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
-@Component({
-
-})
+@Component({})
 export default class TagCreator extends Vue {
   show = false
   valid = false

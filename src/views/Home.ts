@@ -34,10 +34,6 @@ interface TFile {
 })
 export default class App extends Vue {
   error: { message: string; title?: string; color?: string } | null = null
-
-  console = console;
-  inspect = inspect;
-
   settingsOpen = false;
 
   viewSettings = {
@@ -314,7 +310,7 @@ export default class App extends Vue {
 
   /* -------------- */
 
-  serverchange ({ index, url, password }: { index: number; url: string; password: string }) {
+  serverchange ({ url, password }: { url: string; password: string }) {
     this.$store.commit('selectServer', { url, password })
     this.store()
     this.reload()
@@ -368,7 +364,7 @@ export default class App extends Vue {
               return 0;
             })
           }
-        }, (e: any) => {
+        }, e => {
           if (e instanceof Error) {
             this.error = { title: 'A ' + e.name + ' occurred', message: e.message }
           } else {

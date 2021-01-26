@@ -10,6 +10,13 @@ type tdQueryTag = [
   (string|number)?,
 ]
 
+type tdQueryTagEx = [
+  string,
+  (string|number)?,
+  (string|number)?,
+  boolean?,
+]
+
 interface Search {
   text: string;
   tags: tdQueryTag[];

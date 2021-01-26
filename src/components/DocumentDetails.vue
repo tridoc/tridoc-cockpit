@@ -174,8 +174,6 @@ export default class DocumentDetails extends Vue {
     }
   }
 
-  console = console;
-
   page = 1
   numPages = 0
   pdfdata = undefined as undefined|Promise<any>

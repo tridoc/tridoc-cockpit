@@ -143,8 +143,7 @@
 </template>
 
 <script lang="ts">
-import type Server from '@tridoc/frontend'
-import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
+import { Component, PropSync, Vue, Watch } from 'vue-property-decorator'
 
 const validateUrl = (string = '') => {
   if (!string.startsWith('http://') || !string.startsWith('https://')) {

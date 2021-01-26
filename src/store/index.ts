@@ -26,7 +26,7 @@ export default new Vuex.Store({
   mutations: {
     currentServer (state, { index }: { index: number }) {
       if (index >= state.servers.length || index < 0) {
-        console.warn('Trying to select nonexistent server')
+        console.warn('Trying to select nonexistent server') // eslint-disable-line no-console
         return
       }
       state.currentServer = index
@@ -74,7 +74,7 @@ export default new Vuex.Store({
     },
     removeServer (state, { index }: { index: number }) {
       if (index >= state.servers.length || index < 0) {
-        console.warn('Trying to remove nonexistent server')
+        console.warn('Trying to remove nonexistent server') // eslint-disable-line no-console
         return
       }
       state.servers.splice(index, 1)

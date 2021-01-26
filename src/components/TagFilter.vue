@@ -77,8 +77,7 @@
 </template>
 
 <script lang="ts">
-import Server from '@tridoc/frontend'
-import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import RangeInput from '@/components/RangeInput.vue'
 
 import '@/global-types.ts'
@@ -109,7 +108,7 @@ export default class TagFilter extends Vue {
     const noR = this.dnsearch.nottags.filter(t => {
       return t[0] === this.tag.label
     }).map((e: any) => { e[3] = false; return e })
-    return [yes, no, yesR.concat(noR)]
+    return [yes, no, yesR.concat(noR as any)]
   }
 
   includeTag () {

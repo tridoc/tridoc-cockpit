@@ -372,6 +372,22 @@ export default class DocumentDetails extends Vue {
   padding-right: 0;
 }
 
+.pdf {
+  max-width: 100%;
+  margin: 12px auto;
+}
+
+pdf.resize {
+  width: fit-content;
+}
+
+.pdf .page {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+<style lang="scss" scoped>
 .tools {
   position: sticky;
   top: 56px;
@@ -384,11 +400,11 @@ export default class DocumentDetails extends Vue {
   }
 
   .layout {
-    max-height: 100%;
+    height: 100%;
   }
 
   .col {
-    max-height: 100%;
+    height: 100%;
     overflow-y: auto;
   }
 
@@ -409,20 +425,6 @@ export default class DocumentDetails extends Vue {
   & * {
     text-align: end;
   }
-}
-
-.pdf {
-  max-width: 100%;
-  margin: 12px auto;
-}
-
-pdf.resize {
-  width: fit-content;
-}
-
-.pdf .page {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .x {

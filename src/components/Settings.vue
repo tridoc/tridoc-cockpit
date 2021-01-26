@@ -31,8 +31,7 @@
         <v-col cols="auto">
           <v-switch
             id="dmswitch"
-            :value="$store.state.viewSettings.darkMode"
-            @change="e => $store.commit('viewSettings', { darkMode: e })"
+            v-model="viewSettingsDark"
             class="my-0 ml-2 mr-n3"
             inset hide-details
           />
@@ -47,10 +46,9 @@
         <v-col cols="auto">
           <v-switch
             id="dmswitch"
-            :value="$store.state.viewSettings.dense"
-            @change="e => $store.commit('viewSettings', { dense: e })"
+            v-model="viewSettingsDense"
             class="my-0 ml-2 mr-n3"
-            inset hide-details sdisabled
+            inset hide-details disabled
           />
         </v-col>
       </v-row>
@@ -219,6 +217,22 @@ export default class SettingsDrawer extends Vue {
 
   isModified (server: { id: number; valid: boolean; password: string; url: string }, i: number) {
     return (!this.$store.state.servers[i] || !this.$store.state.servers[i].url || !this.$store.state.servers[i].password || this.$store.state.servers[i].url !== server.url || this.$store.state.servers[i].password !== server.password)
+  }
+
+  get viewSettingsDark () {
+    return this.$store.state.viewSettings.darkMode
+  }
+
+  set viewSettingsDark (v: boolean) {
+    this.$store.commit('viewSettings', { darkMode: v })
+  }
+
+  get viewSettingsDense () {
+    return this.$store.state.viewSettings.dense
+  }
+
+  set viewSettingsDense (v: boolean) {
+    this.$store.commit('viewSettings', { dense: v })
   }
 }
 </script>

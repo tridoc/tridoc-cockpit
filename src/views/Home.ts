@@ -5,7 +5,6 @@ import HelpDrawer from '@/components/Help.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagCreator from '@/components/TagCreator.vue'
 import TagFilter from '@/components/TagFilter.vue'
-import DocumentDetails from '@/components/DocumentDetails.vue'
 
 import '@/global-types.ts'
 
@@ -29,7 +28,6 @@ interface TFile {
     ErrorDialog,
     TagCreator,
     TagFilter,
-    DocumentDetails,
   }
 })
 export default class Home extends Vue {

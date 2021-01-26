@@ -180,7 +180,7 @@
 
       <v-col :class="$vuetify.breakpoint.mdAndUp ? 'col pa-0' : 'pa-0'" cols="12" md="7">
         <v-sheet color="grey lighten-2" :class="($vuetify.breakpoint.mdAndUp ? 'col ' : '') + (resize ? 'y pa-0' : 'x y pa-0')">
-          <div :class="resize ? 'pa-3' : 'fit pa-3'">
+          <div :class="resize ? 'px-3' : 'fit px-3'">
             <pdf
               :src="pdfsrc()"
               v-for="i in numPages"
@@ -396,6 +396,10 @@ export default class DocumentDetails extends Vue {
   .v-main {
     max-height: 100vh;
   }
+
+  .grey.x {
+    border-left: 1px solid #e0e0e0;
+  }
 }
 
 .narrow {
@@ -409,7 +413,7 @@ export default class DocumentDetails extends Vue {
 
 .pdf {
   max-width: 100%;
-  margin: 16px auto;
+  margin: 12px auto;
 }
 
 pdf.resize {

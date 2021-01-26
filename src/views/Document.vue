@@ -48,7 +48,15 @@
         </template>
         Delete This Document
       </v-tooltip>
+
+      <v-progress-linear
+        :active="!meta"
+        indeterminate
+        absolute
+        bottom
+      />
     </v-toolbar>
+
     <v-toolbar
       v-if="$vuetify.breakpoint.mdAndUp"
       flat
@@ -82,8 +90,9 @@
       {{ numPages }} Pages
 
       <v-progress-linear
-        :active="loading"
-        indeterminate
+        :indeterminate="numPages === 0"
+        :active="this.loading < this.numPages"
+        :value="(this.loading / this.numPages) * 100"
         absolute
         bottom
       />
@@ -161,8 +170,9 @@
         {{ numPages }} Pages
 
         <v-progress-linear
-          :active="loading"
-          indeterminate
+          :indeterminate="numPages === 0"
+          :active="this.loading < this.numPages"
+          :value="(this.loading / this.numPages) * 100"
           absolute
           bottom
         />
@@ -216,7 +226,7 @@ export default class DocumentDetails extends Vue {
   pdfdata = undefined as undefined|Promise<any>
   errors = []
   scale = 'page-width' as string | number
-  loading = true
+  loading = 0
   resize = true
 
   pdfsrc () {
@@ -276,12 +286,10 @@ export default class DocumentDetails extends Vue {
   }
 
   loadingChange (b: boolean) {
-    this.loading = b;
-    if (!b || b) {
-      const cv = document.getElementsByTagName('canvas')
-      for (let i = 0; i < cv.length; i++) {
-        cv[i].classList.add('elevation-4')
-      }
+    const cv = document.getElementsByTagName('canvas')
+    this.loading = cv.length
+    for (let i = 0; i < cv.length; i++) {
+      cv[i].classList.add('elevation-4')
     }
   }
 
@@ -374,6 +382,20 @@ export default class DocumentDetails extends Vue {
   .tools {
     top: 68px;
   }
+
+  .layout {
+    max-height: 100%;
+  }
+
+  .col {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .col,
+  .v-main {
+    max-height: 100vh;
+  }
 }
 
 .narrow {
@@ -399,15 +421,6 @@ pdf.resize {
   margin-right: auto;
 }
 
-.layout {
-  max-height: 100%;
-}
-
-.col {
-  max-height: 100%;
-  overflow-y: auto;
-}
-
 .x {
   overflow-x: auto;
 }
@@ -419,11 +432,6 @@ pdf.resize {
 .fit {
   min-width: fit-content;
   min-height: fit-content;
-}
-
-.col,
-.v-main {
-  max-height: 100vh;
 }
 
 .expand {

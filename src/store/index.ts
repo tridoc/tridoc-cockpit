@@ -84,7 +84,6 @@ export default new Vuex.Store({
       state.servers.splice(index, 1)
     },
     viewSettings (state, { darkMode, dense }: { darkMode?: boolean; dense?: boolean }) {
-      console.log('Setting viewSettings', darkMode, dense)
       if (darkMode !== undefined) state.viewSettings.darkMode = darkMode
       if (dense !== undefined) state.viewSettings.dense = dense
       localStorage.setItem('viewSettings', JSON.stringify(state.viewSettings))

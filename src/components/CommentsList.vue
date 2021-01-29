@@ -13,7 +13,7 @@
       >
         <v-divider v-if="i !== 0" />
         <v-card-text>
-          <span style="white-space: pre;">{{ comment.text }}</span>
+          <span style="white-space: pre-line;">{{ comment.text }}</span>
           <code class="ml-2">{{ comment.created.replace('T', ' ').replace(/:\d{2}\.\d{1,3}/, ' ').replace('Z', 'UTC') }}</code>
         </v-card-text>
       </div>

@@ -443,4 +443,9 @@ pdf.resize {
 .expand {
   max-height: unset;
 }
+
+// This seems neccesary to fix side-by-side layout on smaller screen, a weird problem only happening when building for production
+.layout {
+  flex-wrap: wrap;
+}
 </style>

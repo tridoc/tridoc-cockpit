@@ -50,7 +50,7 @@
       </v-tooltip>
 
       <v-progress-linear
-        :active="!meta"
+        :active="loadingMeta"
         indeterminate
         absolute
         bottom
@@ -198,6 +198,61 @@
       </v-col>
     </v-row>
   </v-main>
+  <v-dialog
+    transition="dialog-top-transition"
+    v-model="dialog.open"
+    persistent
+    max-width="600px"
+  >
+    <v-card>
+      <v-card-title>
+        <span class="headline">Set Server and Password</span>
+      </v-card-title>
+      <v-card-text class="pb-0">
+        <v-container>
+          <v-form v-model="dialog.valid" ref="form">
+            <v-row dense class="mx-n3">
+              <v-col>
+                <v-text-field
+                  outlined
+                  v-model="dialog.url"
+                  :rules="dialog.urlRules"
+                  label="Server URL"
+                  required
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  outlined
+                  type="password"
+                  v-model="dialog.pw"
+                  :rules="dialog.pwRules"
+                  label="Password"
+                  required
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-row dense class="mx-n3">
+            <v-col>
+              {{ $route.query.s ? 'A password is' : 'Server URL and password are' }} required to view this document.
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="primary"
+          :disabled="!dialog.valid || loadingMeta"
+          :loading="loadingMeta"
+          @click="closeDialog"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </v-app>
 </template>
 
@@ -210,6 +265,18 @@ import pdfvuer from 'pdfvuer'
 
 import { inspect } from 'util'
 
+const validateUrl = (string = '') => {
+  if (!string.startsWith('http://') || !string.startsWith('https://')) {
+    string = 'https://' + string
+  }
+  try {
+    const url = new URL(string);
+    return url.href.replace(/\/$/, '')
+  } catch (_) {
+    return false
+  }
+}
+
 @Component({
   components: {
     pdf: pdfvuer,
@@ -219,8 +286,8 @@ import { inspect } from 'util'
 })
 export default class DocumentDetails extends Vue {
   @Prop() id!: string;
-  meta: tdDocMeta | null = null;
-
+  meta: tdDocMeta | null = null
+  loadingMeta = false
   page = 1
   numPages = 0
   pdfdata = undefined as undefined|Promise<any>
@@ -228,6 +295,26 @@ export default class DocumentDetails extends Vue {
   scale = 'page-width' as string | number
   loading = 0
   resize = true
+
+  dialog = {
+    open: false,
+    url: '',
+    pw: '',
+    valid: false,
+    urlRules: [
+      v => !!v || 'URL is required',
+      v => {
+        const temp = validateUrl(v)
+        if (temp) {
+          return true
+        }
+        return 'URL has to be valid'
+      },
+    ] as FormRule[],
+    pwRules: [
+      v => !!v || 'Password is required',
+    ] as FormRule[],
+  }
 
   pdfsrc () {
     if (this.meta) {
@@ -342,15 +429,29 @@ export default class DocumentDetails extends Vue {
       this.$store.commit('selectServer', { url: this.$route.query.s })
     }
     if (!this.$store.getters.server) {
-      alert('No Server')
-      alert('Servers: ' + inspect(this.$store.state.servers))
+      const s = this.$route.query.s ? (Array.isArray(this.$route.query.s) ? this.$route.query.s[0] || '' : this.$route.query.s) : ''
+      this.dialog.open = true;
+      this.dialog.url = s
+    } else {
+      this.finishSetup()
     }
-    const cs = this.$store.getters.server.server as Server
+  }
+
+  closeDialog () {
+    this.$store.commit('selectServer', { url: this.dialog.url, password: this.dialog.pw })
+    this.finishSetup()
+  }
+
+  finishSetup () {
+    this.loadingMeta = true
+    const cs = this.$store.getters.server?.server as Server
     if (cs) {
       cs.getMeta(this.id).then(r => {
+        this.loadingMeta = false
         if ('error' in r) {
           alert(r)
         } else {
+          this.dialog.open = false
           this.meta = r
         }
       })

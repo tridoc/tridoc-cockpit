@@ -10,6 +10,24 @@ const servers: {
   url: string;
 }[] = []
 
+function storeServers (state: {
+  servers: typeof servers;
+  currentServer: null | number;
+  viewSettings: {
+    darkMode: boolean;
+    dense: boolean;
+  };
+}) {
+  localStorage.setItem('currentserver', state.currentServer?.toString() || '')
+  localStorage.setItem(
+    'servers',
+    JSON.stringify(state.servers.map(({ password, url }: { url: string; password?: string }) => ({
+      password,
+      url
+    })))
+  )
+}
+
 export default new Vuex.Store({
   state: {
     servers,
@@ -51,10 +69,12 @@ export default new Vuex.Store({
           server: new Server(url, 'tridoc', password),
           password,
           url,
-        })
+        }) - 1
       } else {
+        storeServers(state)
         return null
       }
+      storeServers(state)
       return state.currentServer
     },
     addServer (state, { url, password }: { url: string; password?: string }) {
@@ -74,6 +94,7 @@ export default new Vuex.Store({
           url,
         })
       }
+      storeServers(state)
       return state.servers.length
     },
     removeServer (state, { index }: { index: number }) {
@@ -82,6 +103,7 @@ export default new Vuex.Store({
         return
       }
       state.servers.splice(index, 1)
+      storeServers(state)
     },
     viewSettings (state, { darkMode, dense }: { darkMode?: boolean; dense?: boolean }) {
       if (darkMode !== undefined) state.viewSettings.darkMode = darkMode

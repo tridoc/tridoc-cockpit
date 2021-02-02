@@ -216,7 +216,7 @@
                     class="ma-1"
                     small
                     color="primary"
-                    :href="`/doc/${item.identifier}?s=${$store.getters.server.url}`"
+                    :href="`./doc/${item.identifier}?s=${$store.getters.server.url}`"
                   >
                     <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
                     <span :hidden="$vuetify.breakpoint.sm">Open</span>

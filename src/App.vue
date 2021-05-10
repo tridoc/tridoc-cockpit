@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Watch, Vue } from 'vue-property-decorator'
 
+import '@github/time-elements'
 import '@/global-types.ts'
 
 @Component({})

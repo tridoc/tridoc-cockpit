@@ -8,12 +8,13 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home,
+    props: route => ({ page: route.query.p })
   },
   {
     path: '/doc/:id',
-    name: 'Document',
+    name: 'doc',
     component: Document,
     props: true,
   }

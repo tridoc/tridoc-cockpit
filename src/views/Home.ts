@@ -1,4 +1,4 @@
-import { Component, Watch, Vue } from 'vue-property-decorator'
+import { Component, Watch, Vue, Prop } from 'vue-property-decorator'
 import type Server from '@tridoc/frontend'
 import SettingsDrawer from '@/components/Settings.vue'
 import HelpDrawer from '@/components/Help.vue'
@@ -31,6 +31,8 @@ interface TFile {
   }
 })
 export default class Home extends Vue {
+  @Prop() page!: number;
+
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
   helpOpen = false;
@@ -70,27 +72,29 @@ export default class Home extends Vue {
 
   loading = true
   options = {
-    page: 1,
+    page: this.page ?? 1,
     itemsPerPage: 10,
   }
 
   paginationFirst () {
-    this.options.page = 1
-    this.getDocuments()
+    this.changePage(1)
   }
 
   paginationPrev () {
-    this.options.page -= 1
-    this.getDocuments()
+    this.changePage(this.options.page - 1)
   }
 
   paginationNext () {
-    this.options.page += 1
-    this.getDocuments()
+    this.changePage(this.options.page + 1)
   }
 
   paginationLast () {
-    this.options.page = Math.ceil(this.count / this.options.itemsPerPage)
+    this.changePage(Math.ceil(this.count / this.options.itemsPerPage))
+  }
+
+  changePage (p: number) {
+    this.options.page = Math.max(1, Math.min(p, Math.ceil(this.count / this.options.itemsPerPage)))
+    this.$router.push({ name: 'home', query: { p: p.toString() } })
     this.$nextTick().then(this.getDocuments)
   }
 
@@ -103,7 +107,7 @@ export default class Home extends Vue {
   }
 
   openDocumentView (identifier: string) {
-    this.$router.push({ path: `/doc/${identifier}`, query: { s: this.$store.getters.server.url } })
+    this.$router.push({ name: 'doc', params: { id: identifier }, query: { s: this.$store.getters.server.url } })
   }
 
   openDocument (identifier: string) {

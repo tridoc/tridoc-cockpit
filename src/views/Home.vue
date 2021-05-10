@@ -220,6 +220,7 @@
                     small
                     color="primary"
                     :href="`./doc/${item.identifier}?s=${$store.getters.server.url}`"
+                    @click.stop="/**/"
                   >
                     <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
                     <span :hidden="$vuetify.breakpoint.sm">Open</span>

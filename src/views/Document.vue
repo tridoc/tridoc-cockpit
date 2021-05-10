@@ -104,7 +104,7 @@
       <v-col :class="$vuetify.breakpoint.mdAndUp ? 'col' : ''" cols="12" md="5">
 
         <div class="pb-3">
-          <code>{{ id }}</code> <code><time-ago :datetime="meta.created">{{ meta.created }}</time-ago></code>
+          <code>{{ id }}</code> <code><time-ago v-if="meta" :datetime="meta.created">{{ meta.created }}</time-ago></code>
         </div>
 
         <div v-if="meta">

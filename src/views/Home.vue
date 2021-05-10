@@ -131,7 +131,7 @@
     </v-tooltip>
   </v-app-bar>
 
-  <v-content app>
+  <v-main app>
     <v-container class="sfill-height" fluid @drag.stop.prevent @dragstart.stop.prevent @dragend.stop.prevent @dragover.stop.prevent @dragenter.stop.prevent @dragleave.stop.prevent @drop.stop.prevent="addFile">
       <v-row align="start">
         <v-col class="py-0" cols="12">
@@ -337,7 +337,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </v-app>
 </template>
 

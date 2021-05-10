@@ -17,7 +17,7 @@
     </v-toolbar-items>
   </v-app-bar>
 
-  <v-content class="scroll">
+  <v-main class="scroll">
     <v-container
       class="px-4 pb-0"
       fluid
@@ -138,7 +138,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </v-navigation-drawer>
 </template>
 

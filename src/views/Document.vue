@@ -7,7 +7,7 @@
           <v-app-bar-nav-icon
             v-bind="attrs"
             v-on="on"
-            @click.stop="$router.go(-1)"
+            @click.stop="$router.go(-1), $router.push('/')"
           >
             <v-icon>mdi-arrow-left</v-icon>
           </v-app-bar-nav-icon>
@@ -206,9 +206,24 @@
   >
     <v-card>
       <v-card-title>
-        <span class="headline">Set Server and Password</span>
+        <span class="headline">{{ error ? 'An Error Occurred' : 'Set Server and Password' }}</span>
       </v-card-title>
       <v-card-text class="pb-0">
+        <v-alert outlined type="error" class="ma-1">
+          <v-simple-table dense style="color: inherit;">
+            <template v-slot:default>
+              <tbody>
+                <tr
+                  v-for="(value, name) in error"
+                  :key="name"
+                >
+                  <td>{{ name }}</td>
+                  <td>{{ value }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-alert>
         <v-container>
           <v-form v-model="dialog.valid" ref="form">
             <v-row dense class="mx-n3">
@@ -235,13 +250,16 @@
           </v-form>
           <v-row dense class="mx-n3">
             <v-col>
-              {{ $route.query.s ? 'A password is' : 'Server URL and password are' }} required to view this document.
+              {{ error ? 'A different server URL or password may' : ($route.query.s ? 'A password is' : 'Server URL and password are') }} required to view this document.
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn @click.stop="$router.go(-1), $router.push('/')">
+          Go Back
+        </v-btn>
         <v-btn
           color="primary"
           :disabled="!dialog.valid || loadingMeta"
@@ -291,7 +309,7 @@ export default class DocumentDetails extends Vue {
   page = 1
   numPages = 0
   pdfdata = undefined as undefined|Promise<any>
-  errors = []
+  error: false | any = false
   scale = 'page-width' as string | number
   loading = 0
   resize = true
@@ -356,7 +374,7 @@ export default class DocumentDetails extends Vue {
         cs.deleteDocument(identifier)
           .then(r => {
             if ('error' in r) {
-              alert(r)
+              alert(inspect(r))
             } else {
               this.$router.go(-1)
             }
@@ -449,7 +467,9 @@ export default class DocumentDetails extends Vue {
       cs.getMeta(this.id).then(r => {
         this.loadingMeta = false
         if ('error' in r) {
-          alert(r)
+          this.error = r
+          this.dialog.url = this.$route.query.s ? (Array.isArray(this.$route.query.s) ? this.$route.query.s[0] || '' : this.$route.query.s) : ''
+          this.dialog.open = true
         } else {
           this.dialog.open = false
           this.meta = r

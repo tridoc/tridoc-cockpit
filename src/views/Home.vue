@@ -189,7 +189,7 @@
                 </div>
               </template>
               <template v-slot:item.created="{ item }">
-                <time-ago :datetime="item.created">
+                <time-ago :datetime="item.created" style="white-space: nowrap;">
                   {{ item.created }}
                 </time-ago>
                 <!-- {{ calculateTimestamp(item.created) }} -->

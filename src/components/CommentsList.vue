@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <v-card outlined :loading="loading">
+    <v-card outlined :loading="loading" class="list">
       <v-card-text v-if="loading">
         Loading Comments
       </v-card-text>
@@ -14,7 +14,7 @@
         <v-divider v-if="i !== 0" />
         <v-card-text>
           <span style="white-space: pre-line;">{{ comment.text }}</span>
-          <code class="ml-2">{{ comment.created.replace('T', ' ').replace(/:\d{2}\.\d{1,3}/, ' ').replace('Z', 'UTC') }}</code>
+          <span class="timestamp"><time-ago :datetime="comment.created">{{ comment.created }}</time-ago></span>
         </v-card-text>
       </div>
     </v-card>
@@ -45,6 +45,15 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+.timestamp {
+  float: right;
+  font-size: small;
+  margin: 4px -4px -4px 4px;
+  opacity: 0.8;
+}
+</style>
+
 <script lang="ts">
 import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 import type Server from '@tridoc/frontend'
@@ -72,23 +81,6 @@ export default class CommentsList extends Vue {
           this.reload()
         })
     } else {
-    }
-  }
-
-  calculateDatestamp (isoString: string) {
-    const date = new Date(isoString)
-    const year = date.getFullYear().toString().padStart(4, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const now = new Date()
-    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-    switch (daysDiff) {
-      case 0:
-        return 'Today'
-      case 1:
-        return 'Yesterday'
-      default:
-        return `${year}-${month}-${day}`
     }
   }
 

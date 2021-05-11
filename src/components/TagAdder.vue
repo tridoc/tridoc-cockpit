@@ -28,7 +28,10 @@
             <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
             <span v-else>{{ tag.label }}</span>
             <v-divider class="mx-3" vertical v-if="tag.parameter" />
-            <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
+            <strong v-if="tag.parameter">
+              <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
+              <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
+            </strong>
           </v-chip>
         </v-chip-group>
         Avaliable:
@@ -201,23 +204,6 @@ export default class TagAdder extends Vue {
     if (cs && confirm(`Do you want to remove tag "${label}" from the Document?
 This Action cannot be undone`)) {
       cs.removeTag(this.id, label).then(this.reload)
-    }
-  }
-
-  calculateDatestamp (isoString: string) {
-    const date = new Date(isoString)
-    const year = date.getFullYear().toString().padStart(4, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const now = new Date()
-    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-    switch (daysDiff) {
-      case 0:
-        return 'Today'
-      case 1:
-        return 'Yesterday'
-      default:
-        return `${year}-${month}-${day}`
     }
   }
 

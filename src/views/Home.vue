@@ -183,7 +183,10 @@
                       <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
                       <span v-else>{{ tag.label }}</span>
                       <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
-                      <strong v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? tag.parameter.value : calculateDatestamp(tag.parameter.value) }}</strong>
+                      <strong v-if="tag.parameter">
+                        <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
+                        <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
+                      </strong>
                     </v-chip>
                   </v-chip-group>
                 </div>
@@ -192,7 +195,6 @@
                 <time-ago :datetime="item.created" style="white-space: nowrap;">
                   {{ item.created }}
                 </time-ago>
-                <!-- {{ calculateTimestamp(item.created) }} -->
               </template>
               <template v-slot:item.identifier="{ item }">
                 <pre>{{ item.identifier }}</pre>

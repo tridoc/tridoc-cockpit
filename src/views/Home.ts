@@ -117,42 +117,6 @@ export default class Home extends Vue {
     window.open(url + '/doc/' + identifier, '_blank');
   }
 
-  calculateTimestamp (isoString: string) {
-    const date = new Date(isoString)
-    const year = date.getFullYear().toString().padStart(4, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    const now = new Date()
-    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-    switch (daysDiff) {
-      case 0:
-        return `Today ${hours}:${minutes}`
-      case 1:
-        return `Yesterday ${hours}:${minutes}`
-      default:
-        return `${year}-${month}-${day} ${hours}:${minutes}`
-    }
-  }
-
-  calculateDatestamp (isoString: string) {
-    const date = new Date(isoString)
-    const year = date.getFullYear().toString().padStart(4, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const now = new Date()
-    const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-    switch (daysDiff) {
-      case 0:
-        return 'Today'
-      case 1:
-        return 'Yesterday'
-      default:
-        return `${year}-${month}-${day}`
-    }
-  }
-
   getDocuments () {
     this.search.text = this.search.text || '' // This fixes it sometimes being null, which messes up results
     const cs = this.$store.getters.server.server as Server

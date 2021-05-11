@@ -71,9 +71,56 @@
                   :rules="valRules"
                   label="Value"
                   required
-                  :disabled="this.type === 'simple'"
+                  autocomplete="off"
+                  v-if="this.type !== 'date'"
+                  :disabled="this.type !== 'decimal'"
                   :messages="this.type === 'simple' ? 'Value will be ignored for simple tags' : ''"
                 />
+                <v-menu
+                  v-else
+                  ref="dateMenu"
+                  v-model="dateMenu"
+                  :close-on-content-click="false"
+                  :return-value.sync="value"
+                  transition="scale-transition"
+                  offset-y bottom
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="value"
+                      @change="valDate = value || ''"
+                      label="Value"
+                      outlined
+                      :rules="dateRules"
+                      v-bind="attrs"
+                      v-on="on"
+                      required
+                      autocomplete="off"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="valDate"
+                    no-title
+                    scrollable
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="dateMenu = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.dateMenu.save(valDate)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
               </v-col>
             </v-row>
             <v-row>
@@ -123,7 +170,9 @@ export default class TagAdder extends Vue {
   label = ''
   type: 'simple' | 'date' | 'decimal' = 'simple'
   value = ''
+  valDate = ''
   fixed = false
+  dateMenu = false
 
   @Watch('label')
   change (l: string) {
@@ -152,8 +201,11 @@ export default class TagAdder extends Vue {
 
   valRules: FormRule[] = [
     // v => (this.getType() === 'simple' && !v) || this.getType() !== 'simple' || 'Value will be ignored',
-    v => (this.getType() === 'decimal' && !isNaN(+v)) || this.getType() !== 'decimal' || 'Must be a number',
-    v => (this.getType() === 'date' && (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime()))) || this.getType() !== 'date' || 'Must be a date of format YYYY-MM-DD',
+    v => (this.getType() === 'decimal' && !isNaN(+v)) || this.getType() !== 'decimal' || 'Must be a number'
+  ]
+
+  dateRules: FormRule[] = [
+    v => !v || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime())) || 'Must be a date of format YYYY-MM-DD',
   ]
 
   clear () {

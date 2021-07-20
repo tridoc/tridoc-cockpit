@@ -282,7 +282,7 @@ export default class Home extends Vue {
   reload () {
     this.reset()
     this.getDocuments()
-    const cs = this.$store.getters.server.server as Server
+    const cs = this.$store.getters.server?.server as Server
     if (cs) {
       cs.getTags()
         .then((r) => {

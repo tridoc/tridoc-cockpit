@@ -133,6 +133,19 @@
 
   <v-main app>
     <v-container class="sfill-height" fluid @drag.stop.prevent @dragstart.stop.prevent @dragend.stop.prevent @dragover.stop.prevent @dragenter.stop.prevent @dragleave.stop.prevent @drop.stop.prevent="addFile">
+      <v-row v-if="welcome" align="start">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-card-title>Welcome</v-card-title>
+            <v-card-text>
+              It looks like there’s no server configured. If this is your first time using Tridoc, <a class="text-decoration-underline" @click.stop="helpOpen = true">have a look at “Help & About”</a>.
+            </v-card-text>
+            <v-card-text class="pt-0">
+              This message will disappear as soon as you <a class="text-decoration-underline" @click.stop="settingsOpen = true">connect to a server in the settings</a>.
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
       <v-row align="start">
         <v-col class="py-0" cols="12">
           <error-dialog :error="error" :close="() => error = null" />

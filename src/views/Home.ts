@@ -33,6 +33,7 @@ interface TFile {
 export default class Home extends Vue {
   @Prop() page!: number;
 
+  welcome = false;
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
   helpOpen = false;
@@ -70,7 +71,7 @@ export default class Home extends Vue {
     { text: '', value: 'actions', width: 1 },
   ];
 
-  loading = true
+  loading = false
   options = {
     page: this.page ?? 1,
     itemsPerPage: 10,
@@ -119,8 +120,9 @@ export default class Home extends Vue {
 
   getDocuments () {
     this.search.text = this.search.text || '' // This fixes it sometimes being null, which messes up results
-    const cs = this.$store.getters.server.server as Server
+    const cs = this.$store.getters.server?.server as Server
     if (cs) {
+      this.welcome = false
       this.loading = true
       cs.countDocuments(this.search.text, this.search.tags, this.search.nottags)
         .then((r) => {
@@ -167,11 +169,7 @@ export default class Home extends Vue {
           }
         })
     } else {
-      this.error = {
-        title: 'No server configured',
-        message: 'Please add one via the settings.\nIf you’re new here, have a look at the help.',
-        color: 'warning darken-1',
-      }
+      this.welcome = true
       this.loading = false
     }
   }

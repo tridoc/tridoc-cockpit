@@ -40,7 +40,7 @@
       </p>
       <p>
         The search bar searches in document texts and titles.
-        For this purpose, the server tries to do OCR (character recogintion) on all documents which don’t already contain text metadata.
+        For this purpose, the server tries to do OCR (character recognition) on all documents which don’t already contain text metadata.
       </p>
       <h3>Comments</h3>
       <p>
@@ -58,7 +58,7 @@
       </p>
       <p>
         There also exists <a href="https://github.com/tridoc/tridoc-folder">a native program</a> for easy upload from a folder on your computer.
-        It doesn’t, however, provide any graphical user interface.
+        It doesn’t, however, provide any graphical user interface (yet).
       </p>
       <p>
         If you’ve been using Evernote before, you can import your notebooks’ PDFs to tridoc with our <a href="https://github.com/tridoc/tridoc-enex-importer">Enex importer</a>.

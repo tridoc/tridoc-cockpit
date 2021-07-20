@@ -8,8 +8,6 @@ import TagFilter from '@/components/TagFilter.vue'
 
 import '@/global-types.ts'
 
-import { inspect } from 'util'
-
 interface Tag {
   'icon': string;
   'label': string;

@@ -27,7 +27,7 @@ jobs:
           node-version: '14'
           cache: 'npm'
       - run: npm install
-      - run: npm build
+      - run: npm run build
       - run: cp ./dist/index.html ./dist/404.html
       - name: GitHub Pages
         # You may pin to the exact commit or the version.
@@ -60,3 +60,5 @@ jobs:
           # dry_run: # optional, default is false
           # Enable verbose output
           # verbose: # optional, default is false
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

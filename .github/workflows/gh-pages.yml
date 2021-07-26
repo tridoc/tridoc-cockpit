@@ -27,7 +27,7 @@ jobs:
           node-version: '14'
           cache: 'npm'
       - run: npm install
-      - run: npm build
+      - run: npm run build
       - run: cp ./dist/index.html ./dist/404.html
       - name: GitHub Pages
         # You may pin to the exact commit or the version.

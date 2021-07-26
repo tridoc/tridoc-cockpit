@@ -102,6 +102,20 @@
       </template>
       Refresh
     </v-tooltip>
+    <v-tooltip bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon disabled
+          v-bind="attrs"
+          v-on="on"
+          @click="listView = !listView"
+        >
+          <v-icon v-if="listView">mdi-view-module</v-icon>
+          <v-icon v-else>mdi-view-list</v-icon>
+        </v-btn>
+      </template>
+      {{ listView ? 'Grid View' : 'List View' }}
+    </v-tooltip>
     <v-spacer/>
     <v-tooltip bottom open-delay="500">
       <template v-slot:activator="{ on, attrs }">
@@ -153,97 +167,11 @@
       </v-row>
       <v-row class="mt-3" align="start">
         <v-col cols="12">
-          <v-card outlined>
-            <!--<document-details
-              v-for="item in docs"
-              :key="item.identifier"
-              :docMeta="item"
-              @update:docMeta="updateDoc"
-              :error="error"
-              @change="reload"
-              :open="open === item.identifier"
-              @update:open="open = ''"
-            />-->
-            <v-data-table
-              disable-sort
-              disable-filtering
-              :headers="headers"
-              :items="docs"
-              :options="options"
-              :server-items-length="count"
-              :loading="loading"
-              item-key="identifier"
-              no-data-text="No documents found"
-              hide-default-footer
-              @click:row="i => openDocumentView(i.identifier)"
-            >
-              <template v-slot:item.title="{ item }">
-                {{ item.title }}
-                <i v-if="!item.title">Untitled Document</i>
-              </template>
-              <template v-slot:item.tags="{ item }">
-                <div :style="$vuetify.breakpoint.mdAndUp ? 'max-width:40vw;' : 'max-width:80vw;'">
-                  <v-chip-group
-                    :show-arrows="$vuetify.breakpoint.mdAndUp"
-                    :dcolumn="!$vuetify.breakpoint.mdAndUp"
-                    column
-                  >
-                    <v-chip
-                      v-for="tag in item.tags"
-                      :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
-                      label
-                    >
-                      <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-                      <span v-else>{{ tag.label }}</span>
-                      <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
-                      <strong v-if="tag.parameter">
-                        <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
-                        <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
-                      </strong>
-                    </v-chip>
-                  </v-chip-group>
-                </div>
-              </template>
-              <template v-slot:item.created="{ item }">
-                <time-ago :datetime="item.created" style="white-space: nowrap;">
-                  {{ item.created }}
-                </time-ago>
-              </template>
-              <template v-slot:item.identifier="{ item }">
-                <pre>{{ item.identifier }}</pre>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <div class="d-flex ml-n7 mr-n3">
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        class="ma-1"
-                        outlined text small
-                        color="primary darken-1"
-                        @click.stop="openDocument(item.identifier)"
-                        link
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon small>mdi-open-in-new</v-icon>
-                      </v-btn>
-                    </template>
-                    <small>Open document directly<br>Opens in new Tab</small>
-                  </v-tooltip>
-                  <v-btn
-                    class="ma-1"
-                    small
-                    color="primary"
-                    :href="`./doc/${item.identifier}?s=${$store.getters.server.url}`"
-                    @click.stop="/**/"
-                  >
-                    <v-icon small :left="!$vuetify.breakpoint.sm">mdi-file-eye-outline</v-icon>
-                    <span :hidden="$vuetify.breakpoint.sm">Open</span>
-                  </v-btn>
-                </div>
-              </template>
-            </v-data-table>
-          </v-card>
+          <document-list
+            :docs="docs"
+            :list="listView"
+            :loading="loading"
+          />
         </v-col>
       </v-row>
       <v-row justify="center">

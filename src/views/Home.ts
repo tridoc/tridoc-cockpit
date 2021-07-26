@@ -5,6 +5,7 @@ import HelpDrawer from '@/components/Help.vue'
 import ErrorDialog from '@/components/Error.vue'
 import TagCreator from '@/components/TagCreator.vue'
 import TagFilter from '@/components/TagFilter.vue'
+import DocumentList from '@/components/DocumentList.vue'
 
 import '@/global-types.ts'
 
@@ -26,6 +27,7 @@ interface TFile {
     ErrorDialog,
     TagCreator,
     TagFilter,
+    DocumentList,
   }
 })
 export default class Home extends Vue {
@@ -35,6 +37,7 @@ export default class Home extends Vue {
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
   helpOpen = false;
+  listView = true;
 
   search: Search = {
     text: '',
@@ -109,13 +112,6 @@ export default class Home extends Vue {
     this.$router.push({ name: 'doc', params: { id: identifier }, query: { s: this.$store.getters.server.url } })
   }
 
-  openDocument (identifier: string) {
-    const url =
-      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
-        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url
-    window.open(url + '/doc/' + identifier, '_blank');
-  }
-
   getDocuments () {
     this.search.text = this.search.text || '' // This fixes it sometimes being null, which messes up results
     const cs = this.$store.getters.server?.server as Server
@@ -154,15 +150,25 @@ export default class Home extends Vue {
               return { identifier, title, created, tags: [{ label: '..' }] }
             })
             this.docs.forEach(doc => {
-              cs.getTags(doc.identifier)
+              const tagsP = cs.getTags(doc.identifier)
                 .then(r => {
                   if ('error' in r) {
                     this.error = { title: r.error, ...r }
                   } else {
                     doc.tags = r
                   }
-                  this.loading = false
                 })
+              const commentsP = cs.getComments(doc.identifier)
+                .then(r => {
+                  if ('error' in r) {
+                    this.error = { title: r.error, ...r }
+                  } else {
+                    doc.comments = r
+                  }
+                })
+              Promise.allSettled([tagsP, commentsP]).then(() => {
+                this.loading = false
+              })
             });
           }
         })

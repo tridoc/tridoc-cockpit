@@ -125,7 +125,6 @@ export default class DocumentsList extends Vue {
         Vue.set(this.downloading, identifier, false)
         window.open(URL.createObjectURL(b))
       })
-    // window.open(url + '/doc/' + identifier, '_blank');
   }
 }
 </script>

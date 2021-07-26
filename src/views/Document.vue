@@ -19,19 +19,20 @@
         <code v-else>{{ id }}</code>
       </v-toolbar-title>
       <v-spacer/>
-      <v-tooltip bottom open-delay="500" v-if="meta">
+      <v-tooltip bottom open-delay="500" v-if="$vuetify.breakpoint.smAndUp">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            icon
             v-bind="attrs"
             v-on="on"
-            icon
-            dark
-            @click="openDocument(id)"
+            @click.prevent.stop="download(id)"
+            :loading="downloading"
+            :disabled="downloading"
           >
-            <v-icon>mdi-open-in-new</v-icon>
+            <v-icon>mdi-download</v-icon>
           </v-btn>
         </template>
-        Open PDF in New Tab
+        Download
       </v-tooltip>
       <v-tooltip bottom open-delay="500" v-if="meta">
         <template v-slot:activator="{ on, attrs }">
@@ -316,6 +317,7 @@ export default class DocumentDetails extends Vue {
   scale = 'page-width' as string | number
   loading = 0
   resize = true
+  downloading = false
 
   dialog = {
     open: false,
@@ -346,11 +348,20 @@ export default class DocumentDetails extends Vue {
     }
   }
 
-  openDocument (identifier: string) {
-    const url =
-      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
-        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url
-    window.open(url + '/doc/' + identifier, '_blank');
+  download (identifier: string) {
+    this.downloading = true
+    const url = ((this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://')) ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + identifier
+    const options = {
+      headers: {
+        Authorization: this.$store.getters.server.server.headers.get('Authorization')
+      }
+    }
+    fetch(url, options)
+      .then(r => r.blob())
+      .then(b => {
+        this.downloading = false
+        window.open(URL.createObjectURL(b))
+      })
   }
 
   deleteDocument (identifier: string) {

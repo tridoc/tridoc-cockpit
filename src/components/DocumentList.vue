@@ -119,11 +119,15 @@ export default class DocumentsList extends Vue {
         Authorization: this.$store.getters.server.server.headers.get('Authorization')
       }
     }
+
     fetch(url, options)
       .then(r => r.blob())
       .then(b => {
         Vue.set(this.downloading, identifier, false)
-        window.open(URL.createObjectURL(b))
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(b)
+        link.download = this.docs.find(d => d.identifier === identifier)?.title || identifier
+        link.click();
       })
   }
 }

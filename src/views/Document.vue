@@ -25,7 +25,7 @@
             icon
             v-bind="attrs"
             v-on="on"
-            @click.prevent.stop="download(id)"
+            @click.prevent.stop="download"
             :loading="downloading"
             :disabled="downloading"
           >
@@ -348,9 +348,10 @@ export default class DocumentDetails extends Vue {
     }
   }
 
-  download (identifier: string) {
+  download () {
+    if (!this.meta) return;
     this.downloading = true
-    const url = ((this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://')) ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + identifier
+    const url = ((this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://')) ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + this.id
     const options = {
       headers: {
         Authorization: this.$store.getters.server.server.headers.get('Authorization')
@@ -360,7 +361,10 @@ export default class DocumentDetails extends Vue {
       .then(r => r.blob())
       .then(b => {
         this.downloading = false
-        window.open(URL.createObjectURL(b))
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(b)
+        link.download = this.meta?.title || this.id
+        link.click();
       })
   }
 

@@ -56,6 +56,8 @@
                     v-bind="attrs"
                     v-on="on"
                     @click.prevent.stop="download(doc.identifier)"
+                    :loading="downloading[doc.identifier]"
+                    :disabled="downloading[doc.identifier]"
                   >
                     <v-icon>mdi-download</v-icon>
                   </v-btn>
@@ -107,11 +109,23 @@ export default class DocumentsList extends Vue {
   @Prop() list!: boolean;
   @Prop() loading!: boolean;
 
+  downloading: { [id: string]: boolean } = {}
+
   download (identifier: string) {
-    const url =
-      (this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://'))
-        ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url
-    window.open(url + '/doc/' + identifier, '_blank');
+    Vue.set(this.downloading, identifier, true)
+    const url = ((this.$store.getters.server.url.startsWith('https://') || this.$store.getters.server.url.startsWith('http://')) ? this.$store.getters.server.url : 'https://' + this.$store.getters.server.url) + '/doc/' + identifier
+    const options = {
+      headers: {
+        Authorization: this.$store.getters.server.server.headers.get('Authorization')
+      }
+    }
+    fetch(url, options)
+      .then(r => r.blob())
+      .then(b => {
+        Vue.set(this.downloading, identifier, false)
+        window.open(URL.createObjectURL(b))
+      })
+    // window.open(url + '/doc/' + identifier, '_blank');
   }
 }
 </script>

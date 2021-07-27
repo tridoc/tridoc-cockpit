@@ -143,6 +143,14 @@
       </template>
       Settings
     </v-tooltip>
+
+    <v-progress-linear
+      :active="loading"
+      :indeterminate="loading"
+      absolute
+      bottom
+      color="white"
+    />
   </v-app-bar>
 
   <v-main app>

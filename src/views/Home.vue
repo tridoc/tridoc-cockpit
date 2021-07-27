@@ -105,7 +105,7 @@
     <v-tooltip bottom open-delay="500">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          icon disabled
+          icon
           v-bind="attrs"
           v-on="on"
           @click="listView = !listView"

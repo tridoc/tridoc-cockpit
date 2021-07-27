@@ -91,19 +91,25 @@
       </template>
     </v-list>
   </v-card>
-  <div v-else>
-    ...
+  <div v-else class="grid">
+    <v-card v-for="doc in docs" :key="doc.identifier">
+      <thumbnail :id="doc.identifier" />
+      <v-divider/>
+      Doc
+    </v-card>
   </div>
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import Thumbnail from '@/components/Thumbnail.vue'
 
 import '@/global-types.ts'
 
 @Component({
   components: {
+    Thumbnail,
   }
 })
 export default class DocumentsList extends Vue {
@@ -136,6 +142,7 @@ export default class DocumentsList extends Vue {
 </script>
 
 <style scoped lang="scss">
+// LIST
 .row.no-gutters {
   flex-wrap: nowrap;
   max-width: 100%;
@@ -180,5 +187,13 @@ export default class DocumentsList extends Vue {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+// GRID
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 1rem;
 }
 </style>

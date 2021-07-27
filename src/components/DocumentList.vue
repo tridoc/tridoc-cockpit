@@ -148,7 +148,7 @@
           </div>
         </div>
         <v-spacer/>
-        <v-tooltip bottom open-delay="500" class="cv">
+        <v-tooltip bottom open-delay="500" class="cv" v-if="$vuetify.breakpoint.smAndUp">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               icon
@@ -262,9 +262,17 @@ export default class DocumentsList extends Vue {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   grid-gap: 1rem;
   background: none;
+
+  .no-expand {
+    min-width: 0;
+  }
+}
+
+.v-card__actions {
+  height: 52px;
 }
 
 .flex-auto {

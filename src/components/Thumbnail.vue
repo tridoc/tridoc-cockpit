@@ -1,7 +1,7 @@
 <template>
   <v-sheet
     :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-2'"
-    :style="$store.state.viewSettings.dense ? 'height : 4rem;' : 'height: 10rem;'"
+    :style="$store.state.viewSettings.dense ? 'height : 40px;' : 'height: 120px;'"
     class="thumb"
   >
     <v-row
@@ -15,7 +15,8 @@
         color="grey"
       />
     </v-row>
-    <img :src="url" v-else class="elevation-4">
+    <img v-else-if="url" :src="url" class="elevation-4">
+    <v-sheet class="noimg" elevation="4" tile :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'"/>
   </v-sheet>
 </template>
 
@@ -26,7 +27,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 export default class Thumbnail extends Vue {
   @Prop() id!: string
 
-  url = './thumb.png'
+  url = ''
   loading = true
 
   mounted () {
@@ -50,13 +51,20 @@ export default class Thumbnail extends Vue {
 </script>
 
 <style lang="scss" scoped>
+$margin: 8px;
+
 .thumb {
   overflow: hidden;
 
-  img {
+  img,
+  .noimg {
     display: block;
-    margin: 1rem;
-    width: calc(100% - 2rem)
+    margin: $margin;
+    width: calc(100% - calc(2 * #{$margin}));
+  }
+
+  .noimg {
+    height: calc(100% - #{$margin});
   }
 }
 </style>

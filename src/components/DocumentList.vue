@@ -278,6 +278,10 @@ export default class DocumentsList extends Vue {
   }
 }
 
+.v-list-item {
+  display: block;
+}
+
 .v-card__actions {
   height: 52px;
 }

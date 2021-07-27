@@ -1,5 +1,9 @@
 <template>
-  <div class="thumb">
+  <v-sheet
+    :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-2'"
+    :style="$store.state.viewSettings.dense ? 'height : 4rem;' : 'height: 10rem;'"
+    class="thumb"
+  >
     <v-row
       v-if="loading"
       class="fill-height ma-0"
@@ -12,7 +16,7 @@
       />
     </v-row>
     <img :src="url" v-else class="elevation-4">
-  </div>
+  </v-sheet>
 </template>
 
 <script lang="ts">
@@ -47,14 +51,12 @@ export default class Thumbnail extends Vue {
 
 <style lang="scss" scoped>
 .thumb {
-  height: 150px;
   overflow: hidden;
 
   img {
     display: block;
     margin: 1rem;
     width: calc(100% - 2rem)
-
   }
 }
 </style>

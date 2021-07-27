@@ -39,7 +39,7 @@
       </v-row>
       <v-row>
         <v-col class="pt-4">
-          <v-label disabled for="dmswitch">
+          <v-label for="dmswitch">
             Dense
           </v-label>
         </v-col>
@@ -48,7 +48,7 @@
             id="dmswitch"
             v-model="viewSettingsDense"
             class="my-0 ml-2 mr-n3"
-            inset hide-details disabled
+            inset hide-details
           />
         </v-col>
       </v-row>

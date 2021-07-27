@@ -91,13 +91,81 @@
       </template>
     </v-list>
   </v-card>
-  <div v-else class="grid">
-    <v-card v-for="doc in docs" :key="doc.identifier">
+  <v-list v-else class="grid py-0">
+    <v-card
+      v-for="doc in docs"
+      :key="doc.identifier"
+      outlined
+      :to="`./doc/${doc.identifier}?s=${$store.getters.server.url}`"
+      class="pa-0 v-list-item v-list-item--link"
+    >
       <thumbnail :id="doc.identifier" />
       <v-divider/>
-      Doc
+      <v-card-title class="text-truncate">
+        {{ doc.title }}
+        <i v-if="!doc.title">Untitled Document</i>
+      </v-card-title>
+      <v-card-subtitle>
+        Created
+        <time-ago :datetime="doc.created">
+          {{ doc.created }}
+        </time-ago>
+      </v-card-subtitle>
+      <v-divider/>
+      <v-card-actions>
+        <div class="cv flex-auto">
+          <v-tooltip bottom open-delay="500" v-if="doc.comments && doc.comments.length">
+            <template v-slot:activator="{ on, attrs }">
+              <span v-bind="attrs" v-on="on" class="mr-2 text--disabled">
+                {{ doc.comments.length }}
+                <v-icon disabled>mdi-comment-outline</v-icon>
+              </span>
+            </template>
+            {{ doc.comments.length }} Comments
+          </v-tooltip>
+        </div>
+        <div v-if="doc.tags.length" cols="auto" class="mr-2 my-n2 no-expand cv">
+          <div class="wrapper">
+            <v-progress-circular
+              v-if="doc.tags[0].label === '..'"
+              indeterminate
+              :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-2'"
+            />
+            <v-chip
+              v-else
+              class="mr-1"
+              v-for="tag in doc.tags"
+              :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
+              label
+            >
+              <span>{{ tag.label }}</span>
+              <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
+              <strong v-if="tag.parameter">
+                <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
+                <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
+              </strong>
+            </v-chip>
+          </div>
+        </div>
+        <v-spacer/>
+        <v-tooltip bottom open-delay="500" class="cv">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click.prevent.stop="download(doc.identifier)"
+              :loading="downloading[doc.identifier]"
+              :disabled="downloading[doc.identifier]"
+            >
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </template>
+          Download
+        </v-tooltip>
+      </v-card-actions>
     </v-card>
-  </div>
+  </v-list>
 </div>
 </template>
 
@@ -181,6 +249,7 @@ export default class DocumentsList extends Vue {
 
 .text-truncate {
   max-width: 100%;
+  display: block;
 }
 
 .cv {
@@ -195,5 +264,10 @@ export default class DocumentsList extends Vue {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-gap: 1rem;
+  background: none;
+}
+
+.flex-auto {
+  flex: 0 0 auto;
 }
 </style>

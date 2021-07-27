@@ -19,7 +19,7 @@
         <code v-else>{{ id }}</code>
       </v-toolbar-title>
       <v-spacer/>
-      <v-tooltip bottom open-delay="500" v-if="$vuetify.breakpoint.smAndUp">
+      <v-tooltip bottom open-delay="500">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             icon

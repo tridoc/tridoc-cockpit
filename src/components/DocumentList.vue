@@ -111,8 +111,7 @@
         {{ doc.title }}
         <i v-if="!doc.title">Untitled Document</i>
       </v-card-title>
-      <v-card-subtitle>
-        Created
+      <v-card-subtitle class="text-truncate">
         <time-ago :datetime="doc.created">
           {{ doc.created }}
         </time-ago>
@@ -269,7 +268,7 @@ export default class DocumentsList extends Vue {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   grid-gap: 1rem;
   background: none;
 

@@ -16,7 +16,27 @@
       />
     </v-row>
     <img v-else-if="url" :src="url" class="elevation-4">
-    <v-sheet class="noimg" elevation="4" tile :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'"/>
+    <v-tooltip v-else bottom open-delay="500">
+      <template v-slot:activator="{ on, attrs }">
+        <v-sheet
+          class="noimg"
+          elevation="4"
+          tile
+          v-on="on"
+          v-bind="attrs"
+          :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'"
+        >
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+          >
+            <v-icon color="grey">mdi-image-broken-variant</v-icon>
+          </v-row>
+        </v-sheet>
+      </template>
+      Failed to load thumbnail
+    </v-tooltip>
   </v-sheet>
 </template>
 

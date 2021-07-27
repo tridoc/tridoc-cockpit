@@ -39,13 +39,28 @@
       </v-row>
       <v-row>
         <v-col class="pt-4">
-          <v-label for="dmswitch">
+          <v-label for="gridswitch">
+            Use Grid View
+          </v-label>
+        </v-col>
+        <v-col cols="auto">
+          <v-switch
+            id="gridswitch"
+            v-model="viewSettingsGrid"
+            class="my-0 ml-2 mr-n3"
+            inset hide-details
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="pt-4">
+          <v-label for="denseswitch">
             Dense
           </v-label>
         </v-col>
         <v-col cols="auto">
           <v-switch
-            id="dmswitch"
+            id="denseswitch"
             v-model="viewSettingsDense"
             class="my-0 ml-2 mr-n3"
             inset hide-details
@@ -225,6 +240,14 @@ export default class SettingsDrawer extends Vue {
 
   set viewSettingsDark (v: boolean) {
     this.$store.commit('viewSettings', { darkMode: v })
+  }
+
+  get viewSettingsGrid () {
+    return this.$store.state.viewSettings.grid
+  }
+
+  set viewSettingsGrid (v: boolean) {
+    this.$store.commit('viewSettings', { grid: v })
   }
 
   get viewSettingsDense () {

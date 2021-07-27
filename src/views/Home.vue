@@ -102,20 +102,6 @@
       </template>
       Refresh
     </v-tooltip>
-    <v-tooltip bottom open-delay="500">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          icon
-          v-bind="attrs"
-          v-on="on"
-          @click="listView = !listView"
-        >
-          <v-icon v-if="listView">mdi-view-module</v-icon>
-          <v-icon v-else>mdi-view-list</v-icon>
-        </v-btn>
-      </template>
-      {{ listView ? 'Grid View' : 'List View' }}
-    </v-tooltip>
     <v-spacer/>
     <v-tooltip bottom open-delay="500">
       <template v-slot:activator="{ on, attrs }">
@@ -177,7 +163,6 @@
         <v-col cols="12">
           <document-list
             :docs="docs"
-            :list="listView"
             :loading="loading"
           />
         </v-col>

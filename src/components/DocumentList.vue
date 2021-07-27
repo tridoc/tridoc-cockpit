@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-card v-if="list" outlined>
+  <v-card v-if="!$store.state.viewSettings.grid" outlined>
     <v-list class="py-0">
       <template
         v-for="(doc, index) in docs"
@@ -20,21 +20,27 @@
             <v-col v-if="doc.tags.length" cols="auto" class="mr-2 no-expand cv">
               <div class="py-2 wrapper">
                 <v-spacer/>
+                <v-progress-circular
+                  v-if="doc.tags[0].label === '..'"
+                  indeterminate
+                  :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-2'"
+                />
                 <v-chip
+                  v-else
                   class="mr-1"
                   v-for="tag in doc.tags"
                   :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
                   label
+                  :small="$store.state.viewSettings.dense"
                 >
-                  <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-                  <span v-else>{{ tag.label }}</span>
+                  <span>{{ tag.label }}</span>
                   <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
                   <strong v-if="tag.parameter">
                     <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
                     <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
                   </strong>
                 </v-chip>
-              </div>
+                  </div>
             </v-col>
             <v-col cols="auto" class="ma-2 cv">
               <div>
@@ -124,7 +130,7 @@
             {{ doc.comments.length }} Comments
           </v-tooltip>
         </div>
-        <div v-if="doc.tags.length" cols="auto" class="mr-2 my-n2 no-expand cv">
+        <div v-if="doc.tags.length" cols="auto" class="my-n2 no-expand cv">
           <div class="wrapper">
             <v-progress-circular
               v-if="doc.tags[0].label === '..'"
@@ -137,6 +143,7 @@
               v-for="tag in doc.tags"
               :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
               label
+              :small="$store.state.viewSettings.dense"
             >
               <span>{{ tag.label }}</span>
               <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
@@ -148,7 +155,7 @@
           </div>
         </div>
         <v-spacer/>
-        <v-tooltip bottom open-delay="500" class="cv" v-if="$vuetify.breakpoint.smAndUp">
+        <v-tooltip bottom open-delay="500" class="cv ml-2" v-if="$vuetify.breakpoint.smAndUp">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               icon

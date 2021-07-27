@@ -35,6 +35,7 @@ export default new Vuex.Store({
     viewSettings: {
       darkMode: false,
       dense: false,
+      grid: false,
     }
   },
   getters: {
@@ -105,9 +106,10 @@ export default new Vuex.Store({
       state.servers.splice(index, 1)
       storeServers(state)
     },
-    viewSettings (state, { darkMode, dense }: { darkMode?: boolean; dense?: boolean }) {
+    viewSettings (state, { darkMode, dense, grid }: { darkMode?: boolean; dense?: boolean; grid?: boolean }) {
       if (darkMode !== undefined) state.viewSettings.darkMode = darkMode
       if (dense !== undefined) state.viewSettings.dense = dense
+      if (grid !== undefined) state.viewSettings.grid = grid
       localStorage.setItem('viewSettings', JSON.stringify(state.viewSettings))
     },
   },

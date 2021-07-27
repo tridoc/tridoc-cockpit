@@ -37,7 +37,6 @@ export default class Home extends Vue {
   error: { message: string; title?: string; color?: string } | null = null
   settingsOpen = false;
   helpOpen = false;
-  listView = true;
 
   search: Search = {
     text: '',

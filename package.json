@@ -26,6 +26,12 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@types/serviceworker-webpack-plugin": "^1.0.3",
+    "@types/workbox-expiration": "^4.3.1",
+    "@types/workbox-precaching": "^4.3.1",
+    "@types/workbox-routing": "^4.3.1",
+    "@types/workbox-strategies": "^4.3.1",
+    "@types/workbox-webpack-plugin": "^5.1.8",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "@vue/cli-plugin-babel": "~4.2.0",
@@ -44,10 +50,12 @@
     "eslint-plugin-vue": "^6.1.2",
     "sass": "^1.32.4",
     "sass-loader": "^8.0.2",
+    "serviceworker-webpack-plugin": "^1.0.1",
     "typescript": "^3.8.3",
     "vue-cli-plugin-vuetify": "^2.0.9",
     "vue-template-compiler": "^2.6.12",
-    "vuetify-loader": "^1.6.0"
+    "vuetify-loader": "^1.6.0",
+    "workbox-webpack-plugin": "^6.1.5"
   },
   "_id": "tridoc-cockpit@2.0.0",
   "bugs": {

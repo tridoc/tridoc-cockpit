@@ -1,3 +1,5 @@
+const {InjectManifest} = require('workbox-webpack-plugin');
+
 module.exports = {
   transpileDependencies: [
     'vuetify'
@@ -6,6 +8,14 @@ module.exports = {
     ? '/tridoc-cockpit/'
     : '/',
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: [
+      new InjectManifest({
+        swSrc: './src/sw.ts',
+        additionalManifestEntries: [
+          { url: '/js/chunk-vendors.js', revision: '0' }
+        ]
+      })
+    ]  
   }
 }

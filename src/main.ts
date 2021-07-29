@@ -6,6 +6,13 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+if ('serviceWorker' in navigator) {
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+
 new Vue({
   vuetify,
   router,

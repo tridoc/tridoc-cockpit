@@ -3,5 +3,5 @@
   "compilerOptions": {
       "lib": ["WebWorker", "ES2015"]
   },
-  "files": ["service-worker.js"]
+  "files": ["sw.ts"]
 }

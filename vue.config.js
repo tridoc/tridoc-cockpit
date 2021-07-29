@@ -7,5 +7,16 @@ module.exports = {
     : '/',
   configureWebpack: {
     devtool: 'source-map'
-  }
+  },
+  pwa: {
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: './src/service-worker.ts'
+    },
+    name: 'Tridoc Cockpit',
+    themeColor: '#00887b',
+    manifestOptions: {
+      short_name: 'Tridoc',
+    },
+  },
 }

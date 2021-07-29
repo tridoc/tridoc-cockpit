@@ -1,19 +1,21 @@
 const {InjectManifest} = require('workbox-webpack-plugin');
 
+const PATH = process.env.NODE_ENV === 'production'
+    ? '/tridoc-cockpit/'
+    : '/'
+
 module.exports = {
   transpileDependencies: [
     'vuetify'
   ],
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/tridoc-cockpit/'
-    : '/',
+  publicPath: PATH,
   configureWebpack: {
     devtool: 'source-map',
     plugins: [
       new InjectManifest({
         swSrc: './src/serviceworker/sw.ts',
         additionalManifestEntries: [
-          { url: '/js/chunk-vendors.js', revision: '0' }
+          { url: PATH + 'js/chunk-vendors.js', revision: '0' }
         ]
       })
     ]  

@@ -24,8 +24,10 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
-    ]
+      "scripthost",
+      "WebWorker"
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",

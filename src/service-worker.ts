@@ -1,34 +1,24 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="WebWorker" />
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
-const VERSION = '1:'
-const CACHE_DIST = 'cache-update-and-refresh'
-const CACHE_DATA = 'cache-update-and-refresh'
+// eslint-disable-next-line no-console
+console.log('???')
 
-sw.addEventListener('install', event => {
-  console.log('The service worker is being installed.')
-  event.waitUntil(caches.open(CACHE_DIST).then(cache => {
-    cache.addAll([
-      './index.html',
-    ])
-  }))
-})
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate } from 'workbox-strategies';
+import { Plugin } from 'workbox-expiration';
+import { precacheAndRoute } from 'workbox-precaching';
 
-sw.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => {
-      // Remove caches whose name is no longer valid
-      return Promise.all(
-        keys
-          .filter(function (key) {
-            return key.indexOf(VERSION) !== 0
-          })
-          .map(function (key) {
-            return caches.delete(key)
-          })
-      )
+precacheAndRoute((sw as any).serviceWorkerOption.assets);
+
+registerRoute(
+    /\.(?:png|gif|jpg|jpeg|svg)$/,
+    new StaleWhileRevalidate({
+        cacheName: 'images',
+        plugins: [
+            new Plugin({
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+            }),
+        ],
     })
-  )
-})
+);

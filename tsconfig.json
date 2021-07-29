@@ -25,7 +25,6 @@
       "dom",
       "dom.iterable",
       "scripthost",
-      "webworker",
     ]
   },
   "include": [
@@ -36,6 +35,7 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./src/serviceworker"
   ]
 }

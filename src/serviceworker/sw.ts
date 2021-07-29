@@ -1,8 +1,8 @@
+// Default type of `self` is `WorkerGlobalScope & typeof globalThis`
+// https://github.com/microsoft/TypeScript/issues/14877
 import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { CacheFirst } from 'workbox-strategies';
 
-console.log('Hyaa')
+declare const self: ServiceWorkerGlobalScope;
 
 // Use the imported Workbox libraries to implement caching,
 // routing, and other logic:

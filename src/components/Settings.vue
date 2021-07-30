@@ -115,43 +115,74 @@
           <v-col>
             <v-text-field
               outlined
-              type="password"
+              :type="server.show ? 'text' : 'password'"
               v-model="server.password"
               :rules="passwordRules"
+              :append-icon="server.show ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+              @click:append="server.show = !server.show"
               label="Password"
               required
             />
           </v-col>
           <v-col cols="auto">
-            <v-tooltip bottom open-delay="500">
+            <v-menu
+              bottom
+              left
+              :close-on-content-click="false"
+            >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   icon
                   v-bind="attrs"
                   v-on="on"
-                  color="red accent-1"
                   class="m"
-                  @click="remove(i)"
                 >
-                  <v-icon>mdi-delete</v-icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              Remove
-            </v-tooltip>
+
+              <v-list>
+                <div class="text-caption px-4 py-2">{{ server.url }}</div>
+                <v-list-item @click="remove(i)">
+                  <v-list-item-icon class="mr-4"><v-icon color="red accent-1">mdi-delete</v-icon></v-list-item-icon>
+                  <v-list-item-title>Remove Server</v-list-item-title>
+                </v-list-item>
+                <v-list-item
+                  @click="downloadBackup(server.url)"
+                  :disabled="downloadingBackup[server.url] || !server.valid"
+                >
+                  <v-list-item-icon class="mr-4">
+                    <v-progress-circular
+                      indeterminate
+                      :color="$vuetify.theme.dark ? 'grey lighten-2' : 'grey darken-2'" size="24" width="3"
+                      v-if="downloadingBackup[server.url]"
+                    />
+                    <v-icon v-else>mdi-package-down</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Download Backup (ZIP)</v-list-item-title>
+                </v-list-item>
+                <v-list-item
+                  @click="downloadRDF(server.url)"
+                  :disabled="downloadingRDF[server.url] || !server.valid"
+                >
+                  <v-list-item-icon class="mr-4">
+                    <v-progress-circular
+                      indeterminate
+                      :color="$vuetify.theme.dark ? 'grey lighten-2' : 'grey darken-2'" size="24" width="3"
+                      v-if="downloadingRDF[server.url]"
+                    />
+                    <v-icon v-else>mdi-semantic-web</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Download RDF Metadata</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-col>
         </v-row>
       </v-form>
 
-      <v-row><v-col><v-divider/></v-col></v-row>
+      <v-row v-if="installable"><v-col><v-divider/></v-col></v-row>
 
-      <v-row class="mb-3">
-        <v-col>
-          <v-btn block disabled>
-            <v-icon left>mdi-package-down</v-icon>
-            Export Backup
-          </v-btn>
-        </v-col>
-      </v-row>
       <v-row class="mb-3">
         <v-col>
           <v-btn block v-if="installable" @click="install">
@@ -190,9 +221,8 @@ export default class SettingsDrawer extends Vue {
   @PropSync('open') show !: boolean;
 
   // If Vetur was working correctly, the following two `: { password: string; url: string }` would be unnecceasiry. Added them to soothe vs-code’s concerns.
-  iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, password, url }));
+  iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, show: false, password, url }));
 
-  @Watch('servers', { deep: true })
   onServersChanged () {
     this.iservers = this.$store.state.servers.map(({ password, url }: { password: string; url: string }) => ({ id: this.counter(), valid: false, password, url }));
   }
@@ -200,8 +230,6 @@ export default class SettingsDrawer extends Vue {
   counter () {
     return counterhelper()
   }
-
-  valid = false
 
   urlRules: FormRule[] = [
     v => !!v || 'URL is required',
@@ -266,17 +294,57 @@ export default class SettingsDrawer extends Vue {
     this.$store.commit('viewSettings', { dense: v })
   }
 
+  downloadingBackup: { [url: string]: [boolean, boolean] } = {}
+  downloadingRDF: { [url: string]: [boolean, boolean] } = {}
+
+  downloadBackup (serverUrl: string) {
+    Vue.set(this.downloadingBackup, serverUrl, true)
+    const url = ((serverUrl.startsWith('https://') || serverUrl.startsWith('http://')) ? serverUrl : 'https://' + serverUrl) + '/raw/zip'
+    const options = {
+      headers: {
+        Authorization: this.$store.getters.server.server.headers.get('Authorization')
+      }
+    }
+
+    fetch(url, options)
+      .then(r => r.blob())
+      .then(b => {
+        Vue.set(this.downloadingBackup, serverUrl, false)
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(b)
+        link.download = 'tridoc_backup_' + Date.now() + '.zip'
+        link.click();
+      })
+  }
+
+  downloadRDF (serverUrl: string) {
+    Vue.set(this.downloadingRDF, serverUrl, true)
+    const url = ((serverUrl.startsWith('https://') || serverUrl.startsWith('http://')) ? serverUrl : 'https://' + serverUrl) + '/raw/rdf'
+    const options = {
+      headers: {
+        Authorization: this.$store.getters.server.server.headers.get('Authorization')
+      }
+    }
+
+    fetch(url, options)
+      .then(r => r.blob())
+      .then(b => {
+        Vue.set(this.downloadingRDF, serverUrl, false)
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(b)
+        link.download = 'tridoc_backup_' + Date.now() + '.ttl'
+        link.click();
+      })
+  }
+
   // PWA INSTALLATION
   installable: (Event|false) = false
 
   install () {
-    console.log('Installing');
     (this.installable as any).prompt();
     (this.installable as any).userChoice.then((r: any) => {
       if (r.outcome === 'accepted') {
-        console.log('Installed')
-      } else {
-        console.log('Not Installed')
+        this.installable = false
       }
     })
   }

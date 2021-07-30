@@ -152,6 +152,14 @@
           </v-btn>
         </v-col>
       </v-row>
+      <v-row class="mb-3">
+        <v-col>
+          <v-btn block v-if="installable" @click="install">
+            <v-icon left>mdi-plus-circle-outline</v-icon>
+            Add to Homescreen
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </v-main>
 </v-navigation-drawer>
@@ -256,6 +264,28 @@ export default class SettingsDrawer extends Vue {
 
   set viewSettingsDense (v: boolean) {
     this.$store.commit('viewSettings', { dense: v })
+  }
+
+  // PWA INSTALLATION
+  installable: (Event|false) = false
+
+  install () {
+    console.log('Installing');
+    (this.installable as any).prompt();
+    (this.installable as any).userChoice.then((r: any) => {
+      if (r.outcome === 'accepted') {
+        console.log('Installed')
+      } else {
+        console.log('Not Installed')
+      }
+    })
+  }
+
+  mounted () {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      this.installable = e
+    })
   }
 }
 </script>

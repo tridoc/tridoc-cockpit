@@ -478,12 +478,10 @@ export default class DocumentDetails extends Vue {
   }
 
   reloadTags () {
-    console.log('» RLT')
     this.loadingMeta = true
     const cs = this.$store.getters.server?.server as Server
     if (cs) {
       cs.getTags(this.id).then(r => {
-        console.log('» RLT', r)
         this.loadingMeta = false
         if (!('error' in r) && this.meta) {
           // We're being lenient with errors here as nothing much hinges on this

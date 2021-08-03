@@ -114,26 +114,11 @@
             @change="updateTitle"
           />
 
-          <v-chip-group column class="mb-8">
-            <tag-adder
-              :id="id"
-              :meta.sync="meta"
-              @update:meta="reloadTags"
-            />
-            <v-chip
-              v-for="tag in meta.tags"
-              :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
-              label
-            >
-              <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-              <span v-else>{{ tag.label }}</span>
-              <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
-              <strong v-if="tag.parameter">
-                <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
-                <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
-              </strong>
-            </v-chip>
-          </v-chip-group>
+          <tag-adder
+            :id="id"
+            :meta.sync="meta"
+            @update:meta="reloadTags"
+          />
 
           <comments-list
             :id="id"

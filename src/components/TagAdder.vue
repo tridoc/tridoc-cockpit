@@ -1,159 +1,136 @@
 <template>
-  <v-dialog v-model="show" :fullscreen="$vuetify.breakpoint.smAndDown" persistent max-width="600px">
-    <template v-slot:activator="{ on }">
-      <v-chip
-        color="primary"
-        label
-        v-on="on">
-          <v-icon left>mdi-pencil</v-icon>
-          <strong>EDIT TAGS</strong>
-      </v-chip>
-    </template>
-    <v-card>
-      <v-card-title class="headline">Manage Tags</v-card-title>
-      <v-card-subtitle>
-        {{ docMeta.title }}
-        <kbd class="mx-2">{{ id }}</kbd>
-      </v-card-subtitle>
-      <v-card-text>
-        Has:
-        <v-chip-group column>
-          <v-chip
-            v-for="tag in docMeta.tags"
-            :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
-            label
-            close
-            @click:close="removeTag(tag.label)"
+  <v-card outlined>
+    <v-expansion-panels v-model="show" flat>
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          <template v-slot:default>
+            <div v-if="!docMeta.tags.length">
+              <v-chip label>
+                <v-icon small class="mr-3">mdi-tag-off-outline</v-icon>
+                Document has no tags
+              </v-chip>
+            </div>
+            <div class="ma-n1 overflow" v-else-if="docMeta.tags[0].label !== '..'">
+              <v-chip
+                class="ma-1"
+                v-for="tag in docMeta.tags"
+                :key="tag.label + (tag.parameter ? tag.parameter.value : '')"
+                label close
+                @click:close="removeTag(tag.label)"
+              >
+                {{ tag.label }}
+                <v-divider class="mx-3" vertical v-if="tag.parameter"></v-divider>
+                <strong v-if="tag.parameter">
+                  <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
+                  <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
+                </strong>
+              </v-chip>
+            </div>
+          </template>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-divider/>
+          <h2 class="my-3 text-overline">
+            Available Tags:
+          </h2>
+          <div class="ma-n1 overflow">
+            <v-chip
+              class="ma-1"
+              v-for="tag in allTags"
+              :key="tag.label"
+              label
+              @click="label = tag.label"
+            >
+              <v-icon small class="mr-3" v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? 'mdi-pound' : 'mdi-calendar' }}</v-icon>
+              <span>{{ tag.label }}</span>
+            </v-chip>
+          </div>
+          <h2 class="my-3 text-overline">
+            Add Tag:
+          </h2>
+          <v-form
+            lazy-validation
+            v-model="valid"
+            ref="form"
           >
-            <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-            <span v-else>{{ tag.label }}</span>
-            <v-divider class="mx-3" vertical v-if="tag.parameter" />
-            <strong v-if="tag.parameter">
-              <span v-if="tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal'">{{ tag.parameter.value }}</span>
-              <local-time v-else :datetime="tag.parameter.value">{{ tag.parameter.value }}</local-time>
-            </strong>
-          </v-chip>
-        </v-chip-group>
-        Avaliable:
-        <v-chip-group column>
-          <v-chip
-            v-for="tag in allTags"
-            :key="tag.label"
-            label
-            @click="label = tag.label"
-          >
-            <v-icon small class="mr-3" v-if="tag.parameter">{{ tag.parameter.type === 'http://www.w3.org/2001/XMLSchema#decimal' ? 'mdi-pound' : 'mdi-calendar' }}</v-icon>
-            <v-icon v-if="tag.label === '..'">mdi-sync</v-icon>
-            <span v-else>{{ tag.label }}</span>
-          </v-chip>
-        </v-chip-group>
-        <v-divider class="mt-2 mb-3" />
-        <v-form
-          lazy-validation
-          v-model="valid"
-          ref="form"
-        >
-          <v-container>
-            <v-row>
-              <v-col cols="6">
-                <v-text-field
-                  outlined
-                  v-model="label"
-                  :rules="labelRules"
-                  label="Label"
-                  required
-                />
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  outlined
-                  v-model="value"
-                  :rules="valRules"
-                  label="Value"
-                  required
-                  autocomplete="off"
-                  v-if="this.type !== 'date'"
-                  :disabled="this.type !== 'decimal'"
-                  :messages="this.type === 'simple' ? 'Value will be ignored for simple tags' : ''"
-                />
-                <v-menu
-                  v-else
-                  ref="dateMenu"
-                  v-model="dateMenu"
-                  :close-on-content-click="false"
-                  :return-value.sync="value"
-                  transition="scale-transition"
-                  offset-y bottom
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="value"
-                      @change="valDate = value || ''"
-                      label="Value"
-                      outlined
-                      :rules="dateRules"
-                      v-bind="attrs"
-                      v-on="on"
-                      required
-                      autocomplete="off"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="valDate"
-                    no-title
-                    scrollable
+            <v-container class="pa-0">
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field
+                    outlined
+                    v-model="label"
+                    :rules="labelRules"
+                    label="Label"
+                    required
+                  />
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    id="dateField"
+                    outlined
+                    v-model="value"
+                    :rules="valRules"
+                    label="Value"
+                    @input="valDate = (valRules[1](value) === true) ? value : ''"
+                    required
+                    autocomplete="off"
+                    :disabled="this.type === 'simple'"
+                    :messages="this.type === 'simple' ? 'Value will be ignored for simple tags' : ''"
+                  />
+                  <v-menu
+                    v-if="this.type === 'date'"
+                    ref="dateMenu"
+                    open-on-focus
+                    v-model="dateMenu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y bottom
+                    min-width="290px"
+                    activator="#dateField"
                   >
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="dateMenu = false"
+                    <v-date-picker
+                      v-model="valDate"
+                      @input="value = valDate"
+                      :show-current="false"
+                      scrollable
                     >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.dateMenu.save(valDate)"
-                    >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" class="mt-0">
-                <v-radio-group v-model="type" :disabled="fixed" class="mt-0">
-                  <v-radio value="simple">
-                    <template v-slot:label>
-                      <v-icon small left>mdi-tag</v-icon> Not parameterizable
-                    </template>
-                  </v-radio>
-                  <v-radio value="decimal">
-                    <template v-slot:label>
-                      <v-icon small left>mdi-pound</v-icon> Parameterizable with number / decimal
-                    </template>
-                  </v-radio>
-                  <v-radio value="date">
-                    <template v-slot:label>
-                      <v-icon small left>mdi-calendar</v-icon> Parameterizable with date
-                    </template>
-                  </v-radio>
-                </v-radio-group>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary" text @click="clear">Cancel</v-btn>
-          <v-btn color="primary" @click="save">Add</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" class="pt-0">
+                  <v-radio-group v-model="type" :disabled="fixed" class="mt-0" hide-details>
+                    <v-radio value="simple">
+                      <template v-slot:label>
+                        <v-icon small left>mdi-tag</v-icon> Not parameterizable
+                      </template>
+                    </v-radio>
+                    <v-radio value="decimal">
+                      <template v-slot:label>
+                        <v-icon small left>mdi-pound</v-icon> Parameterizable with number / decimal
+                      </template>
+                    </v-radio>
+                    <v-radio value="date">
+                      <template v-slot:label>
+                        <v-icon small left>mdi-calendar</v-icon> Parameterizable with date
+                      </template>
+                    </v-radio>
+                  </v-radio-group>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="auto" class="ml-auto">
+                  <v-btn color="secondary" class="mr-2" text @click="clear">Cancel</v-btn>
+                  <v-btn color="primary" dark @click="save">Add</v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -165,8 +142,8 @@ export default class TagAdder extends Vue {
   @Prop() id!: string;
   @PropSync('meta') docMeta !: tdDocMeta
   allTags: tdTag[] = []
-  show = false
-  valid = false
+  show = -1
+  valid = true
   label = ''
   type: 'simple' | 'date' | 'decimal' = 'simple'
   value = ''
@@ -200,16 +177,17 @@ export default class TagAdder extends Vue {
   }
 
   valRules: FormRule[] = [
-    // v => (this.getType() === 'simple' && !v) || this.getType() !== 'simple' || 'Value will be ignored',
-    v => (this.getType() === 'decimal' && !isNaN(+v)) || this.getType() !== 'decimal' || 'Must be a number'
+    v => (this.getType() === 'decimal' && !isNaN(+v) && !!v) || this.getType() !== 'decimal' || 'Must be a number',
+    v => (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime())) || this.getType() !== 'date' || 'Must be a date of format YYYY-MM-DD',
   ]
 
-  dateRules: FormRule[] = [
-    v => !v || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v).getTime())) || 'Must be a date of format YYYY-MM-DD',
-  ]
+  @Watch('type')
+  typeChanged () {
+    this.value = '';
+    (this.$refs.form as any).resetValidation()
+  }
 
   clear () {
-    this.show = false
     this.label = ''
     this.type = 'simple';
     (this.$refs.form as any).resetValidation()
@@ -292,3 +270,15 @@ This Action cannot be undone`)) {
   }
 }
 </script>
+
+<style scoped>
+.overflow {
+  overflow: auto;
+}
+.v-chip .v-chip__content {
+  max-width: unset;
+}
+.v-chip {
+  max-width: unset;
+}
+</style>

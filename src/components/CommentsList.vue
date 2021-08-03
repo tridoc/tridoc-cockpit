@@ -1,6 +1,10 @@
 <template>
   <div class="mt-3">
     <v-card outlined :loading="loading" class="list">
+      <v-progress-linear
+        indeterminate
+        :active="loading"
+      />
       <v-card-text v-if="loading">
         Loading Comments
       </v-card-text>

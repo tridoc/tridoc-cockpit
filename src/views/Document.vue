@@ -16,7 +16,6 @@
       </v-tooltip>
       <v-toolbar-title>
         <span v-if="meta">{{ meta.title }}</span>
-        <code v-else>{{ id }}</code>
       </v-toolbar-title>
       <v-spacer/>
       <v-tooltip bottom open-delay="500">
@@ -40,8 +39,6 @@
             v-bind="attrs"
             v-on="on"
             icon
-            dark
-            color="red accent-1"
             @click="deleteDocument(id)"
           >
             <v-icon>mdi-delete</v-icon>
@@ -55,6 +52,7 @@
         indeterminate
         absolute
         bottom
+        color="white"
       />
     </v-toolbar>
 
@@ -91,9 +89,9 @@
       {{ numPages }} Pages
 
       <v-progress-linear
-        :indeterminate="numPages === 0"
-        :active="this.loading < this.numPages"
-        :value="(this.loading / this.numPages) * 100"
+        :indeterminate="numPages === 0 || loading === 0"
+        :active="loading < numPages"
+        :value="(loading / numPages) * 100"
         absolute
         bottom
       />
@@ -119,8 +117,8 @@
           <v-chip-group column class="mb-8">
             <tag-adder
               :id="id"
-              :meta="meta"
-              @update:meta="m => $emit('update:docMeta', m)"
+              :meta.sync="meta"
+              @update:meta="reloadTags"
             />
             <v-chip
               v-for="tag in meta.tags"
@@ -139,8 +137,7 @@
 
           <comments-list
             :id="id"
-            :meta="meta"
-            @update:meta="m => $emit('update:docMeta', m)"
+            :meta.sync="meta"
           />
         </div>
       </v-col>
@@ -174,9 +171,9 @@
         {{ numPages }} Pages
 
         <v-progress-linear
-          :indeterminate="numPages === 0"
-          :active="this.loading < this.numPages"
-          :value="(this.loading / this.numPages) * 100"
+          :indeterminate="numPages === 0 || loading === 0"
+          :active="loading < numPages"
+          :value="(loading / numPages) * 100"
           absolute
           bottom
         />
@@ -391,7 +388,7 @@ export default class DocumentDetails extends Vue {
     }
   }
 
-  loadingChange (b: boolean) {
+  loadingChange () {
     const cv = document.getElementsByTagName('canvas')
     this.loading = cv.length
     for (let i = 0; i < cv.length; i++) {
@@ -478,6 +475,22 @@ export default class DocumentDetails extends Vue {
       })
     }
     this.getPdf()
+  }
+
+  reloadTags () {
+    console.log('» RLT')
+    this.loadingMeta = true
+    const cs = this.$store.getters.server?.server as Server
+    if (cs) {
+      cs.getTags(this.id).then(r => {
+        console.log('» RLT', r)
+        this.loadingMeta = false
+        if (!('error' in r) && this.meta) {
+          // We're being lenient with errors here as nothing much hinges on this
+          this.meta.tags = r
+        }
+      })
+    }
   }
 }
 </script>

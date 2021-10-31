@@ -175,6 +175,51 @@ html {
   padding: 8px 8px 8px 0;
 }
 
+nav {
+  background: var(--surface-container);
+  color: var(--surface-container-text);
+  display: grid;
+  grid: 1fr / repeat(3, 1fr);
+  grid-area: nav;
+  min-height: 80px;
+  width: 100vw;
+}
+
+@media screen and (min-width: 720px) {
+  nav {
+    grid: 1fr / repeat(2, 1fr);
+    width: unset;
+    min-height: unset;
+  }
+}
+
+nav .active .icon {
+  background: var(--secondary-container);
+  color: var(--secondary-container-text);
+}
+
+nav .icon {
+  border-radius: 16px;
+  height: 32px;
+  margin: 12px auto 4px;
+  padding: 4px 20px;
+  width: 64px;
+}
+
+nav .label {
+  line-height: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
 noscript {
   display: contents;
+}
+
+/* Overrides */
+
+@media screen and (min-width: 720px) {
+  .mobile-only {
+    display: none;
+  }
 }

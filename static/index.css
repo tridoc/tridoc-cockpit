@@ -82,11 +82,62 @@
   }
 }
 
+/* CSS sorted alphabetically */
+
 body {
   background: var(--surface);
   color: var(--surface-text);
   font-display: block;
   font-family: Inter, Helvetica, Arial sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  height: 100%;
+  grid:
+    "header" auto
+    "message" auto
+    "list" 1fr
+    "nav" auto
+    / 1fr;
+  overflow: hidden;
+  width: 100%;
+}
+
+header {
+  background: var(--surface-container);
+  color: var(--surface-container-text);
+  display: grid;
+  grid: "logo text action" auto / minmax(auto, 1fr) auto minmax(auto, 1fr);
+  grid-area: header;
+  min-height: 64px;
+}
+
+header .action {
+  border-radius: 24px;
+  grid-area: action;
+  margin: 8px 4px 8px auto;
+  padding: 12px;
+}
+
+header .logo {
+  grid-area: logo;
+  margin: 8px auto 8px 4px;
+  padding: 12px 7px;
+}
+
+header .text {
+  font-size: 22px;
+  grid-area: text;
+  line-height: 28px;
+  padding: 18px 24px;
+}
+
+html {
+  height: 100%;
+  width: 100%;
 }
 
 .message {
@@ -94,6 +145,7 @@ body {
   color: var(--warning-container-text);
   display: grid;
   grid: ". icon text action" auto / 1fr auto auto minmax(auto, 1fr);
+  grid-area: message;
   min-height: 40px;
   width: 100vw;
 }
@@ -107,12 +159,12 @@ body {
   padding: 8px;
 }
 
-.message .icon path {
-  fill: currentColor;
-}
-
 .message .text {
   grid-area: text;
   line-height: 24px;
   padding: 8px 8px 8px 0;
+}
+
+noscript {
+  display: contents;
 }

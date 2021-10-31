@@ -1,0 +1,118 @@
+/* Only this selector and the following are not placed alphabetically */
+:root {
+  --brand: #00685c;
+  --brand-text: #ffffff;
+  --brand-container: #4CB5AC;
+  --brand-container-text: #00201d;
+
+  --error: #ba1b1b;
+  --error-text: #ffffff;
+  --error-container: #ffdad4;
+  --error-container-text: #410001;
+
+  --secondary: #006781;
+  --secondary-text: #ffffff;
+  --secondary-container: #b5eaff;
+  --secondary-container-text: #001f29;
+
+  --surface: #fafdfa;
+  --surface-text: #191c1b;
+  --surface-container: #eef1ee;
+  --surface-container-text: #191c1b;
+
+  --warning: #855400;
+  --warning-text: #ffffff;
+  --warning-container: #ffddb3;
+  --warning-container-text: #2a1700;
+
+  /* Dark Variants */
+
+  --dark-brand: #55dbc6;
+  --dark-brand-text: #003730;
+  --dark-brand-container: #005046;
+  --dark-brand-container-text: #75f8e2;
+
+  --dark-error: #ffb4a9;
+  --dark-error-text: #680003;
+  --dark-error-container: #930006;
+  --dark-error-container-text: #ffdad4;
+
+  --dark-secondary: #5fd4fd;
+  --dark-secondary-text: #003545;
+  --dark-secondary-container: #004d62;
+  --dark-secondary-container-text: #b6eaff;
+
+  --dark-surface: #191c1b;
+  --dark-surface-text: #e1e3e1;
+  --dark-surface-container: #3f4946;
+  --dark-surface-container-text: #ffffff;
+
+  --dark-warning: #ffb958;
+  --dark-warning-text: #472a00;
+  --dark-warning-container: #653e00;
+  --dark-warning-container-text: #ffddb4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand: var(--dark-brand);
+    --brand-text: var(--dark-brand-text);
+    --brand-container: var(--dark-brand-container);
+    --brand-container-text: var(--dark-brand-container-text);
+
+    --error: var(--dark-error);
+    --error-text: var(--dark-error-text);
+    --error-container: var(--dark-error-container);
+    --error-container-text: var(--dark-error-container-text);
+  
+    --secondary: var(--dark-secondary);
+    --secondary-text: var(--dark-secondary-text);
+    --secondary-container: var(--dark-secondary-container);
+    --secondary-container-text: var(--dark-secondary-container-text);
+  
+    --surface: var(--dark-surface);
+    --surface-text: var(--dark-surface-text);
+    --surface-container: var(--dark-surface-container);
+    --surface-container-text: var(--dark-surface-container-text);
+  
+    --warning: var(--dark-warning);
+    --warning-text: var(--dark-warning-text);
+    --warning-container: var(--dark-warning-container);
+    --warning-container-text: var(--dark-warning-container-text);
+  }
+}
+
+body {
+  background: var(--surface);
+  color: var(--surface-text);
+  font-display: block;
+  font-family: Inter, Helvetica, Arial sans-serif;
+}
+
+.message {
+  background: var(--warning-container);
+  color: var(--warning-container-text);
+  display: grid;
+  grid: ". icon text action" auto / 1fr auto auto minmax(auto, 1fr);
+  min-height: 40px;
+  width: 100vw;
+}
+
+.message .action {
+  grid-area: action;
+}
+
+.message .icon {
+  grid-area: icon;
+  padding: 8px;
+}
+
+.message .icon path {
+  fill: currentColor;
+}
+
+.message .text {
+  grid-area: text;
+  line-height: 24px;
+  padding: 8px 8px 8px 0;
+}

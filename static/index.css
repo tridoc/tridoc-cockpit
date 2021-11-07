@@ -93,6 +93,37 @@ body {
   width: 100%;
 }
 
+.field {
+  background: var(--surface);
+  border: 2px solid var(--secondary);
+  border-radius: 6px;
+  height: 48px;
+  margin: 8px;
+  padding: 4px;
+  position: relative;
+}
+
+.filters {
+  background: var(--surface-container);
+  border-radius: 12px 12px 0 0;
+  bottom: 0;
+  color: var(--surface-container-text);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: max(30vh, 80px);
+}
+
+@media screen and (min-width: 720px) {
+  .filters {
+    background: var(--surface);
+    border-radius: 0;
+    color: var(--surface-text);
+    grid-area: filters;
+    position: unset;
+  }
+}
+
 .grid {
   display: grid;
   height: 100%;
@@ -120,9 +151,12 @@ header {
   background: var(--surface-container);
   color: var(--surface-container-text);
   display: grid;
-  grid: "logo text action"auto / minmax(auto, 1fr) auto minmax(auto, 1fr);
   grid-area: header;
   min-height: 64px;
+}
+
+header.mainheader {
+  grid: "logo text action"auto / minmax(auto, 1fr) auto minmax(auto, 1fr);
 }
 
 header .action {
@@ -150,11 +184,54 @@ html {
   width: 100%;
 }
 
+[role="switch"] {
+  border-radius: 12px;
+  border: none;
+  display: grid;
+  height: 24px;
+  gap: 11px;
+  grid: "I O" / 1fr 1fr;
+  margin: 4px;
+  padding: 6px;
+  width: 48px;
+}
+
+[role="switch"]:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+[role="switch"]::before {
+  content: '';
+  border-radius: 6px;
+}
+
+[role="switch"][aria-checked="false"] {
+  background: var(--secondary-container);
+}
+
+[role="switch"][aria-checked="false"]::before {
+  background: var(--secondary-container-text);
+  box-shadow: 0px 1px 4px -1px #888888;
+  display: block;
+}
+
+[role="switch"][aria-checked="true"] {
+  background: var(--secondary-container-text);
+}
+
+[role="switch"][aria-checked="true"]::before {
+  background: var(--secondary-container);
+  box-shadow: 0px 1px 4px -1px #888888;
+  display: block;
+  grid-area: 1 / 2;
+}
+
 .message {
   background: var(--warning-container);
   color: var(--warning-container-text);
   display: grid;
-  grid: ". icon text action"auto / 1fr auto auto minmax(auto, 1fr);
+  grid: ". icon text action" auto / 1fr auto auto minmax(auto, 1fr);
   grid-area: message;
   min-height: 40px;
   width: 100vw;
@@ -175,45 +252,110 @@ html {
   padding: 8px 8px 8px 0;
 }
 
+.miniheader {
+  border-bottom: 1px solid var(--surface);
+  display: flex;
+  font-size: 8px;
+  font-weight: 500;
+  justify-content: space-between;
+}
+
+.miniheader .text {
+  font-size: 10px;
+  margin: 8px 16px;
+}
+
+.miniheader button {
+  /* background: var(--secondary-container); */
+  border-radius: 10px;
+  /* color: var(--secondary-container-text); */
+  display: grid;
+  gap: 4px;
+  grid: 12px / auto 12px;
+  line-height: 12px;
+  margin: 4px;
+  padding: 4px 8px;
+}
+
+.miniheader button .label {
+  color: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.miniheader button svg {
+  height: 12px;
+  width: 12px;
+}
+
 nav {
   background: var(--surface-container);
   color: var(--surface-container-text);
   display: grid;
-  grid: 1fr / repeat(3, 1fr);
+  gap: 8px;
+  grid: 1fr / 1fr auto 1fr;
   grid-area: nav;
-  min-height: 80px;
+  min-height: 64px;
+  padding: 0 8px;
   width: 100vw;
 }
 
 @media screen and (min-width: 720px) {
   nav {
-    grid: 1fr / repeat(2, 1fr);
+    grid: 1fr / auto auto;
     width: unset;
+    margin-left: -4px;
     min-height: unset;
   }
 }
 
-nav .active .icon {
+nav button {
+  border-radius: 24px;
+  height: 48px;
+  margin: 8px auto;
+  padding: 12px;
+  min-width: 48px;
+}
+
+nav button:hover {
   background: var(--secondary-container);
   color: var(--secondary-container-text);
 }
 
-nav .icon {
-  border-radius: 16px;
-  height: 32px;
-  margin: 12px auto 4px;
-  padding: 4px 20px;
-  width: 64px;
+nav button.action {
+  background: var(--secondary);
+  color: var(--secondary-text);
+  display: grid;
+  gap: 10px;
+  grid: 1fr / auto auto;
+  padding: 12px 28px 12px 20px;
 }
 
-nav .label {
-  line-height: 16px;
-  text-align: center;
+nav button.action .label {
+  line-height: 24px;
   font-size: 14px;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 260px) {
+  nav button.action {
+    grid: 1fr / auto;
+    padding: 12px;
+  }
+
+  nav button.action .label {
+    display: none;
+  }
 }
 
 noscript {
-  display: contents;
+  grid-area: message;
+}
+
+svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* Overrides */

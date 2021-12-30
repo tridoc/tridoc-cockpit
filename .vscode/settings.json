@@ -2,5 +2,13 @@
   "deno.enable": true,
   "deno.lint": true,
   "deno.unstable": true,
-  "deno.config": "./deno.jsonc"
+  "deno.config": "./deno.jsonc",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "src/static",
+        "cmd": "cp ${workspaceFolder}/src/static/* ${workspaceFolder}/docs"
+      }
+    ]
+  }
 }

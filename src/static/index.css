@@ -129,11 +129,17 @@ body {
 @media screen and (min-width: 720px) {
   .grid {
     grid:
-    "message message message" auto
-    "filters header nav" auto
-    "filters list sheet" 1fr
-    / auto 1fr auto;
+    "message message message message" auto
+    "filters header header nav" auto
+    "filters list sheet sheet" 1fr
+    / auto 1fr auto auto;
   }
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 16px 6px;
 }
 
 header {
@@ -171,49 +177,7 @@ header .text {
 html {
   height: 100%;
   width: 100%;
-}
-
-[role="switch"] {
-  border-radius: 12px;
-  border: none;
-  display: grid;
-  height: 24px;
-  gap: 11px;
-  grid: "I O" / 1fr 1fr;
-  margin: 4px;
-  padding: 6px;
-  width: 48px;
-}
-
-[role="switch"]:focus-visible {
-  outline: 2px solid var(--secondary);
-  outline-offset: 2px;
-}
-
-[role="switch"]::before {
-  content: '';
-  border-radius: 6px;
-}
-
-[role="switch"][aria-checked="false"] {
-  background: var(--secondary-container);
-}
-
-[role="switch"][aria-checked="false"]::before {
-  background: var(--secondary-container-text);
-  box-shadow: 0px 1px 4px -1px #888888;
-  display: block;
-}
-
-[role="switch"][aria-checked="true"] {
-  background: var(--secondary-container-text);
-}
-
-[role="switch"][aria-checked="true"]::before {
-  background: var(--secondary-container);
-  box-shadow: 0px 1px 4px -1px #888888;
-  display: block;
-  grid-area: 1 / 2;
+  overflow: hidden;
 }
 
 .message {
@@ -342,8 +306,32 @@ nav button.action .label {
   }
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  line-height: 24px;
+  margin: 6px;
+}
+
 noscript {
   grid-area: message;
+}
+
+@media screen and (min-width: 720px) {
+  #settings {
+    background: var(--surface);
+    border-radius: 0;
+    color: var(--surface-text);
+    grid-area: sheet;
+    margin: 8px 0;
+    width: 240px;
+    position: unset;
+  }
+
+  #settings.closed {
+    display: none;
+  }
 }
 
 .sheet {
@@ -368,6 +356,12 @@ svg {
 }
 
 /* Overrides */
+
+@media screen and not (min-width: 720px) {
+  .not-mobile {
+    display: none;
+  }
+}
 
 @media screen and (min-width: 720px) {
   .mobile-only {

@@ -1,6 +1,7 @@
 import Server from "https://tridoc.me/tridoc-frontend/src/server.ts";
 
 import "./components/settings.ts";
+import "./components/switch.ts";
 
 const HCServer = new Server("http://127.0.0.1:8000", "tridoc", "pw123");
 

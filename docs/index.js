@@ -228,19 +228,27 @@ class SettingsPage extends HTMLElement {
         });
         this.shadowRoot.append(e("div", [
             e("h2", "Settings", {
-                class: "not-mobile"
+                class: "not-mobile heading row"
             }),
             e("div", [
-                e("div", [
-                    "Dense View",
-                    e("toggle-switch", "Dense View", {
-                        disabled: "disabled"
-                    }), 
-                ], {
-                    class: "row"
+                "Dense View",
+                e("toggle-switch", "Dense View", {
+                    disabled: "disabled"
                 }), 
             ], {
-                class: "list"
+                class: "row"
+            }),
+            e("div", [
+                "Connections",
+                e("button", [
+                    e("div", "Add", {
+                        class: "label"
+                    })
+                ], {
+                    class: "action"
+                }), 
+            ], {
+                class: "heading row"
             }), 
         ]), e("link", [], {
             rel: "stylesheet",

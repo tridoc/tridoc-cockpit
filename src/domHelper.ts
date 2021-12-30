@@ -1,3 +1,5 @@
+import { mdiPlus } from "https://esm.sh/@mdi/js";
+
 export function e(
   name: string,
   contents: (string | Node)[] | string = [],
@@ -17,4 +19,13 @@ export function e(
   if (typeof contents === "string") contents = [contents];
   if (contents.length > 0) el.append(...contents);
   return el;
+}
+
+export const ICONS = {
+  mdiPlus,
+};
+
+export function icon(name: keyof ICONS) {
+  console.log(name, ICONS[name]);
+  return e("div");
 }

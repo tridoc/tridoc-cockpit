@@ -93,6 +93,34 @@ body {
   width: 100%;
 }
 
+button {
+  border-radius: 24px;
+  height: 48px;
+  margin: 8px auto;
+  padding: 12px;
+  min-width: 48px;
+}
+
+button:hover {
+  background: var(--secondary-container);
+  color: var(--secondary-container-text);
+}
+
+button.action {
+  background: var(--secondary);
+  color: var(--secondary-text);
+  display: grid;
+  gap: 10px;
+  grid: 1fr / auto auto;
+  padding: 12px 28px 12px 20px;
+}
+
+button.action .label {
+  line-height: 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .field {
   background: var(--surface);
   border: 2px solid var(--secondary);
@@ -136,12 +164,6 @@ body {
   }
 }
 
-h2 {
-  font-size: 22px;
-  font-weight: 500;
-  margin: 16px 6px;
-}
-
 header {
   background: var(--surface-container);
   color: var(--surface-container-text);
@@ -172,6 +194,11 @@ header .text {
   grid-area: text;
   line-height: 28px;
   padding: 18px 24px;
+}
+
+.heading {
+  font-size: 22px;
+  font-weight: 500;
 }
 
 html {
@@ -312,6 +339,15 @@ nav button.action .label {
   justify-content: space-between;
   line-height: 24px;
   margin: 6px;
+}
+
+.row.heading {
+  line-height: 48px;
+  margin-bottom: 12px;
+}
+
+.row.heading:not(:first-child) {
+  margin-top: 24px;
 }
 
 noscript {

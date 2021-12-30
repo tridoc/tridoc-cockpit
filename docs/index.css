@@ -103,19 +103,8 @@ body {
   position: relative;
 }
 
-.filters {
-  background: var(--surface-container);
-  border-radius: 12px 12px 0 0;
-  bottom: 0;
-  color: var(--surface-container-text);
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: max(30vh, 80px);
-}
-
 @media screen and (min-width: 720px) {
-  .filters {
+  #filters {
     background: var(--surface);
     border-radius: 0;
     color: var(--surface-text);
@@ -266,15 +255,19 @@ html {
 }
 
 .miniheader button {
-  /* background: var(--secondary-container); */
   border-radius: 10px;
-  /* color: var(--secondary-container-text); */
   display: grid;
   gap: 4px;
   grid: 12px / auto 12px;
   line-height: 12px;
   margin: 4px;
   padding: 4px 8px;
+}
+
+.miniheader button:focus,
+.miniheader button:hover {
+  background: var(--secondary-container);
+  color: var(--secondary-container-text);
 }
 
 .miniheader button .label {
@@ -351,6 +344,22 @@ nav button.action .label {
 
 noscript {
   grid-area: message;
+}
+
+.sheet {
+  background: var(--surface-container);
+  border-radius: 12px 12px 0 0;
+  bottom: 0;
+  color: var(--surface-container-text);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: max(30vh, 80px);
+}
+
+.sheet.closed {
+  bottom: unset;
+  top: 100vh;
 }
 
 svg {

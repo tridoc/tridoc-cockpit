@@ -43,7 +43,7 @@
       </a>
     </header>
     <nav>
-      <button class="mobile-only">
+      <button id="filters-button" aria-label="Open Filters and Search" class="mobile-only">
         <div class="icon">
           <svg viewBox="0 0 24 24">
             <path fill="currentColor"
@@ -62,7 +62,7 @@
           Upload
         </div>
       </button>
-      <button>
+      <button id="settings-button" aria-label="Open Settings">
         <div class="icon">
           <svg viewBox="0 0 24 24">
             <path fill="currentColor"
@@ -71,12 +71,12 @@
         </div>
       </button>
     </nav>
-    <aside class="filters">
+    <aside id="filters" class="sheet closed">
       <div class="miniheader mobile-only">
         <div class="text">
           Filters
         </div>
-        <button>
+        <button id="filters-close-button">
           <div class="label">
             Close
           </div>
@@ -109,7 +109,26 @@
         </div>
       </div>
     </aside>
+    <aside id="settings" class="sheet closed">
+      <div class="miniheader mobile-only">
+        <div class="text">
+          Settings
+        </div>
+        <button id="settings-close-button">
+          <div class="label">
+            Close
+          </div>
+          <div class="icon">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+          </div>
+        </button>
+      </div>
+      <settings-page />
+    </aside>
   </div>
+  <script src="index.js"></script>
 </body>
 
 </html>

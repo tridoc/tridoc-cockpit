@@ -1,24 +1,8 @@
 # tridoc-cockpit
 
-## Project setup
-```
-npm install
-```
+Requires independent server: creates static files only.
 
-### Compiles and hot-reloads for development
+Build with:
+```sh
+deno bundle --config deno.jsonc ./src/index.ts ./docs/index.js && cp ./src/static/* ./docs
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

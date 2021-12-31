@@ -205,6 +205,7 @@ class Server {
         }
     }
 }
+var Bp1 = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z";
 function e(name, contents = [], options) {
     const el = document.createElement(name);
     if (options) {
@@ -219,6 +220,19 @@ function e(name, contents = [], options) {
     ];
     if (contents.length > 0) el.append(...contents);
     return el;
+}
+const ICONS = {
+    mdiPlus: Bp1
+};
+function icon(name) {
+    const svgns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgns, "svg");
+    const path = document.createElementNS(svgns, "path");
+    svg.setAttributeNS(null, "viewport", "0 0 24 24");
+    path.setAttributeNS(null, "fill", "currentColor");
+    path.setAttributeNS(null, "d", ICONS[name]);
+    svg.append(path);
+    return svg;
 }
 class SettingsPage extends HTMLElement {
     constructor(){
@@ -241,9 +255,10 @@ class SettingsPage extends HTMLElement {
             e("div", [
                 "Connections",
                 e("button", [
+                    icon("mdiPlus"),
                     e("div", "Add", {
                         class: "label"
-                    })
+                    }), 
                 ], {
                     class: "action"
                 }), 
@@ -290,7 +305,7 @@ class ToggleSwitch extends HTMLButtonElement {
         height: 24px;
         gap: 11px;
         grid: "I O" / 1fr 1fr;
-        /* margin: 4px; */
+        margin: 0 4px;
         padding: 6px;
         width: 48px;
       }

@@ -93,26 +93,22 @@ body {
   width: 100%;
 }
 
-button {
-  border-radius: 24px;
-  height: 48px;
-  margin: 8px auto;
-  padding: 12px;
-  min-width: 48px;
-}
-
-button:hover {
-  background: var(--secondary-container);
-  color: var(--secondary-container-text);
-}
-
 button.action {
   background: var(--secondary);
+  border-radius: 24px;
   color: var(--secondary-text);
   display: grid;
   gap: 10px;
   grid: 1fr / auto auto;
+  height: 48px;
+  margin: 8px;
+  min-width: 48px;
   padding: 12px 28px 12px 20px;
+}
+
+button.action:hover {
+  background: var(--secondary-container);
+  color: var(--secondary-container-text);
 }
 
 button.action .label {
@@ -139,6 +135,11 @@ button.action .label {
     grid-area: filters;
     position: unset;
   }
+}
+
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
 }
 
 .grid {
@@ -350,6 +351,11 @@ nav button.action .label {
   margin-top: 24px;
 }
 
+.row > button {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 noscript {
   grid-area: message;
 }
@@ -361,7 +367,6 @@ noscript {
     color: var(--surface-text);
     grid-area: sheet;
     margin: 8px 0;
-    width: 240px;
     position: unset;
   }
 

@@ -33,7 +33,7 @@ class ToggleSwitch extends HTMLButtonElement {
         height: 24px;
         gap: 11px;
         grid: "I O" / 1fr 1fr;
-        /* margin: 4px; */
+        margin: 0 4px;
         padding: 6px;
         width: 48px;
       }

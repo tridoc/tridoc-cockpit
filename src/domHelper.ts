@@ -21,11 +21,17 @@ export function e(
   return el;
 }
 
-export const ICONS = {
+const ICONS = {
   mdiPlus,
 };
 
-export function icon(name: keyof ICONS) {
-  console.log(name, ICONS[name]);
-  return e("div");
+export function icon(name: keyof typeof ICONS) {
+  const svgns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgns, "svg");
+  const path = document.createElementNS(svgns, "path");
+  svg.setAttributeNS(null, "viewport", "0 0 24 24");
+  path.setAttributeNS(null, "fill", "currentColor");
+  path.setAttributeNS(null, "d", ICONS[name]);
+  svg.append(path);
+  return svg;
 }

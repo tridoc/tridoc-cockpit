@@ -1,4 +1,4 @@
-import { e, icon, ICONS } from "../domHelper.ts";
+import { e, icon } from "../domHelper.ts";
 
 class SettingsPage extends HTMLElement {
   constructor() {
@@ -16,7 +16,7 @@ class SettingsPage extends HTMLElement {
         e("div", [
           "Connections",
           e("button", [
-            icon(ICONS.mdiPlus),
+            icon("mdiPlus"),
             e("div", "Add", { class: "label" }),
           ], {
             class: "action",

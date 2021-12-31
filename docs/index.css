@@ -208,6 +208,45 @@ html {
   overflow: hidden;
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+  background: var(--secondary-container);
+  border-radius: 6px;
+  display: grid;
+  height: 24px;
+  place-content: center;
+  width: 24px;
+  transition: 120ms background-color ease-in-out;
+}
+
+input[type="radio"] {
+  border-radius: 12px;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background-color: var(--secondary);
+}
+
+input[type="checkbox"]::before,
+input[type="radio"]::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  clip-path: path('M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z');
+  transform: scale(0);
+  transform-origin: center;
+  transition: 120ms transform ease-in-out;
+  /* box-shadow: inset 1em 1em var(--secondary-text); */
+  /* Windows High Contrast Mode */
+  background-color: var(--secondary-text);
+}
+
+input[type="checkbox"]:checked::before,
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
 .message {
   background: var(--warning-container);
   color: var(--warning-container-text);
@@ -340,6 +379,10 @@ nav button.action .label {
   justify-content: space-between;
   line-height: 24px;
   margin: 6px;
+}
+
+.row.minimal {
+  margin: 0;
 }
 
 .row.heading {

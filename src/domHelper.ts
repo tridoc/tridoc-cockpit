@@ -1,4 +1,14 @@
-import { mdiPlus } from "https://esm.sh/@mdi/js";
+import {
+  mdiPencilOutline,
+  mdiPlus,
+  mdiShieldAlertOutline,
+} from "https://esm.sh/@mdi/js";
+
+const ICONS = {
+  mdiPencilOutline,
+  mdiPlus,
+  mdiShieldAlertOutline,
+};
 
 export function e(
   name: string,
@@ -20,10 +30,6 @@ export function e(
   if (contents.length > 0) el.append(...contents);
   return el;
 }
-
-const ICONS = {
-  mdiPlus,
-};
 
 export function icon(name: keyof typeof ICONS) {
   const svgns = "http://www.w3.org/2000/svg";

@@ -205,7 +205,12 @@ class Server {
         }
     }
 }
-var Bp1 = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z";
+var La1 = "M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z", Bp1 = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z", wO1 = "M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18L5,6.3V11.22C5,15.54 8.25,20 12,21M11,7H13V13H11V7M11,15H13V17H11V15Z";
+const ICONS = {
+    mdiPencilOutline: La1,
+    mdiPlus: Bp1,
+    mdiShieldAlertOutline: wO1
+};
 function e(name, contents = [], options) {
     const el = document.createElement(name);
     if (options) {
@@ -221,9 +226,6 @@ function e(name, contents = [], options) {
     if (contents.length > 0) el.append(...contents);
     return el;
 }
-const ICONS = {
-    mdiPlus: Bp1
-};
 function icon(name) {
     const svgns = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgns, "svg");
@@ -240,6 +242,12 @@ class SettingsPage extends HTMLElement {
         this.attachShadow({
             mode: "open"
         });
+        const serverSettings = document.createElement("server-settings");
+        serverSettings.data = {
+            url: "http://localhost:8000",
+            password: "pw123",
+            selected: true
+        };
         this.shadowRoot.append(e("div", [
             e("h2", "Settings", {
                 class: "not-mobile heading row"
@@ -264,7 +272,8 @@ class SettingsPage extends HTMLElement {
                 }), 
             ], {
                 class: "heading row"
-            }), 
+            }),
+            serverSettings, 
         ]), e("link", [], {
             rel: "stylesheet",
             href: "index.css"
@@ -275,6 +284,110 @@ class SettingsPage extends HTMLElement {
     }
 }
 customElements.define("settings-page", SettingsPage);
+class ServerSettings extends HTMLElement {
+    #ref;
+    colors = [
+        "#123123",
+        "#ffffff",
+        "#456456",
+        "#fff000"
+    ];
+    #data = {
+        url: "",
+        password: "",
+        color: undefined,
+        selected: false
+    };
+    get data() {
+        return this.#data;
+    }
+    set data(v) {
+        this.#data = {
+            url: v.url ?? this.#data.url,
+            password: v.password ?? this.#data.password,
+            color: v.color ?? this.#data.color,
+            selected: v.selected ?? this.#data.selected
+        };
+        this.updateData();
+    }
+    constructor(){
+        super();
+        this.attachShadow({
+            mode: "open"
+        });
+        const checkedInput = e("input", [], {
+            type: "checkbox",
+            class: "fill"
+        });
+        const nameIndicator = e("div");
+        const collapsedBar = e("div", [
+            checkedInput,
+            e("div", [
+                icon("mdiShieldAlertOutline"),
+                nameIndicator, 
+            ], {
+                class: "row minimal"
+            }),
+            icon("mdiPencilOutline"), 
+        ], {
+            class: "row colored"
+        });
+        this.#ref = {
+            checkedInput,
+            container: e("div", [
+                collapsedBar
+            ], {
+                id: "container"
+            }),
+            nameIndicator
+        };
+        this.shadowRoot.append(this.#ref.container, e("link", [], {
+            rel: "stylesheet",
+            href: "index.css"
+        }), e("link", [], {
+            rel: "stylesheet",
+            href: "reset.css"
+        }), e("style", `.colored {
+          background: var(--secondary-container);
+          border-radius: 6px;
+          color: var(--secondary-container-text);
+          /* margin: 4px 0; */
+          padding: 6px;
+        }
+
+        #container {
+          width: 100%;
+        }
+
+        input.fill {
+          border-right: 1px solid var(--surface);
+          border-radius: 6px 0 0 6px;
+          height: 36px;
+          width: 36px;
+          margin: -6px 6px -6px -6px;
+        }`));
+        this.updateData();
+    }
+    updateData() {
+        console.log(this.data);
+        this.#ref.checkedInput.checked = !!this.data.selected;
+        this.#ref.nameIndicator.innerText = this.data.url.replace(/^https?:\/\//, "");
+        this.changeColors();
+    }
+    changeColors() {
+        this.colors = [
+            this.#data.color ?? "123123",
+            "#ffffff",
+            "#456456",
+            "#fff000", 
+        ];
+        this.#ref.container.setAttribute("style", `--secondary: ${this.colors[0]};
+      --secondary-text: ${this.colors[1]};
+      --secondary-container: ${this.colors[2]};
+      --secondary-container-text: ${this.colors[3]};`);
+    }
+}
+customElements.define("server-settings", ServerSettings);
 class ToggleSwitch extends HTMLButtonElement {
     #button;
     constructor(){

@@ -116,7 +116,7 @@
       color="primary"
        @click="() => toggle(min, max, inc)"
     >
-      <v-icon>{{ inc ? 'mdi-check-box-outline' : 'mdi-close-box-outline' }}</v-icon>
+      <v-icon>{{ inc ? 'mdi-checkbox-outline' : 'mdi-close-box-outline' }}</v-icon>
     </v-btn>
   </div>
 </div>

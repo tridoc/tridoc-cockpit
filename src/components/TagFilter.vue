@@ -29,7 +29,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-check-box-outline' }}</v-icon>
+            <v-icon>{{ status[0].indexOf(tag.label) !== -1 ? 'mdi-checkbox-marked' : 'mdi-checkbox-outline' }}</v-icon>
           </v-btn>
         </template>
         <small>Show only Documents with this tag</small>

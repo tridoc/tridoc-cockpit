@@ -236,7 +236,7 @@
           </v-form>
           <v-row dense class="mx-n3">
             <v-col>
-              {{ error ? 'A different server URL or password may' : ($route.query.s ? 'A password is' : 'Server URL and password are') }} required to view this document.
+              {{ error ? 'A different server URL or password may be' : ($route.query.s ? 'A password is' : 'Server URL and password are') }} required to view this document.
             </v-col>
           </v-row>
         </v-container>
@@ -422,7 +422,7 @@ export default class DocumentDetails extends Vue {
     this.pdfdata = pdfvuer.createLoadingTask({ url, httpHeaders: { Authorization: this.$store.getters.server.server.headers.get('Authorization') } });
     (this.pdfdata as Promise<any>).then(pdf => {
       this.numPages = pdf.numPages;
-    });
+    }).catch(e => this.error = e);
   }
 
   mounted () {

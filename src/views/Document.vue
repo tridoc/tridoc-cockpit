@@ -422,7 +422,7 @@ export default class DocumentDetails extends Vue {
     this.pdfdata = pdfvuer.createLoadingTask({ url, httpHeaders: { Authorization: this.$store.getters.server.server.headers.get('Authorization') } });
     (this.pdfdata as Promise<any>).then(pdf => {
       this.numPages = pdf.numPages;
-    }).catch(e => this.error = e);
+    }).catch(e => { this.error = e });
   }
 
   mounted () {

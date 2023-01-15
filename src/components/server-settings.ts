@@ -16,12 +16,22 @@ export class ServerSettings extends HTMLElement {
 
   colors = ["#123123", "#ffffff", "#456456", "#fff000"];
 
-  data: data = {
+  #data: data = {
     url: "",
     password: "",
     color: undefined,
     selected: false,
   };
+
+  #dataHandler: ProxyHandler<data> = {
+    // deno-lint-ignore no-explicit-any
+    get(target: ServerSettings, prop: PropertyKey, receiver?: any) {
+      target.updateData();
+      return Reflect.get(target.#data, prop, receiver);
+    },
+  };
+
+  data: data = new Proxy(this, this.#dataHandler);
 
   constructor() {
     super();
@@ -78,8 +88,6 @@ export class ServerSettings extends HTMLElement {
         }`,
       ),
     );
-
-    Object.observe(this.data, this.updateData());
   }
 
   updateData() {
@@ -94,7 +102,7 @@ export class ServerSettings extends HTMLElement {
 
   changeColors() {
     this.colors = [
-      this.#data.color ?? "123123",
+      this.data.color ?? "123123",
       "#ffffff",
       "#456456",
       "#fff000",

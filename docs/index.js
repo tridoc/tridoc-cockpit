@@ -1,3 +1,7 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
+// This code was bundled using `deno bundle` and it's not recommended to edit it manually
+
 class Server {
     url;
     headers;
@@ -22,8 +26,7 @@ class Server {
             method: "POST",
             headers: this.postHeaders,
             body: JSON.stringify(body)
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     addTag(id, label, type, value) {
         let body = {
@@ -39,8 +42,7 @@ class Server {
             method: "POST",
             headers: this.postHeaders,
             body: JSON.stringify(body)
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     countDocuments(query = '', tags = [], notTags = []) {
         let params = new URLSearchParams();
@@ -65,8 +67,7 @@ class Server {
         });
         return fetch(this.url + "/count?" + params, {
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     createTag(label, type) {
         let body = {
@@ -81,8 +82,7 @@ class Server {
             method: "POST",
             headers: this.postHeaders,
             body: JSON.stringify(body)
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     deleteDocument(id) {
         return fetch(this.url + "/doc/" + id, {
@@ -94,15 +94,13 @@ class Server {
         return fetch(this.url + "/tag/" + encodeURIComponent(label), {
             method: "DELETE",
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     getComments(id) {
         return fetch(this.url + "/doc/" + id + "/comment", {
             method: "GET",
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     getDocuments(query = '', tags = [], notTags = [], limit = '', offset = '') {
         let params = new URLSearchParams();
@@ -129,30 +127,25 @@ class Server {
         params.append('offset', '' + offset);
         return fetch(this.url + "/doc?" + params, {
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     getTags(id) {
         return id ? fetch(this.url + "/doc/" + id + "/tag", {
             headers: this.headers
-        }).then((r)=>r.json()
-        ) : fetch(this.url + "/tag", {
+        }).then((r)=>r.json()) : fetch(this.url + "/tag", {
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     getMeta(id) {
         return fetch(this.url + "/doc/" + id + "/meta", {
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     getVersion() {
         return fetch(this.url + "/version", {
             method: "GET",
             headers: this.headers
-        }).then((r)=>r.json()
-        );
+        }).then((r)=>r.json());
     }
     removeTag(id, label) {
         return fetch(this.url + "/doc/" + id + "/tag/" + label, {
@@ -172,8 +165,7 @@ class Server {
                 statusCode: 0,
                 error: 'Unknown error occured while setting title',
                 message: 'Recieved following response from server: ' + r
-            }
-        );
+            });
     }
     uploadFile(file) {
         if (file.type != "application/pdf") {
@@ -205,11 +197,11 @@ class Server {
         }
     }
 }
-var La1 = "M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z", Bp1 = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z", wO1 = "M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18L5,6.3V11.22C5,15.54 8.25,20 12,21M11,7H13V13H11V7M11,15H13V17H11V15Z";
+var bv1 = "M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z", un1 = "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z", tP1 = "M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18L5,6.3V11.22C5,15.54 8.25,20 12,21M11,7H13V13H11V7M11,15H13V17H11V15Z";
 const ICONS = {
-    mdiPencilOutline: La1,
-    mdiPlus: Bp1,
-    mdiShieldAlertOutline: wO1
+    mdiPencilOutline: bv1,
+    mdiPlus: un1,
+    mdiShieldAlertOutline: tP1
 };
 function e(name, contents = [], options) {
     const el = document.createElement(name);
@@ -292,24 +284,12 @@ class ServerSettings extends HTMLElement {
         "#456456",
         "#fff000"
     ];
-    #data = {
+    data = {
         url: "",
         password: "",
         color: undefined,
         selected: false
     };
-    get data() {
-        return this.#data;
-    }
-    set data(v) {
-        this.#data = {
-            url: v.url ?? this.#data.url,
-            password: v.password ?? this.#data.password,
-            color: v.color ?? this.#data.color,
-            selected: v.selected ?? this.#data.selected
-        };
-        this.updateData();
-    }
     constructor(){
         super();
         this.attachShadow({
@@ -366,7 +346,6 @@ class ServerSettings extends HTMLElement {
           width: 36px;
           margin: -6px 6px -6px -6px;
         }`));
-        this.updateData();
     }
     updateData() {
         console.log(this.data);
@@ -376,7 +355,7 @@ class ServerSettings extends HTMLElement {
     }
     changeColors() {
         this.colors = [
-            this.#data.color ?? "123123",
+            this.data.color ?? "123123",
             "#ffffff",
             "#456456",
             "#fff000", 

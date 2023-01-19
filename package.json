@@ -17,6 +17,7 @@
     "@github/time-elements": "^3.1.2",
     "@tridoc/frontend": "^2.1.2",
     "core-js": "^3.8.2",
+    "ipfs-only-hash": "^4.0.0",
     "pdfvuer": "^1.6.1",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.6",

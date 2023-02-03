@@ -52,7 +52,7 @@ function computeFileHash (blob: Blob): Promise<string> {
 const ipfsCache = new Map<string, Blob>();
 
 self.addEventListener('fetch', async (event) => {
-  console.log(`fetch: ${event.request.method} ${event.request.url}`)
+  // console.log(`fetch: ${event.request.method} ${event.request.url}`)
   const url = new URL(event.request.url);
 
   // Don't care about other-origin URLs
@@ -69,7 +69,7 @@ self.addEventListener('fetch', async (event) => {
       event.respondWith((async () => {
         if (ipfsCache.has(key)) {
           const blob: Blob = ipfsCache.get(key) as Blob
-          console.log(`the blob has length: ${(await blob.arrayBuffer()).byteLength} and type ${blob.type}`)
+          // console.log(`the blob has length: ${(await blob.arrayBuffer()).byteLength} and type ${blob.type}`)
           return new Response(blob, { headers: new Headers({ 'Content-Type': 'application/pdf' }) });
         } else {
           return new Response('No such object in share-target cache.', { status: 404 })
@@ -91,10 +91,10 @@ self.addEventListener('fetch', async (event) => {
       const dataPromise = event.request.formData();
       const formData = await dataPromise;
       const file = formData.get('file') as Blob;
-      console.log(`will store blob of length: ${(await file.arrayBuffer()).byteLength} `)
+      // console.log(`will store blob of length: ${(await file.arrayBuffer()).byteLength} `)
       const fileHash = await computeFileHash(file)
       ipfsCache.set(fileHash, file)
-      console.log(`stored blob of length: ${(await file.arrayBuffer()).byteLength} for ${fileHash}`)
+      // console.log(`stored blob of length: ${(await file.arrayBuffer()).byteLength} for ${fileHash}`)
       return Response.redirect(`/share-target?file=${fileHash}`)
     })())
   }

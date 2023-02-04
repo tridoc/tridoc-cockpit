@@ -58,13 +58,8 @@ self.addEventListener('fetch', async (event) => {
   // Don't care about other-origin URLs
   if (url.origin !== location.origin) return;
 
-  if (url.pathname === '/editor') {
-    event.respondWith(Response.redirect('/'));
-    return;
-  }
-
-  if (url.pathname.startsWith('/ipfs/')) {
-    const key = url.pathname.substring(6);
+  const key = url.pathname.split('/ipfs/')[1];
+  if (key) {
     if (event.request.method === 'GET') {
       event.respondWith((async () => {
         if (ipfsCache.has(key)) {
@@ -82,7 +77,6 @@ self.addEventListener('fetch', async (event) => {
     return;
   }
   if (
-    url.pathname === '/' &&
     url.searchParams.has('share-target') &&
     event.request.method === 'POST'
   ) {
@@ -95,7 +89,7 @@ self.addEventListener('fetch', async (event) => {
       const fileHash = await computeFileHash(file)
       ipfsCache.set(fileHash, file)
       // console.log(`stored blob of length: ${(await file.arrayBuffer()).byteLength} for ${fileHash}`)
-      return Response.redirect(`/share-target?file=${fileHash}`)
+      return Response.redirect(`./share-target?file=${fileHash}`)
     })())
   }
 });

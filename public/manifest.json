@@ -25,6 +25,11 @@
     "type": "image/svg",
     "purpose": "any"
   }, {
+    "src": "images/favicon_512x512.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any"
+  }, {
     "src": "images/favicon_180x180.png",
     "sizes": "180x180",
     "type": "image/png",

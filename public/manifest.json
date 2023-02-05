@@ -3,40 +3,47 @@
   "short_name": "Tridoc",
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#00685b",
-  "background_color": "#fff",
+  "theme_color": "#00685C",
+  "background_color": "#00685C",
   "description": "Tridoc Document Manager",
   "icons": [{
-    "src": "images/favicon-16.png",
-    "sizes": "16x16",
-    "type": "image/png"
-  }, {
-    "src": "images/favicon-32.png",
-    "sizes": "32x32",
-    "type": "image/png"
-  }, {
-    "src": "images/favicon-400.png",
-    "sizes": "400x400",
-    "type": "image/png"
-  },{
-    "src": "images/icon-48.png",
-    "sizes": "48x48",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }, {
-    "src": "images/icon-192.png",
-    "sizes": "192x192",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }, {
-    "src": "images/icon-512.png",
-    "sizes": "512x512",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }, {
-    "src": "images/icon.svg",
+    "src": "images/maskable.svg",
     "type": "image/svg",
-    "purpose": "any maskable"
+    "purpose": "maskable"
+  }, {
+    "src": "images/apple-touch-icon.png",
+    "sizes": "180x180",
+    "type": "image/png",
+    "purpose": "maskable"
+  }, {
+    "src": "images/maskable_196x196.png",
+    "sizes": "196x196",
+    "type": "image/png",
+    "purpose": "maskable"
+  }, {
+    "src": "images/tridoc.svg",
+    "type": "image/svg",
+    "purpose": "any"
+  }, {
+    "src": "images/favicon_180x180.png",
+    "sizes": "180x180",
+    "type": "image/png",
+    "purpose": "any"
+  }, {
+    "src": "images/favicon_32x32.png",
+    "sizes": "32x32",
+    "type": "image/png",
+    "purpose": "any"
+  }, {
+    "src": "images/favicon_20x20.png",
+    "sizes": "20x20",
+    "type": "image/png",
+    "purpose": "any"
+  }, {
+    "src": "images/favicon_16x16.png",
+    "sizes": "16x16",
+    "type": "image/png",
+    "purpose": "any"
   }],
     "share_target": {
     "action": "./?share-target",

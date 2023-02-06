@@ -53,6 +53,7 @@ export default class ShareTarget extends Vue {
       this.uploaded = true
       this.docPath = (uploadResult as { location: string }).location
       await fetch(this.tmpDoc, { method: 'DELETE' })
+      this.$router.replace({ path: this.docPath })
     } else {
       throw uploadResult
     }

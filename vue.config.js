@@ -13,10 +13,7 @@ module.exports = {
     devtool: 'source-map',
     plugins: [
       new InjectManifest({
-        swSrc: './src/serviceworker/sw.ts',
-        additionalManifestEntries: [
-          { url: PATH + 'js/chunk-vendors.js', revision: '0' }
-        ]
+        swSrc: './src/serviceworker/sw.ts'
       })
     ]  
   }

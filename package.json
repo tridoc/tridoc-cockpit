@@ -56,7 +56,7 @@
     "vue-cli-plugin-vuetify": "^2.0.9",
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.6.0",
-    "workbox-webpack-plugin": "^6.1.5"
+    "workbox-webpack-plugin": "^6.5.4"
   },
   "_id": "tridoc-cockpit@2.0.0",
   "bugs": {

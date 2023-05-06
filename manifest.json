@@ -1,0 +1,100 @@
+{
+  "name": "Tridcoc Cockpit",
+  "short_name": "Tridoc",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#00685C",
+  "background_color": "#00685C",
+  "description": "Tridoc Document Manager",
+  "icons": [
+    {
+      "src": "images/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/maskable_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/maskable_196x196.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/maskable_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/tridoc.svg",
+      "sizes": "any",
+      "type": "image/svg",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicon_180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicon_32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicon_20x20.png",
+      "sizes": "20x20",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicon_16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "share_target": {
+    "action": "./?share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "file",
+          "accept": [
+            "application/pdf"
+          ]
+        }
+      ]
+    }
+  },
+  "orientation": "any",
+  "scope": ".",
+  "dir": "auto",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "utilities"
+  ]
+}

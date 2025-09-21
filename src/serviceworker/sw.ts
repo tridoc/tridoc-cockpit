@@ -50,6 +50,7 @@ function computeFileHash (blob: Blob): Promise<string> {
 }
 
 const ipfsCache = new Map<string, Blob>();
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB limit for PDF files
 
 self.addEventListener('fetch', async (event) => {
   // console.log(`fetch: ${event.request.method} ${event.request.url}`)
@@ -64,32 +65,59 @@ self.addEventListener('fetch', async (event) => {
       event.respondWith((async () => {
         if (ipfsCache.has(key)) {
           const blob: Blob = ipfsCache.get(key) as Blob
-          // console.log(`the blob has length: ${(await blob.arrayBuffer()).byteLength} and type ${blob.type}`)
-          return new Response(blob, { headers: new Headers({ 'Content-Type': 'application/pdf' }) });
+          return new Response(blob, { 
+            headers: new Headers({ 
+              'Content-Type': 'application/pdf',
+              'Content-Length': blob.size.toString()
+            }) 
+          });
         } else {
-          return new Response('No such object in share-target cache.', { status: 404 })
+          return new Response('File not found in share-target cache. It may have expired.', { 
+            status: 404,
+            headers: { 'Content-Type': 'text/plain' }
+          })
         }
       })());
     } else if (event.request.method === 'DELETE') {
       ipfsCache.delete(key);
-      event.respondWith(new Response('', { status: 201 }));
+      event.respondWith(new Response('', { status: 204 }));
     }
     return;
   }
+  
   if (
     url.searchParams.has('share-target') &&
     event.request.method === 'POST'
   ) {
-    // eslint-disable-next-line no-async-promise-executor
     event.respondWith((async () => {
-      const dataPromise = event.request.formData();
-      const formData = await dataPromise;
-      const file = formData.get('file') as Blob;
-      // console.log(`will store blob of length: ${(await file.arrayBuffer()).byteLength} `)
-      const fileHash = await computeFileHash(file)
-      ipfsCache.set(fileHash, file)
-      // console.log(`stored blob of length: ${(await file.arrayBuffer()).byteLength} for ${fileHash}`)
-      return Response.redirect(`./share-target?file=${fileHash}`)
-    })())
+      try {
+        const formData = await event.request.formData();
+        const file = formData.get('file') as Blob;
+        
+        if (!file) {
+          return new Response('No file provided', { status: 400 });
+        }
+        
+        // Validate file size (reasonable limit for PDFs)
+        if (file.size > MAX_FILE_SIZE) {
+          return new Response(`PDF file too large (${Math.round(file.size / 1024 / 1024)}MB). Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`, { 
+            status: 413 
+          });
+        }
+        
+        // Basic PDF validation
+        if (file.type && file.type !== 'application/pdf') {
+          console.warn(`Unexpected file type: ${file.type}, expected PDF`);
+        }
+        
+        const fileHash = await computeFileHash(file);
+        ipfsCache.set(fileHash, file);
+        
+        return Response.redirect(`./share-target?file=${fileHash}`);
+      } catch (error) {
+        console.error('Share target error:', error);
+        return new Response('Failed to process shared PDF file', { status: 500 });
+      }
+    })());
   }
 });
